@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" fill="none" role="img" aria-label="MARELI">
+  <g stroke="currentColor" stroke-width="3" stroke-linecap="square" fill="none">
+    <!-- left vertical leg -->
+    <path d="M70 60 V150" />
+    <!-- right vertical leg -->
+    <path d="M250 60 V150" />
+    <!-- nested chevrons forming the M -->
+    <path d="M70 60 L160 130 L250 60" />
+    <path d="M82 60 L160 118 L238 60" />
+    <path d="M94 60 L160 106 L226 60" />
+  </g>
+  <text x="160" y="190" text-anchor="middle"
+        font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="46" letter-spacing="10" fill="currentColor">MARELI</text>
+</svg>

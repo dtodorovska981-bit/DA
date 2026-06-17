@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MARELI — Фелни и Гуми</title>
+  <meta name="description" content="MARELI — продажба на квалитетни фелни и гуми за сите типови возила. Пронајдете го вашиот сет со филтрирање по тагови." />
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="MARELI почетна">
+        <img class="brand-mark" src="assets/logo.svg" alt="MARELI" />
+      </a>
+      <button class="nav-toggle" aria-label="Мени"><span></span><span></span><span></span></button>
+      <nav class="nav">
+        <a href="index.html" class="active">Почетна</a>
+        <a href="rims.html">Фелни</a>
+        <a href="tires.html">Гуми</a>
+        <a href="contact.html">Контакт</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Фелни и гуми за вашето возило</h1>
+        <p>MARELI нуди широк асортиман на квалитетни фелни и гуми. Пребарувајте по димензија, сезона, материјал и боја — и пронајдете го точниот сет за вас.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="rims.html">Разгледај фелни</a>
+          <a class="btn btn-ghost" href="tires.html">Разгледај гуми</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-title">
+          <h2>Категории</h2>
+        </div>
+        <p class="section-sub">Изберете категорија и филтрирајте ги производите според вашите потреби.</p>
+
+        <div class="cards">
+          <a class="cat-card" href="rims.html">
+            <div class="cat-visual">
+              <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="60" cy="60" r="50" /><circle cx="60" cy="60" r="14" />
+                <circle cx="60" cy="60" r="4" fill="currentColor" stroke="none" />
+                <line x1="60" y1="60" x2="60" y2="12" /><line x1="60" y1="60" x2="100" y2="84" />
+                <line x1="60" y1="60" x2="20" y2="84" /><line x1="60" y1="60" x2="98" y2="38" />
+                <line x1="60" y1="60" x2="22" y2="38" />
+              </svg>
+            </div>
+            <h3>Фелни</h3>
+            <p>Алуминиумски и челични фелни од 14 до 20 цоли, во разни дизајни и бои.</p>
+            <span class="btn btn-ghost">Разгледај →</span>
+          </a>
+
+          <a class="cat-card" href="tires.html">
+            <div class="cat-visual">
+              <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="60" cy="60" r="50" /><circle cx="60" cy="60" r="28" />
+                <g stroke-width="4">
+                  <line x1="60" y1="10" x2="60" y2="32" /><line x1="60" y1="88" x2="60" y2="110" />
+                  <line x1="10" y1="60" x2="32" y2="60" /><line x1="88" y1="60" x2="110" y2="60" />
+                </g>
+              </svg>
+            </div>
+            <h3>Гуми</h3>
+            <p>Летни, зимски и целогодишни гуми за патнички, SUV и спортски возила.</p>
+            <span class="btn btn-ghost">Разгледај →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+      <div class="container">
+        <div class="section-title"><h2>Зошто MARELI?</h2></div>
+        <p class="section-sub">Квалитет, избор и стручен совет на едно место.</p>
+        <div class="cards" style="grid-template-columns:repeat(3,1fr);">
+          <div class="cat-card" style="background:#fff;">
+            <h3>Голем избор</h3>
+            <p>Десетици модели фелни и гуми со лесно филтрирање по тагови.</p>
+          </div>
+          <div class="cat-card" style="background:#fff;">
+            <h3>Проверен квалитет</h3>
+            <p>Само тестирани производи со гаранција за издржливост и безбедност.</p>
+          </div>
+          <div class="cat-card" style="background:#fff;">
+            <h3>Стручен совет</h3>
+            <p>Контактирајте нè и ќе ви помогнеме да го изберете вистинскиот сет.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand"><img class="brand-mark" src="assets/logo.svg" alt="MARELI" style="height:46px;filter:invert(1);" /></div>
+        <p>Фелни и гуми за сите типови возила. Вашиот партнер за безбедно возење.</p>
+      </div>
+      <div>
+        <h4>Мени</h4>
+        <ul>
+          <li><a href="index.html">Почетна</a></li>
+          <li><a href="rims.html">Фелни</a></li>
+          <li><a href="tires.html">Гуми</a></li>
+          <li><a href="contact.html">Контакт</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Контакт</h4>
+        <ul>
+          <li>📍 Скопје, Македонија</li>
+          <li>📞 +389 70 000 000</li>
+          <li>✉️ info@mareli.mk</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 MARELI. Сите права задржани.</div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

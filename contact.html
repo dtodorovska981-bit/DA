@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Контакт — MARELI</title>
+  <meta name="description" content="Контактирајте го MARELI за фелни, гуми и стручен совет." />
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="MARELI почетна">
+        <img class="brand-mark" src="assets/logo.svg" alt="MARELI" />
+      </a>
+      <button class="nav-toggle" aria-label="Мени"><span></span><span></span><span></span></button>
+      <nav class="nav">
+        <a href="index.html">Почетна</a>
+        <a href="rims.html">Фелни</a>
+        <a href="tires.html">Гуми</a>
+        <a href="contact.html" class="active">Контакт</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="catalog-head">
+      <div class="container">
+        <h1>Контакт</h1>
+        <p>Имате прашање за фелни или гуми? Пишете ни или јавете се — тука сме за вас.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="contact-grid">
+          <div>
+            <h2 style="margin-top:0;">Информации за контакт</h2>
+            <ul class="info-list">
+              <li><span class="ico">📍</span><div><strong>Адреса</strong><span>ул. Примерна бр. 1, Скопје, Македонија</span></div></li>
+              <li><span class="ico">📞</span><div><strong>Телефон</strong><span>+389 70 000 000</span></div></li>
+              <li><span class="ico">✉️</span><div><strong>Е-пошта</strong><span>info@mareli.mk</span></div></li>
+              <li><span class="ico">🕒</span><div><strong>Работно време</strong><span>Пон – Саб: 08:00 – 18:00</span></div></li>
+            </ul>
+            <iframe
+              class="map-embed"
+              title="Локација"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=21.38%2C41.97%2C21.50%2C42.02&layer=mapnik"
+              loading="lazy"></iframe>
+          </div>
+
+          <div>
+            <h2 style="margin-top:0;">Испратете порака</h2>
+            <form id="contact-form">
+              <div class="form-field">
+                <label for="name">Име и презиме</label>
+                <input id="name" name="name" type="text" required placeholder="Вашето име" />
+              </div>
+              <div class="form-field">
+                <label for="email">Е-пошта</label>
+                <input id="email" name="email" type="email" required placeholder="vasa@adresa.mk" />
+              </div>
+              <div class="form-field">
+                <label for="phone">Телефон</label>
+                <input id="phone" name="phone" type="tel" placeholder="+389 ..." />
+              </div>
+              <div class="form-field">
+                <label for="message">Порака</label>
+                <textarea id="message" name="message" rows="5" required placeholder="Кои фелни или гуми ве интересираат?"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Испрати порака</button>
+              <p class="form-note" id="form-note">Ќе ви одговориме во најкус можен рок.</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand"><img class="brand-mark" src="assets/logo.svg" alt="MARELI" style="height:46px;filter:invert(1);" /></div>
+        <p>Фелни и гуми за сите типови возила. Вашиот партнер за безбедно возење.</p>
+      </div>
+      <div>
+        <h4>Мени</h4>
+        <ul>
+          <li><a href="index.html">Почетна</a></li>
+          <li><a href="rims.html">Фелни</a></li>
+          <li><a href="tires.html">Гуми</a></li>
+          <li><a href="contact.html">Контакт</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Контакт</h4>
+        <ul>
+          <li>📍 Скопје, Македонија</li>
+          <li>📞 +389 70 000 000</li>
+          <li>✉️ info@mareli.mk</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 MARELI. Сите права задржани.</div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    document.getElementById("contact-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      document.getElementById("form-note").textContent =
+        "Ви благодариме! Вашата порака е примена (демо формулар).";
+      this.reset();
+    });
+  </script>
+</body>
+</html>

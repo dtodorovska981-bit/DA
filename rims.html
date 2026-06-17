@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Фелни — MARELI</title>
+  <meta name="description" content="Разгледајте ги фелните на MARELI. Филтрирајте по димензија, материјал, дизајн и боја." />
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="MARELI почетна">
+        <img class="brand-mark" src="assets/logo.svg" alt="MARELI" />
+      </a>
+      <button class="nav-toggle" aria-label="Мени"><span></span><span></span><span></span></button>
+      <nav class="nav">
+        <a href="index.html">Почетна</a>
+        <a href="rims.html" class="active">Фелни</a>
+        <a href="tires.html">Гуми</a>
+        <a href="contact.html">Контакт</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="catalog-head">
+      <div class="container">
+        <h1>Фелни</h1>
+        <p>Изберете тагови за да ги филтрирате фелните по димензија, материјал, дизајн или боја.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="toolbar">
+          <div class="search-box">
+            <span>🔍</span>
+            <input id="search" type="text" placeholder="Пребарај фелни..." aria-label="Пребарај" />
+          </div>
+          <div class="filters" id="filters"></div>
+          <div class="filter-meta">
+            <span id="result-count"></span>
+            <span class="clear-link" id="clear-filters">Исчисти филтри</span>
+          </div>
+        </div>
+
+        <div class="grid" id="product-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand"><img class="brand-mark" src="assets/logo.svg" alt="MARELI" style="height:46px;filter:invert(1);" /></div>
+        <p>Фелни и гуми за сите типови возила. Вашиот партнер за безбедно возење.</p>
+      </div>
+      <div>
+        <h4>Мени</h4>
+        <ul>
+          <li><a href="index.html">Почетна</a></li>
+          <li><a href="rims.html">Фелни</a></li>
+          <li><a href="tires.html">Гуми</a></li>
+          <li><a href="contact.html">Контакт</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Контакт</h4>
+        <ul>
+          <li>📍 Скопје, Македонија</li>
+          <li>📞 +389 70 000 000</li>
+          <li>✉️ info@mareli.mk</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 MARELI. Сите права задржани.</div>
+  </footer>
+
+  <script src="js/products.js"></script>
+  <script src="js/main.js"></script>
+  <script>initCatalog("rims");</script>
+</body>
+</html>
