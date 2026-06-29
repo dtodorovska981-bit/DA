@@ -84,9 +84,27 @@ function initCatalog(category) {
 
   if (searchEl) {
     searchEl.addEventListener("input", (e) => {
-      searchTerm = e.target.value.trim().toLowerCase();
+      searchTerm = e.target.value.toLowerCase().trim();
       render();
     });
+  }
+
+  /* Сите полиња по кои може да се пребарува за еден производ.
+     Се спојуваат во еден текст за пребарување по повеќе променливи:
+     име, бренд, опис, тагови (димензија, сезона, материјал, боја, тип...),
+     цена и категорија. */
+  function searchableText(p) {
+    return [
+      p.name,
+      p.brand,
+      p.desc,
+      p.price,
+      p.category,
+      p.type,
+      ...(p.tags || [])
+    ]
+      .join(" ")
+      .toLowerCase();
   }
 
   if (clearEl) {
@@ -104,8 +122,14 @@ function initCatalog(category) {
   function matches(p) {
     /* Производот мора да ги содржи СИТЕ избрани тагови */
     const tagOk = [...activeTags].every((t) => p.tags.includes(t));
-    const text = (p.name + " " + p.desc + " " + p.tags.join(" ")).toLowerCase();
-    const searchOk = !searchTerm || text.includes(searchTerm);
+
+    /* Пребарување по повеќе променливи: секој внесен збор мора да се
+       појави барем во едно од полињата (име, бренд, опис, тагови, цена...).
+       На пр. "зимски 18" ги наоѓа зимските гуми од 18 цоли. */
+    const text = searchableText(p);
+    const terms = searchTerm.split(/\s+/).filter(Boolean);
+    const searchOk = terms.every((term) => text.includes(term));
+
     return tagOk && searchOk;
   }
 
