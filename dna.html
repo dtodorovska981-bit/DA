@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DNA Pro Plans — Raise smarter</title>
+  <meta name="description" content="DNA Pro Plans — see our work and start your raise. Book a meeting or send us your details to get started." />
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --bg-soft: #12151d;
+      --line: rgba(255, 255, 255, 0.10);
+      --text: #f4f6fb;
+      --muted: #a2abbd;
+      --accent: #6c5cff;
+      --accent-2: #00d3a7;
+      --accent-ink: #ffffff;
+      --radius: 14px;
+      --shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
+      --focus: 0 0 0 3px rgba(108, 92, 255, 0.5);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(108, 92, 255, 0.18), transparent 60%),
+        radial-gradient(900px 500px at 0% 20%, rgba(0, 211, 167, 0.12), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: clamp(48px, 10vw, 120px) 24px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 14px;
+      margin-bottom: 26px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 6vw, 60px);
+      line-height: 1.05;
+      margin: 0 0 18px;
+      letter-spacing: -0.02em;
+    }
+
+    h1 .grad {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lead {
+      font-size: clamp(16px, 2.4vw, 20px);
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0 auto 40px;
+    }
+
+    /* ===== Button group ===== */
+    .cta-group {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn {
+      appearance: none;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 1;
+      padding: 16px 26px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.2s ease,
+        background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .btn svg { width: 18px; height: 18px; }
+
+    .btn:focus-visible { outline: none; box-shadow: var(--focus); }
+    .btn:active { transform: translateY(1px) scale(0.99); }
+
+    .btn-primary {
+      background: linear-gradient(90deg, var(--accent), #8a7bff);
+      color: var(--accent-ink);
+      box-shadow: 0 12px 30px -12px rgba(108, 92, 255, 0.8);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px -14px rgba(108, 92, 255, 0.95);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--line);
+    }
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    /* The two buttons react to one another: hovering either one
+       gently dims its sibling so focus stays on the active choice. */
+    .cta-group:hover .btn { opacity: 0.72; }
+    .cta-group:hover .btn:hover { opacity: 1; }
+    .cta-group .btn:focus-visible { opacity: 1; }
+
+    /* ===== Modal ===== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(6, 8, 12, 0.72);
+      backdrop-filter: blur(6px);
+      z-index: 50;
+    }
+    .modal.open { display: flex; animation: fade 0.18s ease; }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal-card {
+      width: 100%;
+      max-width: 460px;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      text-align: left;
+      animation: pop 0.2s ease;
+    }
+    @keyframes pop { from { transform: translateY(10px) scale(0.98); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 6px;
+    }
+    .modal-head h2 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
+    .modal-sub { color: var(--muted); font-size: 14px; margin: 0 0 22px; }
+
+    .modal-close {
+      appearance: none;
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      width: 34px; height: 34px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      flex: none;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .modal-close:hover { color: var(--text); border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.04); }
+    .modal-close:focus-visible { outline: none; box-shadow: var(--focus); }
+
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 7px; }
+    .field input, .field textarea {
+      width: 100%;
+      background: #0c0f16;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--text);
+      font: inherit;
+      font-size: 15px;
+      padding: 12px 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input:focus, .field textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: var(--focus);
+    }
+    .field textarea { resize: vertical; min-height: 96px; }
+
+    .modal .btn-primary { width: 100%; justify-content: center; margin-top: 4px; }
+
+    .form-note { font-size: 13px; color: var(--accent-2); margin: 14px 0 0; min-height: 18px; }
+
+    .muted-mini { color: var(--muted); font-size: 13px; margin-top: 22px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn, .modal.open, .modal-card { animation: none; transition: none; }
+      .btn:hover, .btn:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <span class="eyebrow">DNA Pro Plans</span>
+    <h1>Raise capital with a plan<br /><span class="grad">investors take seriously</span></h1>
+    <p class="lead">
+      We turn your traction into a fundable story — decks, models, and a data room
+      built to close. See what we've shipped, or jump straight into planning your raise.
+    </p>
+
+    <div class="cta-group">
+      <!-- Opens the intake form modal -->
+      <button type="button" class="btn btn-secondary" id="seeWorkBtn" aria-haspopup="dialog" aria-controls="workModal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" />
+        </svg>
+        See Work
+      </button>
+
+      <!-- Sends the visitor to the Google Calendar scheduling page -->
+      <a
+        class="btn btn-primary"
+        id="startRaiseBtn"
+        href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1rMIHWb47Hp7tsXS3ZnZXrIJWEaXnTwpcYgRJRwyacGiO4Ol5-uKRxiyqrlWVVwsqXZIv2tACS"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Start Your Raise
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+
+    <p class="muted-mini">No pressure — “Start Your Raise” books a 30-min intro call.</p>
+  </main>
+
+  <!-- ===== See Work modal ===== -->
+  <div class="modal" id="workModal" role="dialog" aria-modal="true" aria-labelledby="workModalTitle" aria-hidden="true">
+    <div class="modal-card" role="document">
+      <div class="modal-head">
+        <div>
+          <h2 id="workModalTitle">See our work</h2>
+        </div>
+        <button type="button" class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+      </div>
+      <p class="modal-sub">Tell us where to send our case studies and recent raises. We'll follow up within one business day.</p>
+
+      <form id="workForm" novalidate>
+        <div class="field">
+          <label for="wf-name">Full name</label>
+          <input id="wf-name" name="name" type="text" required placeholder="Jane Founder" />
+        </div>
+        <div class="field">
+          <label for="wf-email">Work email</label>
+          <input id="wf-email" name="email" type="email" required placeholder="jane@startup.com" />
+        </div>
+        <div class="field">
+          <label for="wf-company">Company</label>
+          <input id="wf-company" name="company" type="text" placeholder="Startup, Inc." />
+        </div>
+        <div class="field">
+          <label for="wf-message">What are you raising? (optional)</label>
+          <textarea id="wf-message" name="message" placeholder="e.g. $1.5M pre-seed, SaaS, $20k MRR"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send me the work</button>
+        <p class="form-note" id="wf-note" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var seeWorkBtn = document.getElementById("seeWorkBtn");
+      var modal = document.getElementById("workModal");
+      var closeBtn = document.getElementById("modalClose");
+      var form = document.getElementById("workForm");
+      var note = document.getElementById("wf-note");
+      var lastFocused = null;
+
+      function getFocusable() {
+        return modal.querySelectorAll(
+          'a[href], button:not([disabled]), input, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+      }
+
+      function openModal() {
+        lastFocused = document.activeElement;
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        var first = document.getElementById("wf-name");
+        if (first) first.focus();
+      }
+
+      function closeModal() {
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        if (lastFocused && lastFocused.focus) lastFocused.focus();
+      }
+
+      seeWorkBtn.addEventListener("click", openModal);
+      closeBtn.addEventListener("click", closeModal);
+
+      // Click on the dimmed backdrop (but not the card) closes the modal
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) closeModal();
+      });
+
+      // Keyboard: Esc closes, Tab is trapped inside the modal
+      document.addEventListener("keydown", function (e) {
+        if (!modal.classList.contains("open")) return;
+        if (e.key === "Escape") {
+          closeModal();
+          return;
+        }
+        if (e.key === "Tab") {
+          var f = getFocusable();
+          if (!f.length) return;
+          var first = f[0];
+          var last = f[f.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var name = document.getElementById("wf-name");
+        var email = document.getElementById("wf-email");
+        if (!name.value.trim() || !email.value.trim() || !email.checkValidity()) {
+          note.style.color = "#ff6b6b";
+          note.textContent = "Please enter your name and a valid email.";
+          (!name.value.trim() ? name : email).focus();
+          return;
+        }
+        note.style.color = "";
+        note.textContent = "Thanks, " + name.value.trim().split(" ")[0] + "! We'll be in touch shortly. (Demo form)";
+        form.reset();
+      });
+    })();
+  </script>
+</body>
+</html>
