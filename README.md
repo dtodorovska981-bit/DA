@@ -1,52 +1,12 @@
-# MARELI — веб-страница за фелни и гуми
+# DNA Pro Plans website (launch version)
 
-Статична веб-страница (HTML/CSS/JavaScript) за компанијата **MARELI**.
-Не бара база на податоци ниту build-процес — само отворете ги фајловите во прелистувач или хостирајте ги на GitHub Pages / Netlify.
+Static site, no build step. Every file sits in the main folder.
 
-## Структура
+## Files
+index.html, styles.css, main.js, thanks.html, privacy.html, 404.html,
+favicon.svg, apple-touch-icon.png, robots.txt, sitemap.xml, netlify.toml
 
-```
-index.html       # Почетна страница
-rims.html        # Фелни (со филтрирање по тагови)
-tires.html       # Гуми (со филтрирање по тагови)
-contact.html     # Контакт (форма + информации + мапа)
-css/styles.css   # Стилови
-js/products.js   # Податоци за производите (фелни и гуми)
-js/main.js       # Филтрирање, пребарување, мени
-assets/logo.svg  # Лого на MARELI
-```
-
-## Како да додадете или измените производ
-
-Отворете `js/products.js`. Секој производ е објект, на пример:
-
-```js
-{
-  id: "rim-009",
-  category: "rims",          // "rims" за фелни, "tires" за гуми
-  type: "rim",               // "rim" или "tire" (за приказ-сликата)
-  name: "Mareli Sport R18",
-  brand: "Mareli",
-  price: "од 6.900 ден.",
-  desc: "Краток опис на производот.",
-  tags: ["Алуминиумски", "18 цоли", "Црна"]   // тагови за филтрирање
-}
-```
-
-Таговите автоматски се појавуваат како копчиња за филтрирање на соодветната страница —
-не треба рачно да ги додавате никаде на друго место.
-
-## Лого и слики
-
-- Логото е во `assets/logo.svg`. За да го замените со вашиот оригинален фајл,
-  едноставно заменете го `logo.svg` (или додајте `.png` и сменете ги патеките во HTML).
-- Производите користат генерирани SVG илустрации. За вистински фотографии,
-  додајте поле `image: "assets/ime.jpg"` и приспособете го `js/main.js`.
-
-## Локално прегледување
-
-```bash
-# било кој статичен сервер, на пример:
-python3 -m http.server 8000
-# отворете http://localhost:8000
-```
+## Images (export from the Figma frame "WEBSITE IMAGES")
+hero-landscape.jpg, cta-seedling.jpg, founder.jpg,
+package-data-room.jpg, package-lender.jpg, package-commercial.jpg,
+partners-towers.jpg
