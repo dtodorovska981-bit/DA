@@ -43,7 +43,7 @@
           <span class="w dim"><span style="--i:10">through</span></span>
           <span class="ann" style="--i:1"><span class="w dim"><span style="--i:11"><span class="ann__u">four platforms</span></span></span><a class="ann__label" href="platforms.html">See the platforms<span class="arr">→</span></a></span>
           <span class="w dim"><span style="--i:12">and</span></span>
-          <span class="ann" style="--i:2"><span class="w dim"><span style="--i:13"><span class="ann__u">one thesis.</span></span></span><a class="ann__label" href="#why">Why it works<span class="arr">→</span></a></span>
+          <span class="ann" style="--i:2"><span class="w dim"><span style="--i:13"><span class="ann__u">one thesis.</span></span></span><a class="ann__label" href="#partners">Why it works<span class="arr">→</span></a></span>
         </h1>
         <p class="hero__lead">We invest across the whole life of a company, from an idea in a regulated industry to an established American business. <span class="dim">Capital works harder with operating advantage and software.</span></p>
         <div class="hero__actions">
@@ -52,7 +52,20 @@
         </div>
         <p class="hero__fine">Pitch us is for entrepreneurs. Investors complete a short form and a partner follows up.</p>
       </div>
-      <div class="hero__tree" aria-hidden="true"><img src="assets/hero-tree.png" alt="" width="593" height="610" data-parallax="-0.05"></div>
+      <div class="hero__tree" aria-hidden="true">
+        <div class="tree-stage" data-parallax="-0.05">
+          <img class="tree-base" src="assets/hero-tree.png" alt="" width="593" height="610">
+          <img class="tree-wind" src="assets/hero-tree.png" alt="" width="593" height="610">
+          <svg class="tree-filter" width="0" height="0" aria-hidden="true" focusable="false">
+            <filter id="wind" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+              <feTurbulence type="fractalNoise" baseFrequency="0.014 0.021" numOctaves="2" seed="4" result="noise">
+                <animate attributeName="baseFrequency" dur="16s" values="0.014 0.021;0.019 0.026;0.012 0.018;0.014 0.021" repeatCount="indefinite"/>
+              </feTurbulence>
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+          </svg>
+        </div>
+      </div>
       <p class="hero__lockup" aria-hidden="true">EPL GROUP &nbsp;·&nbsp; GROWTH PARTNERS</p>
     </section>
 
@@ -199,32 +212,8 @@
       </div>
     </section>
 
-    <!-- 05 PARTNERS -->
-    <section class="section section--line" id="partners">
-      <div class="wrap">
-      <div class="section__head section__head--gap56 ">
-        <div class="title">
-          <p class="eyebrow r"><span class="num">05</span>Is this for me?</p>
-          <h2 class="display r" style="--d:1">Five kinds of partners. <strong>One clear next step each.</strong></h2>
-        </div>
-        
-      </div>
-
-      <div class="paths-grid r r--fade" data-paths>
-        <div class="stacked"><span data-word="founder">Founder-owners</span><span data-word="allocator">Allocators</span><span data-word="allocator">Family offices</span><span data-word="corporate">Corporates</span><span data-word="operator">Operators</span><small>Work with us</small></div>
-        <div class="paths">
-          <a class="path" href="pitch.html" data-path="founder"><span class="n">01</span><span class="q">Founder-owner looking for a long-term partner?</span><span class="link-arrow">Pitch us<span class="arr">→</span></span></a>
-          <a class="path" href="investors.html" data-path="allocator"><span class="n">02</span><span class="q">Family office or allocator?</span><span class="link-arrow">Investors: complete the form<span class="arr">→</span></span></a>
-          <a class="path" href="pitch.html" data-path="founder"><span class="n">03</span><span class="q">Early-stage founder or idea-stage team?</span><span class="link-arrow">Pitch us<span class="arr">→</span></span></a>
-          <a class="path" href="investors.html" data-path="corporate"><span class="n">04</span><span class="q">Corporate or strategic co-investor?</span><span class="link-arrow">Investors: complete the form<span class="arr">→</span></span></a>
-          <a class="path" href="careers.html" data-path="operator"><span class="n">05</span><span class="q">Operator or prospective venture partner?</span><span class="link-arrow">Join the EPL network<span class="arr">→</span></span></a>
-        </div>
-      </div>
-      </div>
-    </section>
-
-    <!-- 05b PARTNERS (report style) -->
-    <section class="section report" id="why">
+    <!-- 05 PARTNERS (report style) -->
+    <section class="section section--line report" id="partners">
       <div class="wrap">
         <div class="section__head">
           <div class="title">

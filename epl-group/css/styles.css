@@ -194,6 +194,19 @@ body.is-ready { opacity: 1; }
 
 .hero__tree { position: absolute; right: -10px; top: 230px; width: 603px; pointer-events: none; z-index: 1; opacity: 0; transform: translateY(24px) scale(.97); transform-origin: bottom center; }
 .hero__tree img { width: 100%; height: auto; }
+.tree-stage { position: relative; }
+.tree-wind {
+  position: absolute; inset: 0; filter: url(#wind);
+  -webkit-mask-image: linear-gradient(to bottom, #000 52%, rgba(0, 0, 0, .6) 66%, transparent 80%);
+  mask-image: linear-gradient(to bottom, #000 52%, rgba(0, 0, 0, .6) 66%, transparent 80%);
+  transform-origin: 50% 96%; animation: sway 9s ease-in-out infinite;
+}
+.tree-filter { position: absolute; width: 0; height: 0; overflow: hidden; }
+@keyframes sway {
+  0%, 100% { transform: rotate(0deg) translateX(0); }
+  35% { transform: rotate(.45deg) translateX(1.5px); }
+  70% { transform: rotate(-.3deg) translateX(-1px); }
+}
 .is-ready .hero__tree { animation: treeIn 1.6s var(--ease-out) .9s forwards; }
 @keyframes treeIn { to { opacity: 1; transform: none; } }
 .hero__lockup {
@@ -531,6 +544,7 @@ body.is-ready { opacity: 1; }
   .pill, .pcard, .router, .ev, .bar, .bar__val { opacity: 1; transform: none; }
   .cal__today { transform: none; }
   .footer__logo svg { clip-path: none; }
+  .tree-wind { display: none; }
   html { scroll-behavior: auto; }
 }
 
