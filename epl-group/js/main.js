@@ -6,7 +6,11 @@
   doc.classList.add('js');
 
   /* ---------- page ready (triggers hero choreography) ---------- */
-  function ready() { document.body.classList.add('is-ready'); }
+  function ready() {
+    document.body.classList.add('is-ready');
+    var title = document.querySelector('.hero__title');
+    if (title) setTimeout(function () { title.classList.add('is-settled'); }, reduce ? 0 : 1500);
+  }
   if (document.fonts && document.fonts.ready) {
     var done = false;
     document.fonts.ready.then(function () { if (!done) { done = true; ready(); } });
