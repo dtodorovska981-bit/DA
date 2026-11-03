@@ -24,7 +24,13 @@
   /* ---------- nav ---------- */
   var nav = document.querySelector('.nav');
   var toggle = document.querySelector('.nav__toggle');
-  function onScrollNav() { nav.classList.toggle('is-scrolled', window.scrollY > 24); }
+  var navScrolled = false;
+  function onScrollNav() {
+    /* hysteresis: compact after 60px, expand again only near the top, so it never flickers */
+    var y = window.scrollY;
+    if (!navScrolled && y > 60) { navScrolled = true; nav.classList.add('is-scrolled'); }
+    else if (navScrolled && y < 8) { navScrolled = false; nav.classList.remove('is-scrolled'); }
+  }
   onScrollNav();
   window.addEventListener('scroll', onScrollNav, { passive: true });
   if (toggle) {
@@ -61,6 +67,18 @@
       }, { threshold: 0.05 });
       fio.observe(footer);
     } else { footerLogo.classList.add('in'); }
+  }
+
+  /* ---------- pause the leaf animation while the hero is off-screen ---------- */
+  var hero = document.querySelector('.hero');
+  var windSvg = document.querySelector('.tree-filter');
+  if (hero && windSvg && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        hero.classList.toggle('is-offscreen', !e.isIntersecting);
+        try { if (e.isIntersecting) windSvg.unpauseAnimations(); else windSvg.pauseAnimations(); } catch (err) {}
+      });
+    }).observe(hero);
   }
 
   /* ---------- counters ---------- */
