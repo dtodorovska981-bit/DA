@@ -45,7 +45,7 @@
   }
 
   /* ---------- scroll reveals ---------- */
-  var revealTargets = document.querySelectorAll('.r, [data-person]');
+  var revealTargets = document.querySelectorAll('.r, [data-person], .journey');
   if ('IntersectionObserver' in window && !reduce) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
@@ -69,16 +69,19 @@
     } else { footerLogo.classList.add('in'); }
   }
 
-  /* ---------- pause the leaf animation while the hero is off-screen ---------- */
-  var hero = document.querySelector('.hero');
-  var windSvg = document.querySelector('.tree-filter');
-  if (hero && windSvg && 'IntersectionObserver' in window) {
-    new IntersectionObserver(function (entries) {
+  /* ---------- pause the leaf animation whenever no tree is on screen ---------- */
+  var windSvg = document.querySelector('.wind-defs');
+  var windEls = Array.prototype.slice.call(document.querySelectorAll('[data-wind]'));
+  if (windSvg && windEls.length && 'IntersectionObserver' in window) {
+    var visibleTrees = new Set();
+    var windIO = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        hero.classList.toggle('is-offscreen', !e.isIntersecting);
-        try { if (e.isIntersecting) windSvg.unpauseAnimations(); else windSvg.pauseAnimations(); } catch (err) {}
+        e.target.classList.toggle('is-offscreen', !e.isIntersecting);
+        if (e.isIntersecting) visibleTrees.add(e.target); else visibleTrees.delete(e.target);
       });
-    }).observe(hero);
+      try { if (visibleTrees.size) windSvg.unpauseAnimations(); else windSvg.pauseAnimations(); } catch (err) {}
+    });
+    windEls.forEach(function (el) { windIO.observe(el); });
   }
 
   /* ---------- counters ---------- */

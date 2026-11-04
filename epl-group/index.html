@@ -30,6 +30,14 @@
     </div>
   </header>
   <main id="main">
+    <svg class="wind-defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <filter id="wind" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.014 0.021" numOctaves="2" seed="4" result="noise">
+          <animate attributeName="baseFrequency" dur="16s" values="0.014 0.021;0.019 0.026;0.012 0.018;0.014 0.021" repeatCount="indefinite"/>
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </svg>
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero__grid" aria-hidden="true"><i class="h1"></i></div>
       <div class="wrap">
@@ -52,37 +60,31 @@
         </div>
         <p class="hero__fine">Pitch us is for entrepreneurs. Investors complete a short form and a partner follows up.</p>
       </div>
-      <div class="hero__tree" aria-hidden="true">
-        <div class="tree-stage" data-parallax="-0.05">
+      <div class="hero__tree" aria-hidden="true" data-wind>
+        <div class="tree-stage">
           <picture><source srcset="assets/hero-tree.webp" type="image/webp"><img class="tree-base" src="assets/hero-tree.png" alt="" width="1195" height="923"></picture>
           <picture><source srcset="assets/hero-tree.webp" type="image/webp"><img class="tree-wind" src="assets/hero-tree.png" alt="" width="1195" height="923"></picture>
-          <svg class="tree-filter" width="0" height="0" aria-hidden="true" focusable="false">
-            <filter id="wind" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
-              <feTurbulence type="fractalNoise" baseFrequency="0.014 0.021" numOctaves="2" seed="4" result="noise">
-                <animate attributeName="baseFrequency" dur="16s" values="0.014 0.021;0.019 0.026;0.012 0.018;0.014 0.021" repeatCount="indefinite"/>
-              </feTurbulence>
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-          </svg>
         </div>
       </div>
       <p class="hero__lockup" aria-hidden="true">EPL GROUP &nbsp;·&nbsp; GROWTH PARTNERS</p>
     </section>
 
     <nav class="journey" aria-label="Page sections">
-      <div class="wrap"><ol>
-        <li><a href="#trust"><span class="n">01</span><span class="q">Can I trust them?</span></a></li>
-        <li><a href="#platforms"><span class="n">02</span><span class="q">What do they do?</span></a></li>
-        <li><a href="#team"><span class="n">03</span><span class="q">Who is behind it?</span></a></li>
-        <li><a href="#track-record"><span class="n">04</span><span class="q">What have they done?</span></a></li>
-        <li><a href="#partners"><span class="n">05</span><span class="q">Is this for me?</span></a></li>
-        <li><a href="#process"><span class="n">06</span><span class="q">What happens next?</span></a></li>
-        <li><a href="#contact"><span class="n">07</span><span class="q">Anything else?</span></a></li>
-      </ol></div>
+      <div class="journey__band" aria-hidden="true"><i></i><i></i></div>
+      <div class="journey__panel"><div class="wrap"><ol>
+        <li><a href="#trust"><span class="blk" aria-hidden="true" style="--l1:#eb5a5d;--lp:64.58%;--l2:#2c3a4b;--r1:#2c3a4b;--rp:35.42%;--r2:#eb5a5d;--i:0"></span><span class="t"><span class="n" style="--i:0">01</span><span class="q" style="--i:0">Can I trust them?</span></span></a></li>
+        <li><a href="#platforms"><span class="blk" aria-hidden="true" style="--l1:#2c3a4b;--lp:50%;--l2:#eb5a5d;--r1:#eb5a5d;--rp:50%;--r2:#2c3a4b;--i:1"></span><span class="t"><span class="n" style="--i:1">02</span><span class="q" style="--i:1">What do they do?</span></span></a></li>
+        <li><a href="#team"><span class="blk" aria-hidden="true" style="--l1:#5b6476;--lp:60.42%;--l2:#eb5a5d;--r1:#eb5a5d;--rp:39.58%;--r2:#eb5a5d;--i:2"></span><span class="t"><span class="n" style="--i:2">03</span><span class="q" style="--i:2">Who is behind it?</span></span></a></li>
+        <li><a href="#track-record"><span class="blk" aria-hidden="true" style="--l1:#eb5a5d;--lp:39.58%;--l2:#2c3a4b;--r1:#2c3a4b;--rp:60.42%;--r2:#2c3a4b;--i:3"></span><span class="t"><span class="n" style="--i:3">04</span><span class="q" style="--i:3">What have they done?</span></span></a></li>
+        <li><a href="#partners"><span class="blk" aria-hidden="true" style="--l1:#2c3a4b;--lp:69.79%;--l2:#e1e5eb;--r1:#e1e5eb;--rp:30.21%;--r2:#eb5a5d;--i:4"></span><span class="t"><span class="n" style="--i:4">05</span><span class="q" style="--i:4">Is this for me?</span></span></a></li>
+        <li><a href="#process"><span class="blk" aria-hidden="true" style="--l1:#e1e5eb;--lp:44.79%;--l2:#eb5a5d;--r1:#eb5a5d;--rp:55.21%;--r2:#2c3a4b;--i:5"></span><span class="t"><span class="n" style="--i:5">06</span><span class="q" style="--i:5">What happens next?</span></span></a></li>
+        <li><a href="#contact"><span class="blk" aria-hidden="true" style="--l1:#eb5a5d;--lp:55.21%;--l2:#5b6476;--r1:#5b6476;--rp:44.79%;--r2:#eb5a5d;--i:6"></span><span class="t"><span class="n" style="--i:6">07</span><span class="q" style="--i:6">Anything else?</span></span></a></li>
+      </ol></div></div>
     </nav>
 
     <!-- 01 TRUST -->
-    <section class="section" id="trust">
+    <section class="section trust" id="trust">
+      <div class="trust__veil" aria-hidden="true"></div>
       <div class="wrap">
       <div class="section__head ">
         <div class="title">
@@ -92,12 +94,23 @@
         <div class="side side--right r" style="--d:2"><p class="note">Figures from the current EPL site, to be confirmed before launch.</p></div>
       </div>
 
+        <div class="trust__figures">
+          <div class="trust__art" aria-hidden="true">
+            <div class="trust__ground"></div>
+            <div class="trust__tree" data-wind>
+              <div class="tree-stage">
+                <picture><source srcset="assets/tree-stage.webp" type="image/webp"><img class="tree-base" src="assets/tree-stage.png" alt="" width="1114" height="916"></picture>
+                <picture><source srcset="assets/tree-stage.webp" type="image/webp"><img class="tree-wind" src="assets/tree-stage.png" alt="" width="1114" height="916"></picture>
+              </div>
+            </div>
+          </div>
       <div class="figures r" data-counters>
-        <div class="figure"><p class="figure__n coral" data-count="900" data-prefix="$" data-suffix="M+">$900M+</p><p class="figure__l">Transaction value advised</p></div>
-        <div class="figure"><p class="figure__n" data-count="80" data-prefix="$" data-suffix="B+">$80B+</p><p class="figure__l">Capital formation and sell-side exposure</p></div>
-        <div class="figure"><p class="figure__n" data-count="30" data-suffix="+">30+</p><p class="figure__l">Years of combined investment banking experience</p></div>
-        <div class="figure"><p class="figure__n" data-count="150" data-suffix="+">150+</p><p class="figure__l">Experts in our network across three continents</p></div>
+        <div class="figure"><span class="blk" aria-hidden="true" style="--l1:#eb5a5d;--lp:62.13%;--l2:#2c3a4b;--r1:#2c3a4b;--rp:40.24%;--r2:#eb5a5d;--i:0"></span><p class="figure__n coral" data-count="900" data-prefix="$" data-suffix="M+">$900M+</p><p class="figure__l">Transaction value advised</p></div>
+        <div class="figure"><span class="blk" aria-hidden="true" style="--l1:#2c3a4b;--lp:50.3%;--l2:#eb5a5d;--r1:#eb5a5d;--rp:55.03%;--r2:#5b6476;--i:1"></span><p class="figure__n" data-count="80" data-prefix="$" data-suffix="B+">$80B+</p><p class="figure__l">Capital formation and sell-side exposure</p></div>
+        <div class="figure"><span class="blk" aria-hidden="true" style="--l1:#5b6476;--lp:57.99%;--l2:#eb5a5d;--r1:#eb5a5d;--rp:34.91%;--r2:#2c3a4b;--i:2"></span><p class="figure__n" data-count="30" data-suffix="+">30+</p><p class="figure__l">Years of combined investment banking experience</p></div>
+        <div class="figure"><span class="blk" aria-hidden="true" style="--l1:#eb5a5d;--lp:40.24%;--l2:#2c3a4b;--r1:#e1e5eb;--rp:59.76%;--r2:#eb5a5d;--i:3"></span><p class="figure__n" data-count="150" data-suffix="+">150+</p><p class="figure__l">Experts in our network across three continents</p></div>
       </div>
+        </div>
       </div>
     </section>
 
