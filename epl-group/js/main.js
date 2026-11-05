@@ -84,6 +84,24 @@
     windEls.forEach(function (el) { windIO.observe(el); });
   }
 
+  /* ---------- team cards: open the selection box on hover, focus, or (touch) when in view ---------- */
+  var people = Array.prototype.slice.call(document.querySelectorAll('[data-person]'));
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  people.forEach(function (card) {
+    card.addEventListener('mouseenter', function () { card.classList.add('is-open'); });
+    card.addEventListener('mouseleave', function () { if (!card.contains(document.activeElement)) card.classList.remove('is-open'); });
+    card.addEventListener('focusin', function () { card.classList.add('is-open'); });
+    card.addEventListener('focusout', function () { if (!card.matches(':hover')) card.classList.remove('is-open'); });
+    card.addEventListener('click', function () { if (!finePointer) card.classList.toggle('is-open'); });
+  });
+  if (!finePointer && 'IntersectionObserver' in window) {
+    /* no hover on touch screens: open as each card comes into view, close when it leaves so it replays */
+    var openIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { e.target.classList.toggle('is-open', e.isIntersecting); });
+    }, { threshold: 0.6 });
+    people.forEach(function (card) { openIO.observe(card); });
+  }
+
   /* ---------- counters ---------- */
   function animateCount(el) {
     var target = parseFloat(el.getAttribute('data-count'));

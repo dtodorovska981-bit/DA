@@ -272,20 +272,6 @@ body.is-ready { opacity: 1; }
 .person__photo img { width: 100%; height: 100%; object-fit: cover; }
 .person__fade { position: absolute; left: 0; right: 0; top: 170px; height: 120px; background: linear-gradient(to bottom, rgba(242, 244, 247, 0), var(--card) 75%); }
 .person__big { position: absolute; left: 0; right: 0; top: 228px; font-size: 84px; font-weight: 600; letter-spacing: -.04em; color: var(--card-text); line-height: 1.2; white-space: nowrap; }
-.person__sel { position: absolute; left: calc(50% - 75px); top: 48px; width: 150px; height: 150px; opacity: 0; transition: opacity .4s; z-index: 1;
-  background:
-    linear-gradient(to right, var(--coral) 55%, transparent 0) left top / 10px 1.5px repeat-x,
-    linear-gradient(to right, var(--coral) 55%, transparent 0) left bottom / 10px 1.5px repeat-x,
-    linear-gradient(to bottom, var(--coral) 55%, transparent 0) left top / 1.5px 10px repeat-y,
-    linear-gradient(to bottom, var(--coral) 55%, transparent 0) right top / 1.5px 10px repeat-y; }
-.person__sel i { position: absolute; width: 10px; height: 10px; box-sizing: border-box; background: #fff; border: 1.5px solid var(--coral); }
-.person__sel i:nth-child(1) { left: -4px; top: -4px; } .person__sel i:nth-child(2) { right: -4px; top: -4px; }
-.person__sel i:nth-child(3) { left: -4px; bottom: -4px; } .person__sel i:nth-child(4) { right: -4px; bottom: -4px; }
-.person__cursor { position: absolute; left: calc(50% + 69px); top: 194px; width: 24px; height: 26px; opacity: 0; transform: translate(30px, 30px); transition: opacity .5s var(--ease), transform .7s var(--ease-out); z-index: 2; }
-.person__tag { position: absolute; left: calc(50% + 51px); top: 218px; background: #fff; border-radius: 100px; padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--ink-2); box-shadow: 0 4px 12px rgba(0, 0, 0, .12); white-space: nowrap; opacity: 0; transform: translateY(6px) scale(.92); transform-origin: left top; transition: opacity .4s var(--ease), transform .5s var(--ease-out); z-index: 2; }
-.person.in .person__sel, .person:hover .person__sel { opacity: 1; transition-delay: .3s; }
-.person.in .person__cursor, .person:hover .person__cursor { opacity: 1; transform: none; transition-delay: .5s; }
-.person.in .person__tag, .person:hover .person__tag { opacity: 1; transform: none; transition-delay: .9s; }
 .person__role { position: absolute; left: 0; right: 0; top: 326px; font-size: 15px; font-weight: 500; color: var(--ink-soft); }
 .person__cred { position: absolute; left: 0; right: 0; top: 354px; font-size: 13px; font-weight: 600; color: var(--coral); }
 .person__focus { position: absolute; left: 50%; top: 390px; transform: translateX(-50%); background: var(--coral-tint); color: var(--coral); font-size: 12px; font-weight: 600; letter-spacing: .14em; padding: 8px 14px; border-radius: 6px; white-space: nowrap; }
@@ -657,8 +643,6 @@ body.is-ready { opacity: 1; }
 
   /* team cards */
   .person { height: 470px; }
-  .person__tag { left: auto; right: 12px; }
-  .person__cursor { left: auto; right: 64px; }
 
   /* chart */
   .chart-card .note { text-align: left; }
@@ -863,4 +847,55 @@ body.is-ready { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   .tl--canopy, .tl--flutter { animation: none !important; filter: none !important; }
   .petal { display: none; }
+}
+
+/* =====================================================================
+   Team cards: interactive selection box.
+   Closed: four handles in a tight square on the face.
+   Open (hover / focus / in view on touch): the square opens out, the
+   dashed edges draw corner to corner, the cursor glides in, the name pops.
+   ===================================================================== */
+.person__sel {
+  position: absolute; z-index: 1; pointer-events: none;
+  left: calc(50% - 32px); top: 91px; width: 64px; height: 64px;
+  transition: left .55s var(--ease-out), top .55s var(--ease-out), width .55s var(--ease-out), height .55s var(--ease-out);
+}
+.person__sel b { position: absolute; display: block; transition: transform .32s var(--ease-out); }
+.person__sel b:nth-of-type(1) { left: 0; right: 0; top: 0; height: 2px; transform: scaleX(0); transform-origin: left; }
+.person__sel b:nth-of-type(2) { top: 0; bottom: 0; right: 0; width: 2px; transform: scaleY(0); transform-origin: top; }
+.person__sel b:nth-of-type(3) { left: 0; right: 0; bottom: 0; height: 2px; transform: scaleX(0); transform-origin: right; }
+.person__sel b:nth-of-type(4) { top: 0; bottom: 0; left: 0; width: 2px; transform: scaleY(0); transform-origin: bottom; }
+.person__sel b:nth-of-type(odd) { background: linear-gradient(to right, var(--coral) 55%, transparent 0) left top / 10px 2px repeat-x; }
+.person__sel b:nth-of-type(even) { background: linear-gradient(to bottom, var(--coral) 55%, transparent 0) left top / 2px 10px repeat-y; }
+.person__sel i { position: absolute; width: 10px; height: 10px; box-sizing: border-box; background: #fff; border: 1.5px solid var(--coral); transition: transform .4s var(--ease-out), box-shadow .4s; }
+.person__sel i:nth-of-type(1) { left: -4px; top: -4px; }
+.person__sel i:nth-of-type(2) { right: -4px; top: -4px; }
+.person__sel i:nth-of-type(3) { right: -4px; bottom: -4px; }
+.person__sel i:nth-of-type(4) { left: -4px; bottom: -4px; }
+.person__cursor { position: absolute; left: calc(50% + 69px); top: 194px; width: 24px; height: 26px; z-index: 2; pointer-events: none;
+  opacity: 0; transform: translate(34px, 34px); transition: opacity .35s var(--ease), transform .7s var(--ease-out); }
+.person__tag { position: absolute; right: 12px; top: 218px; z-index: 2; pointer-events: none; background: #fff; border-radius: 100px; padding: 8px 14px;
+  font-size: 13px; font-weight: 500; color: var(--ink-2); box-shadow: 0 4px 12px rgba(0, 0, 0, .12); white-space: nowrap;
+  opacity: 0; transform: translateY(8px) scale(.9); transform-origin: right top; transition: opacity .3s var(--ease), transform .45s var(--ease-out); }
+.person__big { transition: transform .8s var(--ease-out), color .6s; }
+
+.person.is-open .person__sel { left: calc(50% - 75px); top: 48px; width: 150px; height: 150px; }
+.person.is-open .person__sel b { transform: none; }
+.person.is-open .person__sel b:nth-of-type(1) { transition-delay: .28s; }
+.person.is-open .person__sel b:nth-of-type(2) { transition-delay: .42s; }
+.person.is-open .person__sel b:nth-of-type(3) { transition-delay: .56s; }
+.person.is-open .person__sel b:nth-of-type(4) { transition-delay: .70s; }
+.person.is-open .person__cursor { opacity: 1; transform: none; transition-delay: .55s; }
+.person.is-open .person__tag { opacity: 1; transform: none; transition-delay: .95s; }
+.person.is-open .person__big { transform: translateY(-6px); color: #dde2ea; }
+.person.is-open .person__photo { filter: grayscale(.35); }
+.person[tabindex] { outline: none; }
+.person:focus-visible { box-shadow: 0 0 0 2px var(--coral); }
+
+/* tablets: two cards per row */
+@media (max-width: 1080px) and (min-width: 641px) {
+  .people { grid-template-columns: 1fr 1fr; max-width: none; }
+}
+@media (max-width: 640px) {
+  .person__tag { right: 10px; }
 }
