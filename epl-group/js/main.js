@@ -5,6 +5,42 @@
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   doc.classList.add('js');
 
+  /* ---------- always open a page at the top ----------
+     Browsers restore the last scroll position on reload/back, and a URL ending in #section
+     opens mid-page. Every page starts at the top instead. The one exception: a link the
+     visitor clicks that points at a section on another page (e.g. footer "xPL Ventures"
+     -> platforms.html#xpl) still lands on that section. */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  var JUMP_KEY = 'epl-jump';
+  var wanted = null;
+  try { wanted = sessionStorage.getItem(JUMP_KEY); sessionStorage.removeItem(JUMP_KEY); } catch (e) {}
+  var hereWithHash = location.pathname + location.hash;
+  var jumpTarget = (location.hash && wanted === hereWithHash) ? location.hash : null;
+  if (location.hash && !jumpTarget) {
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  }
+  function toTop() { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
+  function settle() {
+    if (jumpTarget) {
+      var el = null;
+      try { el = document.querySelector(jumpTarget); } catch (e) {}
+      if (el) { el.scrollIntoView({ behavior: 'instant', block: 'start' }); return; }
+    }
+    toTop();
+  }
+  settle();
+  window.addEventListener('load', settle);
+  window.addEventListener('pageshow', function (e) { if (e.persisted) { jumpTarget = null; toTop(); } });
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href*="#"]');
+    if (!a || a.target === '_blank') return;
+    var url;
+    try { url = new URL(a.getAttribute('href'), location.href); } catch (err) { return; }
+    if (url.origin === location.origin && url.pathname !== location.pathname && url.hash) {
+      try { sessionStorage.setItem(JUMP_KEY, url.pathname + url.hash); } catch (err) {}
+    }
+  });
+
   /* ---------- page ready (triggers hero choreography) ---------- */
   function ready() {
     document.body.classList.add('is-ready');
