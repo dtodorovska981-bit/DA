@@ -234,16 +234,47 @@
       chip.addEventListener('click', function () {
         if (!multi) row.querySelectorAll('.chip').forEach(function (c) { if (c !== chip) c.classList.remove('on'); });
         chip.classList.toggle('on');
+        row.querySelectorAll('.chip').forEach(function (c) { if (c.hasAttribute('aria-pressed')) c.setAttribute('aria-pressed', c.classList.contains('on') ? 'true' : 'false'); });
         var vals = Array.prototype.map.call(row.querySelectorAll('.chip.on'), function (c) { return c.getAttribute('data-value'); });
         if (input) input.value = vals.join(', ');
+        if (vals.length && row.parentNode.classList) row.parentNode.classList.remove('is-invalid');
       });
     });
+  });
+
+  /* ---------- events page: buttons that pre-select an event in the intake form ---------- */
+  document.querySelectorAll('[data-pick]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var chip = document.querySelector('.chip[data-key="' + link.getAttribute('data-pick') + '"]');
+      if (chip && !chip.classList.contains('on')) chip.click();
+    });
+  });
+
+  /* ---------- events page: calendar dates and event cards light each other up ---------- */
+  var evLinked = Array.prototype.slice.call(document.querySelectorAll('.ev-hero [data-ev]'));
+  evLinked.forEach(function (el) {
+    function set(on) {
+      evLinked.forEach(function (other) { if (other !== el && other.getAttribute('data-ev') === el.getAttribute('data-ev')) other.classList.toggle('is-hot', on); });
+    }
+    el.addEventListener('mouseenter', function () { set(true); });
+    el.addEventListener('mouseleave', function () { set(false); });
+    el.addEventListener('focusin', function () { set(true); });
+    el.addEventListener('focusout', function () { set(false); });
   });
 
   /* ---------- forms: progressive enhancement over Netlify forms ---------- */
   document.querySelectorAll('[data-form]').forEach(function (form) {
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
+      /* choices made with chips are required on some forms */
+      var missing = null;
+      form.querySelectorAll('input[type="hidden"][data-required]').forEach(function (h) {
+        var field = h.closest('.field');
+        var empty = !h.value;
+        if (field) field.classList.toggle('is-invalid', empty);
+        if (empty && !missing) missing = field || h;
+      });
+      if (missing) { missing.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
       var btn = form.querySelector('button[type="submit"]');
       var label = btn.querySelector('span');
       var original = label.textContent;
@@ -253,7 +284,8 @@
         .then(function (res) { if (!res.ok) throw new Error('bad status'); form.classList.add('is-sent'); form.nextElementSibling.scrollIntoView({ behavior: 'smooth', block: 'center' }); })
         .catch(function () {
           /* Fallback when not deployed behind Netlify forms: open a pre-filled email instead. */
-          var to = form.getAttribute('name') === 'investors' ? 'ir@eplgroup.co' : 'founders@eplgroup.co';
+          var formName = form.getAttribute('name');
+          var to = (formName === 'investors' || formName === 'family-office-events') ? 'ir@eplgroup.co' : 'founders@eplgroup.co';
           var lines = [];
           data.forEach(function (v, k) { if (k !== 'form-name' && k !== 'company-website' && v) lines.push(k + ': ' + v); });
           window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('EPL Group: ' + form.getAttribute('name')) + '&body=' + encodeURIComponent(lines.join('\n'));
