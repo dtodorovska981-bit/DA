@@ -240,10 +240,20 @@
     });
   });
 
-  /* ---------- events page: hide the "loading" note once the embedded form has loaded ---------- */
+  /* ---------- events page: embed the registration form where embedding is possible ----------
+     On the site itself the form loads in place. Inside another page's frame (such as a preview)
+     outside content is usually blocked, so the designed panel with its button stays instead. */
   document.querySelectorAll('[data-embed]').forEach(function (box) {
     var frame = box.querySelector('iframe');
-    if (frame) frame.addEventListener('load', function () { box.classList.add('is-loaded'); });
+    var framed = true;
+    try { framed = window.self !== window.top; } catch (e) { framed = true; }
+    if (!frame || framed) return;
+    var loaded = false;
+    frame.addEventListener('load', function () { loaded = true; box.classList.add('is-live', 'is-loaded'); });
+    box.classList.add('is-live');
+    frame.src = box.getAttribute('data-src');
+    /* if the form has not loaded after a while, fall back to the panel; it switches back if it arrives */
+    setTimeout(function () { if (!loaded) box.classList.remove('is-live'); }, 15000);
   });
 
   /* ---------- events page: calendar dates and event cards light each other up ---------- */
