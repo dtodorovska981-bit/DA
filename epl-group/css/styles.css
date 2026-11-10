@@ -1037,16 +1037,24 @@ a.ev-cal__day.is-hot .ev-cal__ring path, a.ev-cal__day:hover .ev-cal__ring path 
 .ev-register__grid { display: grid; grid-template-columns: minmax(0, 1fr) 384px; gap: 24px; align-items: start; }
 .ev-formcard { background: #fff; color: var(--ink); border-radius: 22px; padding: 40px 40px 36px; box-shadow: 0 30px 60px -20px rgba(5, 13, 26, .6); }
 .ev-formcard h3 { font-size: 22px; font-weight: 600; }
-.ev-formcard > p { font-size: 15px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0 28px; }
-.ev-formcard .form { max-width: none; }
-.ev-formcard .form > * { min-width: 0; }
+.ev-formcard { padding: 32px 32px 24px; }
+.ev-formcard__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+.ev-formcard__head p { font-size: 15px; line-height: 1.55; color: var(--ink-soft); margin-top: 6px; }
+.ev-formcard__open { font-size: 13px; font-weight: 500; color: var(--coral); white-space: nowrap; }
+.ev-formcard__open .arr { display: inline-block; margin-left: .4em; transition: transform .3s var(--ease); }
+.ev-formcard__open:hover .arr { transform: translateX(4px); }
+.ev-embed { position: relative; height: clamp(620px, 82vh, 900px); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; }
+.ev-embed iframe { position: relative; display: block; width: 100%; height: 100%; border: 0; background: transparent; }
+.ev-embed__loading { position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; color: var(--grey); }
+.ev-embed.is-loaded .ev-embed__loading { display: none; }
+.ev-formcard__foot { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin-top: 16px; }
+.ev-formcard__foot a { color: var(--ink); border-bottom: 1px solid var(--ink); }
+.ev-steps { counter-reset: step; display: flex; flex-direction: column; }
+.ev-steps li { counter-increment: step; position: relative; padding: 12px 0 12px 44px; border-top: 1px solid rgba(255, 255, 255, .16); display: flex; flex-direction: column; gap: 4px; }
+.ev-steps li::before { content: "0" counter(step); position: absolute; left: 0; top: 10px; font-size: 22px; font-weight: 300; color: #f17279; }
+.ev-steps b { font-size: 15px; font-weight: 600; }
+.ev-steps span { font-size: 14px; line-height: 1.5; color: rgba(255, 255, 255, .8); }
 .ev-formcard, .ev-side { min-width: 0; }
-.ev-formcard .form__done { max-width: none; }
-.field .optional { font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--grey); }
-.field__error { display: none; font-size: 13px; font-weight: 500; color: var(--coral); }
-.field.is-invalid .field__error { display: block; }
-.chip--event { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; border-radius: 14px; padding: 12px 18px; text-align: left; }
-.chip--event small { font-size: 12px; font-weight: 400; opacity: .75; }
 .ev-side { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 112px; }
 .ev-side .ev-glass { padding: 28px; display: flex; flex-direction: column; gap: 14px; }
 .ev-side h3 { font-size: 20px; font-weight: 600; }
@@ -1097,8 +1105,9 @@ a.ev-cal__day.is-hot .ev-cal__ring path, a.ev-cal__day:hover .ev-cal__ring path 
   .ev-card h2 { font-size: 20px; }
   .ev-date__num { font-size: 80px; }
   .ev-register { padding: 64px 0; }
-  .ev-formcard { padding: 26px 20px 24px; border-radius: 18px; }
-  .chip--event { width: 100%; }
+  .ev-formcard { padding: 22px 14px 18px; border-radius: 18px; }
+  .ev-formcard__head { padding: 0 6px; }
+  .ev-embed { height: 78vh; min-height: 560px; border-radius: 10px; }
   .ev-partners { gap: 20px 32px; }
   .ev-partners img { height: 26px; }
 }
