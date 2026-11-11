@@ -270,7 +270,7 @@ main { padding-top: var(--nav-h); }
 .stat dt { font-weight: 500; font-size: 60px; line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
 .stat dd { font-size: 15px; line-height: 1.35; color: var(--lav); margin-top: 6px; max-width: 170px; }
 .stat + .stat dd { max-width: 130px; }
-.founder__cta { margin-top: 40px; }
+.founder__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 36px; margin-top: 40px; }
 
 /* ---------- engagements ---------- */
 .engagements { padding: 110px 0; }

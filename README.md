@@ -20,5 +20,4 @@ Forms in the Netlify dashboard. After a successful submit the page shows the Cal
 (`calendly.com/draganatodorovskajaneva/30min`), prefilled with the visitor's name and email.
 
 ## Still to fill in
-- LinkedIn URL in the footer of every page (currently `https://www.linkedin.com/`)
 - Review the payments and refunds wording in `privacy.html`
