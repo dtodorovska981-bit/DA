@@ -1137,15 +1137,21 @@ a.ev-cal__day.is-hot .ev-cal__ring path, a.ev-cal__day:hover .ev-cal__ring path 
 /* =====================================================================
    Pitch and Investors pages: embedded Pipefy forms.
    Full width up to 720px, tall enough to show the whole form without
-   scrolling inside the frame, no border. Heights are set per form with
-   --embed-h (desktop) and --embed-h-m (phone).
+   scrolling inside the frame, in the same card as the Events page. Heights
+   are set per form with --embed-h (desktop), --embed-h-m (phone) and
+   --embed-h-s (narrow phone).
    ===================================================================== */
 @media (min-width: 1081px) {
-  .two-col--form { grid-template-columns: minmax(0, 720px) minmax(0, 1fr); }
+  .two-col--form { grid-template-columns: minmax(0, 786px) minmax(0, 1fr); gap: 56px; }
 }
+/* same white card as the Events page, on a light page */
+.ev-formcard--page { width: 100%; max-width: 786px; border: 1px solid var(--line); box-shadow: 0 24px 50px -30px rgba(44, 58, 75, .35); }
 .ev-embed--page { width: 100%; max-width: 720px; }
-.ev-embed--page.is-live { height: var(--embed-h, 1100px); border: 0; border-radius: 0; background: transparent; overflow: visible; }
+.ev-embed--page.is-live { height: var(--embed-h, 1100px); }
 .ev-embed--page iframe { border: 0; }
 @media (max-width: 640px) {
   .ev-embed--page.is-live { height: var(--embed-h-m, 1400px); min-height: 0; }
+}
+@media (max-width: 360px) {
+  .ev-embed--page.is-live { height: var(--embed-h-s, var(--embed-h-m, 1400px)); }
 }
