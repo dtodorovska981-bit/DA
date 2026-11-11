@@ -21,4 +21,4 @@ Forms in the Netlify dashboard. After a successful submit the page shows the Cal
 
 ## Still to fill in
 - LinkedIn URL in the footer of every page (currently `https://www.linkedin.com/`)
-- Contact email in `privacy.html` (currently `[your email address]`)
+- Review the payments and refunds wording in `privacy.html`
