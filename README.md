@@ -1,12 +1,23 @@
-# DNA Pro Plans website (launch version)
+# DNA Pro Plans website
 
-Static site, no build step. Every file sits in the main folder.
+Static site for dnaproplans.com. No build step: open `index.html`, or serve the folder with any static server.
 
-## Files
-index.html, styles.css, main.js, thanks.html, privacy.html, 404.html,
-favicon.svg, apple-touch-icon.png, robots.txt, sitemap.xml, netlify.toml
+## Pages
+- `index.html` – home (services, approach, founder, engagements, process)
+- `case-studies.html`, `case-study-haraz.html`, `case-study-custel.html` – work
+- `contact.html` – brief form, then the Calendly booking step
+- `thanks.html` – fallback confirmation page (also offers the booking calendar)
+- `privacy.html`, `404.html`
 
-## Images (export from the Figma frame "WEBSITE IMAGES")
-hero-landscape.jpg, cta-seedling.jpg, founder.jpg,
-package-data-room.jpg, package-lender.jpg, package-commercial.jpg,
-partners-towers.jpg
+## Assets
+- `styles.css`, `main.js` – all styling, scroll motion and form logic
+- `images/`, `icons/` – exported from the Figma file (Home v3 and the case study frames)
+
+## Form and booking
+The brief form on `contact.html` is a Netlify form named `project-brief`; submissions appear under
+Forms in the Netlify dashboard. After a successful submit the page shows the Calendly calendar
+(`calendly.com/draganatodorovskajaneva/30min`), prefilled with the visitor's name and email.
+
+## Still to fill in
+- LinkedIn URL in the footer of every page (currently `https://www.linkedin.com/`)
+- Contact email in `privacy.html` (currently `[your email address]`)
