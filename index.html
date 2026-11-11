@@ -30,7 +30,7 @@
     <div class="wrap nav__in">
       <a href="index.html" class="logo" aria-label="DNA Pro Plans home"><img src="icons/mark.svg" alt="" width="20" height="20">DNA PRO PLANS</a>
       <nav class="nav__links" id="menu" aria-label="Main">
-        <a href="index.html#services">Services</a>
+        <a href="services.html">Services</a>
         <a href="index.html#approach">Approach</a>
         <a href="case-studies.html">Case studies</a>
         <a href="index.html#founder">Founder</a>
@@ -142,24 +142,25 @@
             </div>
             <div class="show" id="show-plan">
               <div class="show__pages">
-                <img src="images/plan-cover.webp" alt="Cover page of a DNA Pro Plans business and financial plan" style="--i:0" loading="lazy" width="700" height="990">
-                <img src="images/plan-scenarios.webp" alt="Plan page comparing four market scenarios" style="--i:1" loading="lazy" width="700" height="990">
-                <img src="images/plan-contents.webp" alt="Plan page listing business plan and financial plan contents" style="--i:2" loading="lazy" width="700" height="990">
+                <img src="images/sample-1-cover.webp" alt="Cover of a sample business plan for Fieldhouse Workspace" style="--i:0" loading="lazy" width="900" height="1273">
+                <img src="images/sample-3-summary.webp" alt="Executive summary page of the sample business plan" style="--i:1" loading="lazy" width="900" height="1273">
+                <img src="images/sample-6-financials.webp" alt="Financial statements page of the sample business plan" style="--i:2" loading="lazy" width="900" height="1273">
               </div>
-              <p class="show__cap"><strong>Business and financial plan</strong><span>Base, Upside, Downside and Stress cases. Illustrative figures.</span></p>
+              <p class="show__cap"><strong>Sample business plan</strong><a href="services.html#sample">Fieldhouse Workspace, a fictional company. See more pages →</a></p>
             </div>
-            <div class="show" id="show-research">
+            <div class="show show--duo" id="show-research">
               <div class="show__main"><img src="images/custel-market.webp" alt="Market sizing slide built from the Custel market research report" loading="lazy" width="1520" height="855"></div>
-              <div class="show__thumbs"><img src="images/custel-competition.webp" alt="Competitor map" style="--i:0" loading="lazy" width="432" height="243"><img src="images/custel-scenarios.webp" alt="Market scenarios" style="--i:1" loading="lazy" width="432" height="243"><img src="images/custel-problem.webp" alt="Problem analysis" style="--i:2" loading="lazy" width="432" height="243"><img src="images/custel-solution.webp" alt="Solution analysis" style="--i:3" loading="lazy" width="432" height="243"><img src="images/custel-how.webp" alt="How it works" style="--i:4" loading="lazy" width="432" height="243"></div>
-              <p class="show__cap"><strong>Market research</strong><a href="case-study-custel.html">Türkiye corporate card market, for Custel. Figures masked. →</a></p>
+              <img class="show__over" src="images/custel-competition.webp" alt="Competitor map from the Custel research" loading="lazy" width="1500" height="844">
+              <p class="show__cap"><strong>Market research</strong><a href="case-study-custel.html">Market sizing and competitor intelligence, sourced and labelled. →</a></p>
             </div>
             <div class="show" id="show-website">
               <div class="show__main"><img src="images/brand-cover.webp" alt="Cover of the DNA Pro Plans brand guidelines" loading="lazy" width="1200" height="717"></div>
               <div class="show__thumbs"><img src="images/brand-logo.webp" alt="Logo and icon page" style="--i:0" loading="lazy" width="432" height="243"><img src="images/brand-color.webp" alt="Colour and font page" style="--i:1" loading="lazy" width="432" height="243"><img src="images/brand-pattern.webp" alt="Pattern page" style="--i:2" loading="lazy" width="432" height="243"></div>
-              <p class="show__cap"><strong>Brand identity and guidelines</strong><span>Logo, colour, type and pattern, ready for the website build.</span></p>
+              <p class="show__cap"><strong>Brand identity and materials</strong><span>Brand system, reports and ads built on one identity.</span></p>
             </div>
           </div>
         </div>
+        <p class="svc-more" data-reveal><a class="ulink" href="services.html">See what each service includes, and pricing</a></p>
       </div>
     </section>
 
@@ -170,9 +171,27 @@
           <p class="lead" data-reveal style="--d:3">Most founders hire a researcher, a modeler, a designer and a web agency, then spend weeks making their work match. We build it as one piece, so the research, the numbers and the story never contradict each other.</p>
         </div>
         <div class="layers">
-          <article class="layer layer--1"><h3>Research</h3><p>Market sizing, competitors and demand evidence from sources the reader can verify. Estimates are labelled as estimates.</p></article>
-          <article class="layer layer--2"><h3>Projections</h3><p>A five-year model with Base, Upside, Downside and Stress cases. One source of truth for every number you present.</p></article>
-          <article class="layer layer--3"><h3>Presentation</h3><p>Decks, plans, brand and website that say it clearly, so each page points to the decision you need.</p></article>
+          <article class="layer layer--1">
+            <button class="layer__head" type="button" aria-expanded="false" aria-controls="layer-1">
+              <h3>Research<span class="layer__plus" aria-hidden="true"></span></h3>
+              <span class="layer__lead">Market sizing, competitors and demand evidence from sources the reader can verify. Estimates are labelled as estimates.</span>
+            </button>
+            <div class="layer__more" id="layer-1"><p class="layer__k">What is inside</p><ul><li style="--i:1">Market size from public sources</li><li style="--i:2">Competitor revenue, clients and funding</li><li style="--i:3">Customer segments and demand</li><li style="--i:4">Every source cited</li></ul></div>
+          </article>
+          <article class="layer layer--2">
+            <button class="layer__head" type="button" aria-expanded="false" aria-controls="layer-2">
+              <h3>Projections<span class="layer__plus" aria-hidden="true"></span></h3>
+              <span class="layer__lead">A five-year model with Base, Upside, Downside and Stress cases. One source of truth for every number you present.</span>
+            </button>
+            <div class="layer__more" id="layer-2"><p class="layer__k">What is inside</p><ul><li style="--i:1">Four scenarios, switched with one input</li><li style="--i:2">P&amp;L, cash flow and balance sheet</li><li style="--i:3">Revenue, payroll and cost assumptions</li><li style="--i:4">NPV, IRR, DSCR and cash runway</li></ul></div>
+          </article>
+          <article class="layer layer--3">
+            <button class="layer__head" type="button" aria-expanded="false" aria-controls="layer-3">
+              <h3>Presentation<span class="layer__plus" aria-hidden="true"></span></h3>
+              <span class="layer__lead">Decks, plans, brand and website that say it clearly, so each page points to the decision you need.</span>
+            </button>
+            <div class="layer__more" id="layer-3"><p class="layer__k">What is inside</p><ul><li style="--i:1">Pitch decks and sales decks</li><li style="--i:2">Designed plans and reports</li><li style="--i:3">Brand identity and guidelines</li><li style="--i:4">Websites that match the documents</li></ul></div>
+          </article>
         </div>
       </div>
     </section>
@@ -251,7 +270,7 @@
     <div class="wrap footer__in">
       <a href="index.html" class="logo" aria-label="DNA Pro Plans home"><img src="icons/mark.svg" alt="" width="17" height="17">DNA PRO PLANS</a>
       <nav class="footer__links" aria-label="Footer">
-        <a href="index.html#services">Services</a>
+        <a href="services.html">Services</a>
         <a href="index.html#engagements">Engagements</a>
         <a href="case-studies.html">Case studies</a>
         <a href="contact.html">Contact</a>

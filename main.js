@@ -124,6 +124,49 @@
     tiersBox.addEventListener('mouseleave', function () { setTier(defaultTier); });
   }
 
+  /* ---------- approach layers: one card open at a time, the rest tuck under ---------- */
+  var layerEls = $$('.layer');
+  var layersHover = false, layerOpen = -1;
+  function setLayer(i) {
+    if (i === layerOpen) return;
+    layerOpen = i;
+    var y = 0;
+    layerEls.forEach(function (l, j) {
+      l.style.setProperty('--y', y + 'px');
+      l.classList.toggle('is-open', j === i);
+      $('.layer__head', l).setAttribute('aria-expanded', String(j === i));
+      y += j === i ? 380 : 180;
+    });
+  }
+  if (layerEls.length) {
+    setLayer(reduce ? 2 : 0);
+    layerEls.forEach(function (l, i) {
+      var head = $('.layer__head', l);
+      head.addEventListener('click', function () { layersHover = true; setLayer(i); });
+      head.addEventListener('focus', function () { setLayer(i); });
+      l.addEventListener('mouseenter', function () {
+        if (window.matchMedia('(hover: hover)').matches) { layersHover = true; setLayer(i); }
+      });
+    });
+    $('.layers').addEventListener('mouseleave', function () { layersHover = false; });
+  }
+
+  /* ---------- sample plan reel: drag to scroll ---------- */
+  $$('.reel').forEach(function (reel) {
+    var down = false, startX = 0, startLeft = 0, moved = 0;
+    reel.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      down = true; moved = 0; startX = e.clientX; startLeft = reel.scrollLeft;
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      moved = e.clientX - startX;
+      if (Math.abs(moved) > 4) reel.classList.add('is-drag');
+      reel.scrollLeft = startLeft - moved;
+    });
+    window.addEventListener('pointerup', function () { down = false; reel.classList.remove('is-drag'); });
+  });
+
   /* ---------- count up ---------- */
   var counters = $$('[data-count]');
   if (counters.length && 'IntersectionObserver' in window && !reduce) {
@@ -149,7 +192,7 @@
   var layers = $('.layers');
   var rail = $('.rail');
   var steps = $$('.step');
-  var lastY = window.scrollY, ticking = false;
+  var ticking = false;
 
   // progress of an element through the viewport: 0 when its top hits `from` (fraction of
   // viewport height), 1 when its top hits `to`.
@@ -162,11 +205,6 @@
     ticking = false;
     var y = window.scrollY, vh = window.innerHeight;
 
-    if (nav && !nav.classList.contains('is-open')) {
-      if (y > lastY + 4 && y > 240) nav.classList.add('is-hidden');
-      else if (y < lastY - 4 || y <= 240) nav.classList.remove('is-hidden');
-    }
-    lastY = y;
 
     if (rail) {
       var rp = progress(rail, 0.9, 0.42);
@@ -180,8 +218,9 @@
       var n = Math.round(sp * words.length);
       words.forEach(function (w, i) { w.classList.toggle('on', i < n); });
     }
-    if (layers && window.innerWidth > 600) {
-      layers.style.setProperty('--p', progress(layers, 0.95, 0.3).toFixed(4));
+    if (layers && !layersHover) {
+      // the open card follows the scroll: Research, then Projections, then Presentation
+      setLayer(Math.min(2, Math.floor(progress(layers, 0.78, 0.12) * 3)));
     }
     parallax.forEach(function (el) {
       var r = el.parentElement.getBoundingClientRect();

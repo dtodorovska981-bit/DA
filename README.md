@@ -4,6 +4,7 @@ Static site for dnaproplans.com. No build step: open `index.html`, or serve the 
 
 ## Pages
 - `index.html` – home (services, approach, founder, engagements, process)
+- `services.html` – what each service includes, pricing, sample business plan
 - `case-studies.html`, `case-study-haraz.html`, `case-study-custel.html` – work
 - `contact.html` – brief form, then the Calendly booking step
 - `thanks.html` – fallback confirmation page (also offers the booking calendar)
