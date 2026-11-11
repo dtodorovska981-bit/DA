@@ -242,12 +242,32 @@
 
   /* ---------- embedded Pipefy forms (pitch, investors, events) ----------
      On the site itself each form loads in place. Inside another page's frame (such as a preview)
-     outside content is usually blocked, so the panel with its button stays instead. */
+     outside content is usually blocked, so a picture of the form is shown in the box instead.
+     Without JavaScript, or if the form never loads, the panel with its button stays. */
   document.querySelectorAll('[data-embed]').forEach(function (box) {
     var frame = box.querySelector('iframe');
     var framed = true;
     try { framed = window.self !== window.top; } catch (e) { framed = true; }
-    if (!frame || framed) return;
+    if (!frame) return;
+    if (framed) {
+      /* a preview cannot load the form, so show a picture of it in the same box */
+      var shot = box.getAttribute('data-shot');
+      if (!shot) return;
+      var link = document.createElement('a');
+      link.className = 'ev-embed__shot';
+      link.href = box.getAttribute('data-src').split('?')[0];
+      link.target = '_blank'; link.rel = 'noopener';
+      var note = document.createElement('span');
+      note.className = 'ev-embed__shotnote';
+      note.textContent = 'Preview picture. On eplgroup.co the live form loads right here.';
+      var img = new Image();
+      img.alt = 'Picture of the ' + (frame.title || 'registration') + ' form. Opens the form in a new tab.';
+      img.onload = function () { box.classList.add('is-live', 'is-loaded', 'is-shot'); };
+      img.src = box.clientWidth < 480 ? shot.replace('.webp', '-m.webp') : shot;
+      link.appendChild(note); link.appendChild(img);
+      box.appendChild(link);
+      return;
+    }
     var loaded = false;
     frame.addEventListener('load', function () { loaded = true; box.classList.add('is-live', 'is-loaded'); });
     box.classList.add('is-live');

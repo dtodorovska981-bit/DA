@@ -1154,3 +1154,10 @@ a.ev-cal__day.is-hot .ev-cal__ring path, a.ev-cal__day:hover .ev-cal__ring path 
 @media (max-width: 360px) {
   .ev-embed--page.is-live { height: var(--embed-h-s, var(--embed-h-m, 78vh)); }
 }
+
+/* preview only: a picture of the form stands in for the live frame */
+.ev-embed__shot { display: none; }
+.ev-embed.is-shot iframe { display: none; }
+.ev-embed.is-shot .ev-embed__shot { display: block; position: absolute; inset: 0; overflow-y: auto; background: #fff; }
+.ev-embed__shot img { display: block; width: 100%; height: auto; }
+.ev-embed__shotnote { position: sticky; top: 0; z-index: 1; display: block; padding: 8px 14px; font-family: var(--mono); font-size: 11px; line-height: 1.4; letter-spacing: .02em; color: var(--ink-soft); background: #f4f5f7; border-bottom: 1px solid var(--line); }
