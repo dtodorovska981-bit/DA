@@ -1,4 +1,4 @@
-/* EPL Group website interactions: reveals, counters, hero choreography, router, FAQ, forms. */
+/* EPL Group website interactions: reveals, counters, hero choreography, router, FAQ, embedded forms. */
 (function () {
   'use strict';
   var doc = document.documentElement;
@@ -240,9 +240,9 @@
     });
   });
 
-  /* ---------- events page: embed the registration form where embedding is possible ----------
-     On the site itself the form loads in place. Inside another page's frame (such as a preview)
-     outside content is usually blocked, so the designed panel with its button stays instead. */
+  /* ---------- embedded Pipefy forms (pitch, investors, events) ----------
+     On the site itself each form loads in place. Inside another page's frame (such as a preview)
+     outside content is usually blocked, so the panel with its button stays instead. */
   document.querySelectorAll('[data-embed]').forEach(function (box) {
     var frame = box.querySelector('iframe');
     var framed = true;
@@ -252,8 +252,15 @@
     frame.addEventListener('load', function () { loaded = true; box.classList.add('is-live', 'is-loaded'); });
     box.classList.add('is-live');
     frame.src = box.getAttribute('data-src');
-    /* if the form has not loaded after a while, fall back to the panel; it switches back if it arrives */
-    setTimeout(function () { if (!loaded) box.classList.remove('is-live'); }, 15000);
+    /* If the form has not loaded a while after it scrolled into view, fall back to the panel;
+       it switches back if the form arrives. (A lazy frame only starts loading near the viewport.) */
+    function startTimer() { setTimeout(function () { if (!loaded) box.classList.remove('is-live'); }, 15000); }
+    if ('IntersectionObserver' in window) {
+      var seen = new IntersectionObserver(function (entries) {
+        if (entries.some(function (en) { return en.isIntersecting; })) { seen.disconnect(); startTimer(); }
+      });
+      seen.observe(box);
+    } else { startTimer(); }
   });
 
   /* ---------- events page: calendar dates and event cards light each other up ---------- */
@@ -268,25 +275,15 @@
     el.addEventListener('focusout', function () { set(false); });
   });
 
-  /* ---------- forms: progressive enhancement over Netlify forms ---------- */
-  document.querySelectorAll('[data-form]').forEach(function (form) {
+  /* ---------- careers form: opens a ready-to-send email (the site has no form backend) ---------- */
+  document.querySelectorAll('[data-mail-form]').forEach(function (form) {
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
-      var btn = form.querySelector('button[type="submit"]');
-      var label = btn.querySelector('span');
-      var original = label.textContent;
-      label.textContent = 'Sending…'; btn.disabled = true;
-      var data = new FormData(form);
-      fetch(form.getAttribute('action') || '/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(data).toString() })
-        .then(function (res) { if (!res.ok) throw new Error('bad status'); form.classList.add('is-sent'); form.nextElementSibling.scrollIntoView({ behavior: 'smooth', block: 'center' }); })
-        .catch(function () {
-          /* Fallback when not deployed behind Netlify forms: open a pre-filled email instead. */
-          var to = form.getAttribute('name') === 'investors' ? 'ir@eplgroup.co' : 'founders@eplgroup.co';
-          var lines = [];
-          data.forEach(function (v, k) { if (k !== 'form-name' && k !== 'company-website' && v) lines.push(k + ': ' + v); });
-          window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent('EPL Group: ' + form.getAttribute('name')) + '&body=' + encodeURIComponent(lines.join('\n'));
-          label.textContent = original; btn.disabled = false;
-        });
+      var lines = [];
+      new FormData(form).forEach(function (v, k) { if (v) lines.push(k + ': ' + v); });
+      window.location.href = 'mailto:' + form.getAttribute('data-mail-to') +
+        '?subject=' + encodeURIComponent(form.getAttribute('data-mail-subject') || 'EPL Group') +
+        '&body=' + encodeURIComponent(lines.join('\n'));
     });
   });
 

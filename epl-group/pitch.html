@@ -38,31 +38,19 @@
       </div>
     </section>
     <section class="section">
-      <div class="wrap two-col">
+      <div class="wrap two-col two-col--form">
         <div>
-          <form class="form r" name="pitch" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="company-website" data-form>
-            <input type="hidden" name="form-name" value="pitch">
-            <p class="sr" aria-hidden="true"><label>Leave this field empty <input name="company-website" tabindex="-1" autocomplete="off"></label></p>
-            <div class="field"><label for="p-name">Your name</label><input id="p-name" name="name" required autocomplete="name"></div>
-            <div class="field"><label for="p-email">Email</label><input id="p-email" name="email" type="email" required autocomplete="email"></div>
-            <div class="field"><label for="p-company">Company</label><input id="p-company" name="company" required autocomplete="organization"></div>
-            <div class="field"><label for="p-url">Website or deck link</label><input id="p-url" name="link" type="url" placeholder="https://"></div>
-            <div class="field full"><label>Where are you?</label>
-              <div class="choice-row" data-chips="stage">
-                <button type="button" class="chip" data-value="Idea or pre-seed">Idea or pre-seed</button>
-                <button type="button" class="chip" data-value="Seed to Series A">Seed to Series A</button>
-                <button type="button" class="chip" data-value="Established business">Established, profitable business</button>
-                <button type="button" class="chip" data-value="Not sure">Not sure</button>
-              </div>
-              <input type="hidden" name="stage" value="">
+          <div class="ev-embed ev-embed--page r" data-embed data-src="https://app.pipefy.com/public/form/czfdp_CJ?embedded=true" style="--embed-h:1100px;--embed-h-m:1400px">
+            <div class="ev-embed__fallback">
+              <p class="ev-kicker">Pitch form</p>
+              <h4>Tell us what you are building</h4>
+              <p class="ev-embed__hint">Name, company, a link to your site or deck, your stage, and a few lines on what you need from a partner.</p>
+              <a class="btn btn--coral" href="https://app.pipefy.com/public/form/czfdp_CJ" target="_blank" rel="noopener"><span>Open the pitch form</span><span class="btn__icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L7.2 8.8" stroke="white" stroke-width="2" stroke-linecap="square"/><path d="M9 7L12 4M12 10V4H6" stroke="white" stroke-width="2" stroke-linecap="square"/></svg></span></a>
+              <p class="ev-embed__fine">Opens in a new tab.</p>
             </div>
-            <div class="field full"><label for="p-what">What are you building, and what do you need from a partner?</label><textarea id="p-what" name="message" required placeholder="A few lines is enough. We will ask for more if it fits."></textarea></div>
-            <div class="form__foot">
-              <button class="btn btn--black" type="submit"><span>Send your pitch</span><span class="btn__icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L7.2 8.8" stroke="white" stroke-width="2" stroke-linecap="square"/><path d="M9 7L12 4M12 10V4H6" stroke="white" stroke-width="2" stroke-linecap="square"/></svg></span></button>
-              <p class="note">Confidential from the first message. A senior partner replies personally.</p>
-            </div>
-          </form>
-          <div class="form__done" role="status"><h3>Thank you. A partner will be in touch.</h3><p class="lead">Your pitch has been received. A senior partner reads it personally and you will normally hear back within a few working days.</p></div>
+            <p class="ev-embed__loading" aria-hidden="true">Loading the form…</p>
+            <iframe title="Pitch EPL" loading="lazy" frameborder="0"></iframe>
+          </div>
         </div>
         <aside class="sticky-aside">
           <p class="eyebrow r">What happens next</p>

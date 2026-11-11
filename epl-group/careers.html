@@ -38,11 +38,9 @@
       </div>
     </section>
     <section class="section">
-      <div class="wrap two-col">
+      <div class="wrap two-col two-col--form">
         <div>
-          <form class="form r" name="network" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="company-website" data-form>
-            <input type="hidden" name="form-name" value="network">
-            <p class="sr" aria-hidden="true"><label>Leave this field empty <input name="company-website" tabindex="-1" autocomplete="off"></label></p>
+          <form class="form r" name="network" data-mail-form data-mail-to="founders@eplgroup.co" data-mail-subject="Joining the EPL network">
             <div class="field"><label for="c-name">Your name</label><input id="c-name" name="name" required autocomplete="name"></div>
             <div class="field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" required autocomplete="email"></div>
             <div class="field"><label for="c-linkedin">LinkedIn</label><input id="c-linkedin" name="linkedin" type="url" placeholder="https://"></div>
@@ -59,10 +57,9 @@
             <div class="field full"><label for="c-msg">Where have you built, run or advised?</label><textarea id="c-msg" name="message" required placeholder="A few lines on your operating background and the industries you know."></textarea></div>
             <div class="form__foot">
               <button class="btn btn--black" type="submit"><span>Introduce yourself</span><span class="btn__icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L7.2 8.8" stroke="white" stroke-width="2" stroke-linecap="square"/><path d="M9 7L12 4M12 10V4H6" stroke="white" stroke-width="2" stroke-linecap="square"/></svg></span></button>
-              <p class="note">Confidential from the first message. A senior partner replies personally.</p>
+              <p class="note">This opens a ready-to-send email to founders@eplgroup.co in your mail app.</p>
             </div>
           </form>
-          <div class="form__done" role="status"><h3>Thank you. A partner will be in touch.</h3><p class="lead">Your introduction has been received. A senior partner reads it personally and will follow up.</p></div>
         </div>
         <aside class="sticky-aside">
           <p class="eyebrow r">Join the EPL network</p>

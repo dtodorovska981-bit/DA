@@ -492,10 +492,6 @@ body.is-ready { opacity: 1; }
 .chip { border: 1px solid var(--line); border-radius: 100px; padding: 8px 16px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all .3s; }
 .chip:hover { border-color: var(--ink); }
 .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
-.form__done { display: none; padding: 32px; background: var(--card); border-radius: 6px; max-width: 820px; }
-.form__done h3 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
-.form.is-sent { display: none; }
-.form.is-sent + .form__done { display: block; }
 
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
 .sticky-aside { position: sticky; top: 120px; display: flex; flex-direction: column; gap: 24px; }
@@ -1136,4 +1132,20 @@ a.ev-cal__day.is-hot .ev-cal__ring path, a.ev-cal__day:hover .ev-cal__ring path 
   .ev-cal__ring path { stroke-dashoffset: 0; }
   .ev-cal__dot { animation: none; }
   .ev-timeline::before { transform: none; }
+}
+
+/* =====================================================================
+   Pitch and Investors pages: embedded Pipefy forms.
+   Full width up to 720px, tall enough to show the whole form without
+   scrolling inside the frame, no border. Heights are set per form with
+   --embed-h (desktop) and --embed-h-m (phone).
+   ===================================================================== */
+@media (min-width: 1081px) {
+  .two-col--form { grid-template-columns: minmax(0, 720px) minmax(0, 1fr); }
+}
+.ev-embed--page { width: 100%; max-width: 720px; }
+.ev-embed--page.is-live { height: var(--embed-h, 1100px); border: 0; border-radius: 0; background: transparent; overflow: visible; }
+.ev-embed--page iframe { border: 0; }
+@media (max-width: 640px) {
+  .ev-embed--page.is-live { height: var(--embed-h-m, 1400px); min-height: 0; }
 }

@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Investors | EPL Group</title>
-  <meta name="description" content="Investors: complete a short form and an EPL Group partner follows up about your mandate, ticket size and the platform that fits.">
+  <meta name="description" content="Investors: complete the onboarding form and an EPL Group partner follows up about your mandate and the platform that fits.">
   <meta property="og:title" content="Investors | EPL Group">
-  <meta property="og:description" content="Investors: complete a short form and an EPL Group partner follows up about your mandate, ticket size and the platform that fits.">
+  <meta property="og:description" content="Investors: complete the onboarding form and an EPL Group partner follows up about your mandate and the platform that fits.">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#2c3a4b">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -38,39 +38,19 @@
       </div>
     </section>
     <section class="section">
-      <div class="wrap two-col">
+      <div class="wrap two-col two-col--form">
         <div>
-          <form class="form r" name="investors" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="company-website" data-form>
-            <input type="hidden" name="form-name" value="investors">
-            <p class="sr" aria-hidden="true"><label>Leave this field empty <input name="company-website" tabindex="-1" autocomplete="off"></label></p>
-            <div class="field"><label for="i-name">Your name</label><input id="i-name" name="name" required autocomplete="name"></div>
-            <div class="field"><label for="i-email">Email</label><input id="i-email" name="email" type="email" required autocomplete="email"></div>
-            <div class="field"><label for="i-org">Organisation</label><input id="i-org" name="organisation" required autocomplete="organization"></div>
-            <div class="field"><label for="i-type">You are a</label>
-              <select id="i-type" name="investor-type" required>
-                <option value="">Select one</option>
-                <option>Family office</option><option>Allocator or fund of funds</option><option>Corporate or strategic</option><option>Accredited individual</option><option>Other</option>
-              </select>
+          <div class="ev-embed ev-embed--page r" data-embed data-src="https://app.pipefy.com/public/form/qyeXlWs4?embedded=true" style="--embed-h:4300px;--embed-h-m:4500px">
+            <div class="ev-embed__fallback">
+              <p class="ev-kicker">Investor onboarding</p>
+              <h4>Tell us about your mandate</h4>
+              <p class="ev-embed__hint">For qualified investors only, by approval. The form takes about 5 minutes and includes the December events in Miami.</p>
+              <a class="btn btn--coral" href="https://app.pipefy.com/public/form/qyeXlWs4" target="_blank" rel="noopener"><span>Open the investor form</span><span class="btn__icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L7.2 8.8" stroke="white" stroke-width="2" stroke-linecap="square"/><path d="M9 7L12 4M12 10V4H6" stroke="white" stroke-width="2" stroke-linecap="square"/></svg></span></a>
+              <p class="ev-embed__fine">Opens in a new tab.</p>
             </div>
-            <div class="field full"><label>Which platform interests you?</label>
-              <div class="choice-row" data-chips="platform" data-multi>
-                <button type="button" class="chip" data-value="xPL Ventures">xPL Ventures</button>
-                <button type="button" class="chip" data-value="xpansionIQ">xpansionIQ</button>
-                <button type="button" class="chip" data-value="Permanent Capital Platform">Permanent Capital Platform</button>
-                <button type="button" class="chip" data-value="GP Stackers">GP Stackers</button>
-                <button type="button" class="chip" data-value="Not sure yet">Not sure yet</button>
-              </div>
-              <input type="hidden" name="platform" value="">
-            </div>
-            <div class="field"><label for="i-ticket">Typical ticket size</label><input id="i-ticket" name="ticket" placeholder="e.g. $1M to $5M"></div>
-            <div class="field"><label for="i-horizon">Investment horizon</label><input id="i-horizon" name="horizon" placeholder="e.g. 7 to 10 years"></div>
-            <div class="field full"><label for="i-msg">Tell us about your mandate</label><textarea id="i-msg" name="message" required placeholder="Strategy, geography, anything we should know before a first conversation."></textarea></div>
-            <div class="form__foot">
-              <button class="btn btn--black" type="submit"><span>Send to a partner</span><span class="btn__icon"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L7.2 8.8" stroke="white" stroke-width="2" stroke-linecap="square"/><path d="M9 7L12 4M12 10V4H6" stroke="white" stroke-width="2" stroke-linecap="square"/></svg></span></button>
-              <p class="note">Confidential from the first message. A senior partner replies personally.</p>
-            </div>
-          </form>
-          <div class="form__done" role="status"><h3>Thank you. A partner will follow up.</h3><p class="lead">Your details have been received. A senior partner will follow up personally about your mandate and the platform that fits.</p></div>
+            <p class="ev-embed__loading" aria-hidden="true">Loading the form…</p>
+            <iframe title="Investor onboarding" loading="lazy" frameborder="0"></iframe>
+          </div>
         </div>
         <aside class="sticky-aside">
           <p class="eyebrow r">For allocators and family offices</p>
