@@ -241,58 +241,6 @@
   window.addEventListener('resize', onScroll);
   frame();
 
-  /* ---------- contact: brief form, then booking ---------- */
-  var form = $('#brief-form');
-  if (form) {
-    var CAL = form.getAttribute('data-calendly');
-    var params = new URLSearchParams(location.search);
-    var need = params.get('need');
-    if (need) {
-      var sel = form.elements.need;
-      $$('option', sel).forEach(function (o) { if (o.value.toLowerCase() === need.toLowerCase()) sel.value = o.value; });
-    }
-
-    var showBooking = function (name, email) {
-      var q = '?hide_gdpr_banner=1&primary_color=5271ff';
-      if (name) q += '&name=' + encodeURIComponent(name);
-      if (email) q += '&email=' + encodeURIComponent(email);
-      var first = (name || '').trim().split(' ')[0];
-      $('#step-form').hidden = true;
-      var b = $('#step-book');
-      $('#book-title').textContent = first ? 'Thank you, ' + first + '. Now pick a time.' : 'Thank you. Now pick a time.';
-      $('#book-frame').src = CAL + q;
-      $('#book-link').href = CAL;
-      b.hidden = false;
-      b.classList.add('swap-in');
-      $$('.flow li').forEach(function (li, i) { li.classList.toggle('is-on', i === 1); });
-      b.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-      $('#book-title').focus();
-    };
-
-    form.addEventListener('submit', function (e) {
-      if (!window.fetch || !window.FormData) return; // no-JS / old browsers: plain POST to thanks.html
-      e.preventDefault();
-      var btn = $('button[type=submit]', form), err = $('#form-error');
-      err.hidden = true;
-      btn.disabled = true;
-      var label = btn.textContent;
-      btn.textContent = 'Sending…';
-      var body = new URLSearchParams(new FormData(form)).toString();
-      fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body
-      }).then(function (res) {
-        if (!res.ok) throw new Error(res.status);
-        showBooking(form.elements.name.value, form.elements.email.value);
-      }).catch(function () {
-        btn.disabled = false;
-        btn.textContent = label;
-        err.hidden = false;
-      });
-    });
-  }
-
   var year = $('#year');
   if (year) year.textContent = new Date().getFullYear();
 })();
