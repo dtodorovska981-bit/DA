@@ -8,7 +8,7 @@ index.html (home), platforms.html, team.html, track-record.html, partners.html,
 insights.html, events.html, pitch.html, investors.html, careers.html, 404.html
 
 ## Files
-css/styles.css, js/main.js, assets/ (photos, logo and monogram SVGs), favicon.svg
+css/styles.css, js/main.js, assets/ (photos, logo and monogram SVGs), favicon.svg, favicon.ico, favicon-32x32.png, apple-touch-icon.png
 
 ## Notes
 - The Pitch and Investors pages embed Pipefy forms (pitch: czfdp_CJ, investor onboarding: qyeXlWs4). The Events page embeds the investor onboarding form too.
