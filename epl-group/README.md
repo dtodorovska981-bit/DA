@@ -4,7 +4,7 @@ Static site, no build step. Built from the Figma file "EPL Group | Website Desig
 (page "Homepage v5, editorial layers").
 
 ## Pages
-index.html (home), platforms.html, team.html, track-record.html, partners.html,
+index.html (home), about.html, faq.html, platforms.html, team.html, track-record.html, partners.html,
 insights.html, events.html, pitch.html, investors.html, careers.html, 404.html
 
 ## Files
