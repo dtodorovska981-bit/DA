@@ -1,0 +1,26 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="428.303" height="460.725" viewBox="0 0 428.303 460.725" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Lines A / investor (coral, top-left, animate: draw toward the X)">
+<path id="Vector" d="M1.00009 1.00008L322.203 459.725" stroke-width="2" stroke-linecap="round" stroke="url(#paint0_linear_0_17)"/>
+<path id="Vector_2" d="M42.6001 1.00008L363.803 459.725" stroke-linecap="round" stroke="url(#paint1_linear_0_17)"/>
+<path id="Vector_3" d="M77.8001 1.00008L399.003 459.725" stroke-linecap="round" stroke="url(#paint2_linear_0_17)"/>
+<path id="Vector_4" d="M106.6 1.00008L427.803 459.725" stroke-linecap="round" stroke="url(#paint3_linear_0_17)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_17" x1="1.00009" y1="230.363" x2="322.203" y2="230.363" gradientUnits="userSpaceOnUse">
+<stop stop-color="#EB5A5D"/>
+<stop offset="1" stop-color="#EB5A5D" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_17" x1="42.6001" y1="230.363" x2="363.803" y2="230.363" gradientUnits="userSpaceOnUse">
+<stop stop-color="#EB5A5D" stop-opacity="0.5"/>
+<stop offset="1" stop-color="#EB5A5D" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint2_linear_0_17" x1="77.8001" y1="230.363" x2="399.003" y2="230.363" gradientUnits="userSpaceOnUse">
+<stop stop-color="#EB5A5D" stop-opacity="0.28"/>
+<stop offset="1" stop-color="#EB5A5D" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint3_linear_0_17" x1="106.6" y1="230.363" x2="427.803" y2="230.363" gradientUnits="userSpaceOnUse">
+<stop stop-color="#EB5A5D" stop-opacity="0.14"/>
+<stop offset="1" stop-color="#EB5A5D" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

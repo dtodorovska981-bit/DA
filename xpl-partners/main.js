@@ -54,24 +54,15 @@
     targets.forEach(function (el) { io.observe(el); });
   }
 
-  /* ---- nav: solid after scrolling, hides on the way down, returns on the way up ---- */
+  /* ---- nav: stays fixed at the top, turns solid after scrolling ---- */
   var nav = $('#nav');
   var toggle = $('#navToggle');
-  var parallax = reduce ? [] : $$('[data-parallax]');
-  var hero = $('.hero');
-  var lastY = window.scrollY, ticking = false;
+  var ticking = false;
 
   function onFrame() {
     ticking = false;
     var y = window.scrollY;
     nav.classList.toggle('is-stuck', y > 24);
-    nav.classList.toggle('is-hidden', y > 640 && y > lastY && !nav.classList.contains('is-open'));
-    lastY = y;
-    if (parallax.length && y < hero.offsetHeight + 80) {
-      parallax.forEach(function (el) {
-        el.style.transform = 'translate3d(0,' + (y * parseFloat(el.getAttribute('data-parallax'))).toFixed(1) + 'px,0)';
-      });
-    }
   }
   window.addEventListener('scroll', function () {
     if (!ticking) { ticking = true; requestAnimationFrame(onFrame); }
@@ -115,24 +106,4 @@
       }
     });
   });
-
-  /* ---- hero: the photo and coral bands lean gently toward the pointer ---- */
-  var img = $('.hero__img');
-  if (!reduce && img && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    var bands = $('.hero__bands');
-    var tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
-    function lean() {
-      cx += (tx - cx) * 0.06; cy += (ty - cy) * 0.06;
-      img.style.translate = (cx * -14).toFixed(2) + 'px ' + (cy * -10).toFixed(2) + 'px';
-      bands.style.translate = (cx * 10).toFixed(2) + 'px ' + (cy * 6).toFixed(2) + 'px';
-      raf = (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.002) ? requestAnimationFrame(lean) : null;
-    }
-    hero.addEventListener('pointermove', function (e) {
-      var r = hero.getBoundingClientRect();
-      tx = (e.clientX - r.left) / r.width - 0.5;
-      ty = (e.clientY - r.top) / r.height - 0.5;
-      if (!raf) { raf = requestAnimationFrame(lean); }
-    });
-    hero.addEventListener('pointerleave', function () { tx = 0; ty = 0; if (!raf) { raf = requestAnimationFrame(lean); } });
-  }
 })();
