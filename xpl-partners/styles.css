@@ -457,15 +457,15 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .legal .legal__copy { color: rgba(158, 173, 194, .7); line-height: normal; }
 
 /* ---------- scroll reveals (only when JS is running) ---------- */
-.js [data-reveal], .js [data-stagger] > * { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease-out), transform 1s var(--ease-out); transition-delay: var(--d, 0s); }
+.js [data-reveal], .js [data-stagger] > * { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--ease-out), transform .8s var(--ease-out); transition-delay: var(--d, 0s); }
 .js [data-reveal="left"] { transform: translateX(-36px); }
 .js [data-reveal="right"] { transform: translateX(36px); }
 /* clip reveals live on the image, not the observed box: a fully clipped box never reports as intersecting */
 .js [data-reveal="clip"] { opacity: 1; transform: none; }
-.js [data-reveal="clip"] > img { clip-path: inset(0 0 100% 0); transform: scale(1.18); transition: clip-path 1.3s var(--ease-out) var(--d, 0s), transform 1.6s var(--ease-out) var(--d, 0s); }
+.js [data-reveal="clip"] > img { clip-path: inset(0 0 100% 0); transform: scale(1.1); transition: clip-path .75s var(--ease-out) var(--d, 0s), transform 1s var(--ease-out) var(--d, 0s); }
 .js [data-reveal="clip"] > .tile__cap { opacity: 0; transform: translateY(16px); transition: opacity .8s ease, transform .8s var(--ease-out); }
 .js [data-reveal="clip"].is-in > img { clip-path: inset(0 0 0 0); transform: scale(1); }
-.js [data-reveal="clip"].is-in > .tile__cap { opacity: 1; transform: none; transition-delay: calc(var(--d, 0s) + .5s); }
+.js [data-reveal="clip"].is-in > .tile__cap { opacity: 1; transform: none; transition-delay: calc(var(--d, 0s) + .2s); }
 .js [data-reveal="clip"].is-in:hover > img { transform: scale(1.06); transition-delay: 0s; }
 .js [data-reveal="clip"].is-in:hover > .tile__cap { transform: translateY(-6px); transition-delay: 0s; }
 .js [data-stagger].is-in > * { opacity: 1; transform: none; }
@@ -473,7 +473,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .js [data-reveal="clip"].is-in > img { transform: scale(1); }
 .js [data-reveal="clip"].is-in:hover > img { transform: scale(1.06); }
 .js [data-reveal].is-in, .js [data-stagger].is-in > * { opacity: 1; transform: none; }
-.js [data-stagger].is-in > * { transition-delay: calc(var(--i, 0) * 90ms); }
+.js [data-stagger].is-in > * { transition-delay: calc(var(--i, 0) * 70ms); }
 .js .strip__inner > .strip__x { transform: scale(0) rotate(-180deg); }
 .js .strip__inner.is-in > .strip__x { transform: none; transition-timing-function: cubic-bezier(.34, 1.56, .64, 1); }
 
@@ -491,6 +491,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .case__copy { width: 440px; }
   .foot__brand { width: 420px; }
   .foot { gap: 56px; }
+  .lockup--lg { gap: 22px; }
+  .lockup--lg img { width: 170px; height: auto; }
+  .lockup--lg .lockup__divider { height: 62px; }
+  .lockup--lg .lockup__text { font-size: 22px; letter-spacing: 5.9px; }
   .approach__title { font-size: 52px; }
   .approach__row { grid-template-columns: 340px 1fr 340px; }
   .exec__title { font-size: 34px; }
