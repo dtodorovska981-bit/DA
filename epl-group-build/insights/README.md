@@ -1,4 +1,13 @@
-# Insights articles
+# Insights
+
+The Insights page shows two things together, newest first:
+
+1. **Newsletter issues** from beehiiv ("Operating Advantage"). They come from the feed set as
+   `FEED_URL` in `build.py`. The page also re-reads the feed in the visitor's browser, so a new
+   issue appears on the live site without a new upload. `feed-cache.xml` is the last copy seen at build time.
+2. **Articles written for the site**, one Markdown file each, described below.
+
+## Articles
 
 Each `.md` file in this folder becomes an article on the site: its own page at
 `/insights/<file-name>` and a card at the top of the Insights page, newest first.

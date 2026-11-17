@@ -313,4 +313,69 @@
     sel.addEventListener('mouseenter', function () { sel.querySelector('.sel__cursor').style.transform = 'translate(-6px,-6px)'; });
     sel.addEventListener('mouseleave', function () { sel.querySelector('.sel__cursor').style.transform = ''; });
   }
+  /* ---------- insights: read the newsletter feed so a new issue shows without a new upload ----------
+     The page already carries the posts known when the site was built. Feed text is only ever
+     written with textContent, never as HTML. */
+  var ins = document.querySelector('[data-insights]');
+  if (ins && window.fetch && window.DOMParser) {
+    var MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var bakedPosts = [];
+    try { bakedPosts = JSON.parse(ins.querySelector('[data-insights-data]').textContent) || []; } catch (e) { bakedPosts = []; }
+    var mk = function (tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    var linkTo = function (a, post) { a.href = post.link; if (post.external) { a.target = '_blank'; a.rel = 'noopener'; } };
+    var renderPosts = function (posts) {
+      var featuredBox = ins.querySelector('[data-insights-featured]');
+      var more = ins.querySelector('[data-insights-more]');
+      var list = ins.querySelector('[data-insights-list]');
+      var first = posts[0];
+      var kind = first.external ? 'issue' : 'article';
+      var card = mk('a', 'issue'); linkTo(card, first);
+      var pic = mk('div', 'issue__img' + (first.img ? '' : ' is-empty'));
+      if (first.img) {
+        var img = new Image(); img.alt = ''; img.width = 1200; img.height = 630;
+        img.onerror = function () { pic.classList.add('is-empty'); img.remove(); };
+        img.src = first.img; pic.appendChild(img);
+      }
+      var body = mk('div', 'issue__body');
+      var kicker = mk('p', 'issue__kicker', 'Latest ' + kind);
+      kicker.appendChild(mk('span', '', first.external ? (ins.getAttribute('data-newsletter') || 'Newsletter') : first.tag));
+      var meta = mk('p', 'issue__meta');
+      var parts = first.date.split('-');
+      var time = mk('time', '', parseInt(parts[2], 10) + ' ' + MONTH_NAMES[parseInt(parts[1], 10) - 1] + ' ' + parts[0]); time.dateTime = first.date;
+      var read = mk('span', 'link-arrow', 'Read the ' + kind); read.appendChild(mk('span', 'arr', '→'));
+      meta.appendChild(time); meta.appendChild(read);
+      body.appendChild(kicker); body.appendChild(mk('h2', '', first.title)); body.appendChild(mk('p', '', first.summary)); body.appendChild(meta);
+      card.appendChild(pic); card.appendChild(body);
+      featuredBox.textContent = ''; featuredBox.appendChild(card);
+      list.textContent = '';
+      posts.slice(1).forEach(function (post) {
+        var row = mk('a', 'post'); linkTo(row, post);
+        var mid = mk('div'); mid.appendChild(mk('h3', '', post.title)); mid.appendChild(mk('p', '', post.summary));
+        row.appendChild(mk('span', 'date', post.date.slice(0, 7))); row.appendChild(mid); row.appendChild(mk('span', 'tag', post.tag));
+        list.appendChild(row);
+      });
+      more.hidden = posts.length < 2;
+    };
+    fetch(ins.getAttribute('data-feed'), { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('feed'); return r.text(); })
+      .then(function (xml) {
+        var doc = new DOMParser().parseFromString(xml, 'application/xml');
+        if (doc.querySelector('parsererror')) return;
+        var feed = [];
+        Array.prototype.forEach.call(doc.getElementsByTagName('item'), function (it) {
+          var t = function (n) { var e = it.getElementsByTagName(n)[0]; return e ? (e.textContent || '').trim() : ''; };
+          var link = t('link'), when = new Date(t('pubDate'));
+          if (!/^https:\/\//.test(link) || isNaN(when.getTime())) return;
+          var enc = it.getElementsByTagName('enclosure')[0];
+          var pic = enc && /^image\//.test(enc.getAttribute('type') || '') ? (enc.getAttribute('url') || '') : '';
+          feed.push({ title: t('title'), summary: t('description'), link: link, date: when.toISOString().slice(0, 10), img: /^https:\/\//.test(pic) ? pic : '', tag: 'Newsletter', external: true });
+        });
+        if (!feed.length) return;
+        var posts = bakedPosts.filter(function (p) { return !p.external; }).concat(feed);
+        posts.sort(function (a, b) { return a.date === b.date ? (a.title < b.title ? 1 : -1) : (a.date < b.date ? 1 : -1); });
+        var same = posts.length === bakedPosts.length && posts.every(function (p, i) { var q = bakedPosts[i]; return p.link === q.link && p.title === q.title && p.summary === q.summary && p.img === q.img; });
+        if (!same) renderPosts(posts);
+      })
+      .catch(function () { /* keep the posts already on the page */ });
+  }
 })();

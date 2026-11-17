@@ -129,7 +129,7 @@ FOOTER = f'''  <footer class="footer">
           <li><a href="pitch.html">Start a conversation</a></li>
           <li><a href="investors.html">Investors: complete the form</a></li>
           <li><a href="https://www.linkedin.com/" rel="noopener" target="_blank">LinkedIn</a></li>
-          <li><a href="https://medium.com/" rel="noopener" target="_blank">Medium</a></li></ul></div>
+          <li><a href="https://epls-newsletter.beehiiv.com/" rel="noopener" target="_blank">Newsletter</a></li></ul></div>
       </div>
       <div class="footer__legal">
         <p>Securities are offered through Finalis Securities LLC, Member FINRA / SIPC. EPL Group is not a registered broker-dealer, and Finalis Securities LLC and EPL Group are separate, unaffiliated entities. This website is for information only and is not an offer or solicitation to buy or sell any security.</p>
@@ -815,40 +815,96 @@ for a in ARTICLES:
                     "datePublished": a["date"].isoformat(), "author": author, "publisher": {"@id": SITE + "/#org"},
                     "mainEntityOfPage": clean_url(path), "articleSection": a["tag"]}, ORG))
 
-POSTS = [
-    ("2026-02", "Thesis", "Why capital works harder with operating advantage and software", "The same base under four platforms: what we mean by operating advantage, and why software is the part most investors skip."),
-    ("2026-01", "Permanent capital", "The factory floor is the most under-served market in American software", "Thousands of profitable founder-owned businesses run on spreadsheets and phone calls. That is the opportunity, not the problem."),
-    ("2025-12", "xpansionIQ", "Landing in the US: what changes at the border for a B2B scale-up", "Pricing, hiring, compliance and go-to-market all reset. A checklist from the partners who help companies through it."),
-    ("2025-11", "xPL Ventures", "Building software inside regulated industries, with the people who know the rules", "Why slow-moving industries create durable moats for focused software, and how we choose which gaps to build into."),
-    ("2025-10", "GP Stackers", "Backing emerging managers at the GP level", "Sharing economics and operating load with the managers who see early-stage deals first."),
-]
+# ---- newsletter feed (beehiiv). Posts are baked in at build time and refreshed in the visitor's browser,
+# so a new issue shows on the Insights page without a new upload.
+FEED_URL = "https://rss.beehiiv.com/feeds/4HLKRQItkZ.xml"
+NEWSLETTER_URL = "https://epls-newsletter.beehiiv.com/"
+NEWSLETTER_NAME = "Operating Advantage"
+FEED_CACHE = HERE / "insights" / "feed-cache.xml"
+
+def load_feed():
+    import xml.etree.ElementTree as ET
+    from email.utils import parsedate_to_datetime
+    try:
+        raw = subprocess.run(["curl", "-sS", "-f", "-m", "25", FEED_URL], capture_output=True, text=True, check=True).stdout
+        ET.fromstring(raw)
+        FEED_CACHE.write_text(raw)
+    except Exception as e:                      # offline build: use the last copy
+        print("feed not reachable, using the saved copy:", type(e).__name__)
+        raw = FEED_CACHE.read_text() if FEED_CACHE.exists() else "<rss><channel></channel></rss>"
+    posts = []
+    for it in ET.fromstring(raw).iter("item"):
+        get = lambda t: (it.findtext(t) or "").strip()
+        link = get("link")
+        if not link.startswith("https://"):
+            continue
+        try:
+            date = parsedate_to_datetime(get("pubDate")).date()
+        except Exception:
+            continue
+        enc = it.find("enclosure")
+        img = enc.get("url", "") if enc is not None and enc.get("type", "").startswith("image/") else ""
+        posts.append({"title": get("title"), "summary": get("description"), "link": link, "date": date,
+                      "img": img if img.startswith("https://") else "", "tag": "Newsletter", "external": True})
+    return posts
+
+FEED_POSTS = load_feed()
+ALL_POSTS = sorted(FEED_POSTS + [{"title": a["title"], "summary": a["summary"], "link": f'insights/{a["slug"]}.html', "date": a["date"],
+                                  "img": "", "tag": a["tag"], "external": False} for a in ARTICLES],
+                   key=lambda x: (x["date"], x["title"]), reverse=True)
+
+def long_date(d):
+    return f"{d.day} {MONTHS[d.month - 1]} {d.year}"
+
+def post_row(x, i=0):
+    ext = ' target="_blank" rel="noopener"' if x["external"] else ""
+    return (f'          <a class="post r" style="--d:{i % 3}" href="{esc(x["link"])}"{ext}><span class="date">{x["date"]:%Y-%m}</span>'
+            f'<div><h3>{esc(x["title"])}</h3><p>{esc(x["summary"])}</p></div><span class="tag">{esc(x["tag"])}</span></a>\n')
+
+def featured(x):
+    ext = ' target="_blank" rel="noopener"' if x["external"] else ""
+    img = (f'<img src="{esc(x["img"])}" alt="" width="1200" height="630" onerror="this.parentNode.classList.add(\'is-empty\');this.remove()">'
+           if x["img"] else "")
+    return f'''        <a class="issue r" href="{esc(x["link"])}"{ext}>
+          <div class="issue__img{"" if x["img"] else " is-empty"}">{img}</div>
+          <div class="issue__body">
+            <p class="issue__kicker">Latest {"issue" if x["external"] else "article"}<span>{NEWSLETTER_NAME if x["external"] else esc(x["tag"])}</span></p>
+            <h2>{esc(x["title"])}</h2>
+            <p>{esc(x["summary"])}</p>
+            <p class="issue__meta"><time datetime="{x["date"].isoformat()}">{long_date(x["date"])}</time><span class="link-arrow">Read the {"issue" if x["external"] else "article"}<span class="arr">→</span></span></p>
+          </div>
+        </a>
+'''
+
+rows = "".join(post_row(x, i) for i, x in enumerate(ALL_POSTS[1:]))
+baked = json.dumps([{**x, "date": x["date"].isoformat()} for x in ALL_POSTS], ensure_ascii=False).replace("</", "<\\/")
 INSIGHTS = f'''    <section class="page-hero">
       <div class="wrap">
         <p class="eyebrow r">Insights</p>
         <h1 class="display r" style="--d:1">Notes from the partners. <strong>One thesis, written down.</strong></h1>
-        <p class="lead r" style="--d:2">Short essays on venture, permanent capital and US expansion: how we invest, what we are seeing across the four platforms, and the operating lessons from inside the portfolio. Longer pieces are published on Medium.</p>
-        <div class="page-hero__actions r" style="--d:3">{btn("Read on Medium", "https://medium.com/", "ghost")}</div>
+        <p class="lead r" style="--d:2">{NEWSLETTER_NAME} is the EPL Group newsletter on venture, permanent capital and US expansion. Where capital meets operating know-how, with one question a week answered with data.</p>
+        <div class="page-hero__actions r" style="--d:3">{ext_btn("Subscribe to the newsletter", NEWSLETTER_URL, "black")}</div>
       </div>
     </section>
     <section class="section">
-      <div class="wrap">
-        <div class="post-list">
-'''
-for i, a in enumerate(ARTICLES):
-    INSIGHTS += f'''          <a class="post post--own r" style="--d:{i % 3}" href="insights/{a["slug"]}.html"><span class="date">{a["date"]:%Y-%m}</span><div><h3>{esc(a["title"])}</h3><p>{esc(a["summary"])}</p></div><span class="tag">{esc(a["tag"])}</span></a>
-'''
-for i, (date, tag, title, desc) in enumerate(POSTS):
-    INSIGHTS += f'''          <a class="post r" style="--d:{(i + len(ARTICLES)) % 3}" href="https://medium.com/" target="_blank" rel="noopener"><span class="date">{date}</span><div><h3>{title}</h3><p>{desc}</p></div><span class="tag">{tag}</span></a>
-'''
-INSIGHTS += '''        </div>
+      <div class="wrap" data-insights data-feed="{FEED_URL}" data-newsletter="{NEWSLETTER_NAME}">
+        <div data-insights-featured>
+{featured(ALL_POSTS[0]) if ALL_POSTS else '        <p class="lead">The first issue is on its way.</p>' + chr(10)}        </div>
+        <div class="post-wrap" data-insights-more{"" if rows else " hidden"}>
+          <p class="eyebrow">Earlier issues and articles</p>
+          <div class="post-list" data-insights-list>
+{rows}          </div>
+        </div>
+        <script type="application/json" data-insights-data>{baked}</script>
       </div>
     </section>
 '''
 INS_TITLE = "EPL Group Insights | Venture, Permanent Capital, US Expansion"
-INS_DESC = "Notes from the EPL Group partners on venture studios, permanent capital, US market entry and backing emerging fund managers."
+INS_DESC = "Operating Advantage, the EPL Group newsletter: notes from the partners on venture studios, permanent capital, US market entry and emerging fund managers."
 page("insights.html", INS_TITLE, INS_DESC, "insights.html", INSIGHTS,
      jsonld=ld(webpage("insights.html", INS_TITLE, INS_DESC, "CollectionPage"), *[
-         {"@type": "Article", "headline": a["title"], "url": clean_url(f'insights/{a["slug"]}.html'), "datePublished": a["date"].isoformat()} for a in ARTICLES]))
+         {"@type": "BlogPosting", "headline": x["title"], "description": x["summary"], "datePublished": x["date"].isoformat(),
+          "url": x["link"] if x["external"] else clean_url(x["link"]), "publisher": {"@id": SITE + "/#org"}} for x in ALL_POSTS]))
 
 FAQ_ALL = [
     ("What is EPL Group?", "EPL Group is a multi-strategy investment platform based in Miami, Florida. It runs four platforms, xPL Ventures, xpansionIQ, the Permanent Capital Platform and GP Stackers, that back companies from the first check to the factory floor."),
