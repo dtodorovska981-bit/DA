@@ -24,6 +24,9 @@ NAV = [("Platforms", "platforms.html"), ("Team", "team.html"), ("Track record", 
        ("Partners", "partners.html"), ("Insights", "insights.html"), ("Events", "events.html")]
 
 SITE = "https://eplgroup.co"
+LINKEDIN = "https://www.linkedin.com/company/epl-group-inc"
+JOIN = "https://join.com/companies/eplgroup"
+OG_IMAGE = SITE + "/assets/og-image.jpg"
 BOILERPLATE = ("EPL Group is a Miami-based multi-strategy investment platform that backs companies from the first check to the factory floor "
                "through four platforms: xPL Ventures, xpansionIQ, the Permanent Capital Platform and GP Stackers. Its investors are "
                "single-family offices, high-net-worth individuals and allocators who qualify as accredited or qualified investors. "
@@ -31,8 +34,8 @@ BOILERPLATE = ("EPL Group is a Miami-based multi-strategy investment platform th
 ADDRESS = {"@type": "PostalAddress", "streetAddress": "1000 Brickell Avenue, Suite 715", "addressLocality": "Miami",
            "addressRegion": "FL", "postalCode": "33131", "addressCountry": "US"}
 ORG = {"@type": "Organization", "@id": SITE + "/#org", "name": "EPL Group", "legalName": "EPL Group Inc.", "url": SITE + "/",
-       "logo": SITE + "/apple-touch-icon.png", "description": BOILERPLATE, "email": "ir@eplgroup.co", "address": ADDRESS,
-       "founder": {"@type": "Person", "name": "Jerome Davant"}}
+       "logo": SITE + "/apple-touch-icon.png", "description": BOILERPLATE, "address": ADDRESS, "sameAs": [LINKEDIN],
+       "founder": {"@type": "Person", "name": "Jerome Davant", "jobTitle": "Managing Partner & CIO", "sameAs": ["https://www.linkedin.com/in/jeromevd/"]}}
 
 def clean_url(path):
     return SITE + "/" if path in ("index.html", "") else SITE + "/" + path[:-5]
@@ -56,7 +59,13 @@ def head(title, desc, path, extra_css=""):
   <meta property="og:title" content="{title}">
   <meta property="og:description" content="{desc}">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="EPL Group">{f"""
+  <meta property="og:site_name" content="EPL Group">
+  <meta property="og:image" content="{OG_IMAGE}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="EPL Group, growth partners from the first check to the factory floor">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{OG_IMAGE}">{f"""
   <link rel="canonical" href="{clean_url(path)}">
   <meta property="og:url" content="{clean_url(path)}">""" if path != "404.html" else ""}
   <meta name="theme-color" content="#2c3a4b">
@@ -124,11 +133,12 @@ FOOTER = f'''  <footer class="footer">
           <li><a href="insights.html">Insights</a></li>
           <li><a href="events.html">Events</a></li>
           <li><a href="faq.html">FAQ</a></li>
-          <li><a href="https://join.com/companies/eplgroup" target="_blank" rel="noopener">Careers</a></li></ul></div>
+          <li><a href="{JOIN}" target="_blank" rel="noopener">Careers</a></li></ul></div>
         <div><h4>Connect</h4><ul>
           <li><a href="pitch.html">Start a conversation</a></li>
           <li><a href="investors.html">Investors: complete the form</a></li>
-          <li><a href="https://www.linkedin.com/" rel="noopener" target="_blank">LinkedIn</a></li>
+          <li><a href="partners.html">xPL Partners</a></li>
+          <li><a href="{LINKEDIN}" rel="noopener" target="_blank">LinkedIn</a></li>
           <li><a href="https://epls-newsletter.beehiiv.com/" rel="noopener" target="_blank">Newsletter</a></li></ul></div>
       </div>
       <div class="footer__legal">
@@ -214,25 +224,25 @@ def mesh_panel(link=True):
 PLATFORM_NOTES = '''      <div class="platform-notes">
         <div class="r" style="--d:0"><h3>01&nbsp; xPL Ventures</h3><p>A venture studio that builds or buys software for innovation gaps in regulated industries.</p></div>
         <div class="r" style="--d:1"><h3>02&nbsp; xpansionIQ</h3><p>Series A growth capital for international B2B tech scale-ups entering the US market.</p></div>
-        <div class="r" style="--d:2"><h3>03&nbsp; Permanent Capital Platform</h3><p>Permanent capital for lower-middle-market roll-ups in established US industries, strengthened by software and AI.</p></div>
+        <div class="r" style="--d:2"><h3>03&nbsp; Permanent Capital</h3><p>Permanent capital for lower-middle-market roll-ups in established US industries, strengthened by software and AI.</p></div>
         <div class="r" style="--d:3"><h3>04&nbsp; GP Stackers</h3><p>GP-level venture co-investments alongside emerging fund managers.</p></div>
       </div>
 '''
 
 PEOPLE = [
     # name, photo, large background text, role, credential, focus, small photo, LinkedIn shown
-    ("Jerome Davant", "team-jerome.png", "$200M+", "Founding Partner, EPL Group", "30+ M&amp;A deals closed", "All platforms", False, True),
+    ("Jerome Davant", "team-jerome.png", "$200M+", "Managing Partner &amp; CIO", "30+ M&amp;A deals closed", "All platforms", False, "https://www.linkedin.com/in/jeromevd/"),
     ("Romulo Justa", "team-romulo.png", "15+ yrs", "Venture Partner, Latin America", "Founded and sold Grupo Omni", "Latin America", False, False),
     ("Geoffroy de Clisson", "team-geoffroy.png", "M&amp;A", "Venture Partner, Europe", "Ex Dalkia / Veolia Energy M&amp;A", "Europe", True, False),
-    ("Sebastian Fidilio", "team-sebastian.png", "CPA", "Chief Financial Officer, EPL Group", "Certified Public Accountant", "Finance", False, False),
-    ("James White", "team-james.png", "JW", "Investment Manager, EPL Group", "Deal flow and portfolio support", "Investments", False, False),
+    ("Sebastian Fidilio", "team-sebastian.png", "CPA", "Chief Financial Officer", "Certified Public Accountant", "Finance", False, False),
+    ("James White", "team-james.png", "JW", "Investment Manager", "Deal flow and portfolio support", "Investments", False, False),
     ("Dragana Todorovska Janeva", "team-dragana.png", "7+ yrs", "Financial Models and Investor Materials", "Business planning and modelling", "Analysis", False, False),
 ]
 
 def people_cards(bios=None):
     out = f'      <div class="people{" people--bios" if bios else ""}">\n'
     for i, (name, img, big, role, cred, focus, small, linkedin) in enumerate(PEOPLE):
-        link = (f'\n          <a class="person__link" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn<span class="arr">→</span><span class="sr"> ({name})</span></a>'
+        link = (f'\n          <a class="person__link" href="{linkedin}" target="_blank" rel="noopener">LinkedIn<span class="arr">→</span><span class="sr"> ({name})</span></a>'
                 if linkedin else "")
         card = f'''        <article class="person r" style="--d:{i % 3}" data-person tabindex="0" aria-label="{name}, {role}">
           <div class="person__photo{" person__photo--sm" if small else ""}"><img src="assets/{img}" alt="Portrait of {name}" loading="lazy" width="210" height="240"></div>
@@ -386,12 +396,12 @@ AUDIENCES = '''      <div class="audiences r r--fade">
         <div class="audience">
           <h3>For founders and operators</h3>
           <p>Tell us what you are building, where you are in your journey and what you need from a partner.</p>
-          <a class="email" href="mailto:founders@eplgroup.co">founders@eplgroup.co</a>
+          <a class="email" href="pitch.html">Pitch us<span class="arr">→</span></a>
         </div>
         <div class="audience">
           <h3>For allocators and family offices</h3>
           <p>Tell us about your mandate, typical ticket size and which platform interests you.</p>
-          <a class="email" href="mailto:ir@eplgroup.co">ir@eplgroup.co</a>
+          <a class="email" href="investors.html">Investors: complete the form<span class="arr">→</span></a>
         </div>
       </div>
 '''
@@ -659,7 +669,7 @@ TEAM_TITLE = "EPL Group Team | Partners, Operators and Experts"
 TEAM_DESC = "Meet the EPL Group partners in Miami: M&A, energy, venture and finance leaders who have built, run or advised companies and answer personally."
 page("team.html", TEAM_TITLE, TEAM_DESC, "team.html", TEAM,
      jsonld=ld(webpage("team.html", TEAM_TITLE, TEAM_DESC, "AboutPage"), *[
-         {"@type": "Person", "name": pp[0], "jobTitle": pp[3].replace(", EPL Group", ""), "worksFor": {"@id": SITE + "/#org"}} for pp in PEOPLE]))
+         {"@type": "Person", "name": pp[0], "jobTitle": htmllib.unescape(pp[3]), "worksFor": {"@id": SITE + "/#org"}, **({"sameAs": [pp[7]]} if pp[7] else {})} for pp in PEOPLE]))
 
 # ---------------------------------------------------------------- TRACK RECORD
 TRACK = f'''    <section class="page-hero">
@@ -693,7 +703,7 @@ TRACK = f'''    <section class="page-hero">
       <div class="wrap">
 {section_head("", "Before EPL", "Thirty years of <strong>capital formation and sell-side work.</strong>", '<p class="lead">Before founding EPL, the partners advised on more than $900M of transaction value and worked on capital formation and sell-side mandates with more than $80B of exposure across investment banking careers.</p>', gap56=True)}
         <div class="cards">
-          <div class="card r"><p class="tag">M&amp;A</p><h3>30+ deals closed</h3><p>Sell-side and buy-side mandates for founder-owned and sponsor-backed companies in the US and Europe.</p><p class="meta">Jerome Davant, Founding Partner</p></div>
+          <div class="card r"><p class="tag">M&amp;A</p><h3>30+ deals closed</h3><p>Sell-side and buy-side mandates for founder-owned and sponsor-backed companies in the US and Europe.</p><p class="meta">Jerome Davant, Managing Partner &amp; CIO</p></div>
           <div class="card r" style="--d:1"><p class="tag">Energy</p><h3>Ex Dalkia / Veolia Energy M&amp;A</h3><p>Corporate development and acquisitions inside one of Europe's largest energy services groups.</p><p class="meta">Geoffroy de Clisson, Venture Partner</p></div>
           <div class="card r" style="--d:2"><p class="tag">Founder</p><h3>Founded and sold Grupo Omni</h3><p>Fifteen years building and exiting an operating business in Latin America before joining EPL.</p><p class="meta">Romulo Justa, Venture Partner</p></div>
         </div>
@@ -916,7 +926,7 @@ FAQ_ALL = [
     ("Is EPL Group a broker-dealer?", "No. EPL Group is not a registered broker-dealer. Securities are offered through Finalis Securities LLC, Member FINRA / SIPC. Finalis Securities LLC and EPL Group are separate, unaffiliated entities."),
     ("What are the minimums, fees and expected returns?", "This website does not state them. They vary by vehicle and are disclosed in the definitive offering documents to eligible investors. EPL Group does not promise returns."),
     ("What are the risks?", "Private investments can lose value and you can lose the entire amount invested. Early-stage ventures carry a high risk of total loss. Private investments are generally illiquid."),
-    ("How do I get started?", "Complete the investor form, which takes about five minutes, or email ir@eplgroup.co. A partner follows up about your mandate, and a senior partner replies personally. Conversations are confidential."),
+    ("How do I get started?", "Complete the investor form, which takes about five minutes. A partner follows up about your mandate, and a senior partner replies personally. Conversations are confidential."),
     ("I am a founder. Can I pitch EPL Group?", "Yes. Use the Pitch us page. Senior partners read every pitch and reply personally, and nothing is shared beyond the reviewing partners without your written permission."),
     ("Where is EPL Group located?", "EPL Group Inc. is based at 1000 Brickell Avenue, Suite 715, Miami, Florida 33131."),
 ]
@@ -925,9 +935,9 @@ FACTS = [("Legal name", "EPL Group Inc."), ("What it is", "A multi-strategy inve
          ("Headquarters", "1000 Brickell Avenue, Suite 715, Miami, Florida 33131"),
          ("Platforms", "xPL Ventures, xpansionIQ, Permanent Capital Platform, GP Stackers"),
          ("Investor base", "Single-family offices, high-net-worth individuals and allocators who are qualified or accredited"),
-         ("Leadership", "Jerome Davant, Founding Partner"), ("Advisory practice", "EPL Advisory, founded in 2019"),
+         ("Leadership", "Jerome Davant, Managing Partner &amp; CIO"), ("Advisory practice", "EPL Advisory, founded in 2019"),
          ("Regulatory structure", "Securities offered through Finalis Securities LLC, Member FINRA/SIPC"),
-         ("Investor contact", '<a href="mailto:ir@eplgroup.co">ir@eplgroup.co</a>'), ("Facts current as of", '<time datetime="2026-11-12">12 November 2026</time>')]
+         ("Investor contact", '<a href="investors.html">Investor onboarding form</a>'), ("Facts current as of", '<time datetime="2026-11-12">12 November 2026</time>')]
 LIFE = [
     ("xpl", "First check to pre-seed", "A founder with an idea", "xPL Ventures", mono([("x", 21)])),
     ("xpansioniq", "Series A, US landing", "An international scale-up", "xpansionIQ", mono([("i", 5), ("q", 20)])),
@@ -1089,7 +1099,7 @@ def pipefy_embed(form_id, title, height, height_mobile, height_small, kicker, he
             <p class="ev-embed__loading" aria-hidden="true">Loading the form…</p>
             <iframe title="{title}" loading="lazy" frameborder="0"></iframe>
           </div>
-          <p class="ev-formcard__foot">Trouble seeing the form? <a href="{url}" target="_blank" rel="noopener">Open it in a new tab</a> or write to <a href="mailto:{help_mail}">{help_mail}</a>.</p>
+          <p class="ev-formcard__foot">Trouble seeing the form? <a href="{url}" target="_blank" rel="noopener">Open it in a new tab</a>.</p>
           </div>'''
 
 def form_page(filename, title, desc, eyebrow, h1, lead, main_html, sidebar):
@@ -1120,61 +1130,45 @@ PITCH_SIDE = f'''
             <li>/03 &nbsp;a confidential first conversation</li>
             <li>/04 &nbsp;platform, structure and next steps, agreed together</li>
           </ol>
-          <p class="lead r" style="--d:3">Prefer email? Write to <a class="email" href="mailto:founders@eplgroup.co">founders@eplgroup.co</a></p>
 '''
 form_page("pitch.html", "Pitch EPL Group | Venture and Growth Capital for Founders", "Founders and operators: pitch EPL Group. A senior partner reads every pitch personally, from first checks to Series A US landing and long-term capital.",
           "Pitch us", "Tell us what you are building. <strong>A partner reads it personally.</strong>",
           "For founders and operators. Tell us what you are building, where you are in your journey and what you need from a partner.",
           pipefy_embed("czfdp_CJ", "Pitch EPL", 820, 850, 870, "Pitch form", "Tell us what you are building",
                        "Name, company, a link to your site or deck, your stage, and a few lines on what you need from a partner.", "Open the pitch form",
-                       "Pitch form", "For founders and operators. Takes about 5 minutes.", "founders@eplgroup.co", "pitch"),
+                       "Pitch form", "For founders and operators. Takes about 5 minutes.", "", "pitch"),
           PITCH_SIDE)
 
 INV_SIDE = f'''
           <p class="eyebrow r">For allocators and family offices</p>
           <h2 class="display r" style="--d:1">Tell us about your mandate. <strong>A partner follows up.</strong></h2>
           <p class="lead r" style="--d:2">Our vehicles are open to qualified and accredited investors only. Securities are offered through Finalis Securities LLC, Member FINRA / SIPC.</p>
-          <p class="lead r" style="--d:3">Prefer email? Write to <a class="email" href="mailto:ir@eplgroup.co">ir@eplgroup.co</a></p>
 '''
 form_page("investors.html", "Invest with EPL Group | Family Office and Allocator Access", "Family offices, allocators and accredited investors: complete the EPL Group onboarding form and a partner follows up about your mandate.",
           "Investors", "Complete the form. <strong>A partner follows up.</strong>",
           "For allocators and family offices. Tell us about your mandate, typical ticket size and which platform interests you.",
           pipefy_embed("qyeXlWs4", "Investor onboarding", None, None, None, "Investor onboarding", "Tell us about your mandate",
                        "For qualified investors only, by approval. The form takes about 5 minutes and includes the December events in Miami.", "Open the investor form",
-                       "Investor onboarding", "For qualified investors only, by approval. Takes about 5 minutes.", "ir@eplgroup.co", "investor"),
+                       "Investor onboarding", "For qualified investors only, by approval. Takes about 5 minutes.", "", "investor"),
           INV_SIDE)
 
-CAREERS_FIELDS = '''            <div class="field"><label for="c-name">Your name</label><input id="c-name" name="name" required autocomplete="name"></div>
-            <div class="field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" required autocomplete="email"></div>
-            <div class="field"><label for="c-linkedin">LinkedIn</label><input id="c-linkedin" name="linkedin" type="url" placeholder="https://"></div>
-            <div class="field"><label for="c-region">Region</label><input id="c-region" name="region" placeholder="e.g. US, Europe, Latin America"></div>
-            <div class="field full"><label>How would you like to work with us?</label>
-              <div class="choice-row" data-chips="role">
-                <button type="button" class="chip" data-value="Venture partner">Venture partner</button>
-                <button type="button" class="chip" data-value="Operator">Operator</button>
-                <button type="button" class="chip" data-value="Industry expert">Industry expert</button>
-                <button type="button" class="chip" data-value="Other">Other</button>
-              </div>
-              <input type="hidden" name="role" value="">
-            </div>
-            <div class="field full"><label for="c-msg">Where have you built, run or advised?</label><textarea id="c-msg" name="message" required placeholder="A few lines on your operating background and the industries you know."></textarea></div>
-'''
 CAREERS_SIDE = f'''
           <p class="eyebrow r">Join the EPL network</p>
           <h2 class="display r" style="--d:1">Operators first. <strong>Always.</strong></h2>
           <p class="lead r" style="--d:2">Venture partners source and lead in their region, operators run what we build and buy, and industry experts help us with diligence inside the industries they know. Every role starts with a conversation with a partner.</p>
           <div class="r" style="--d:3">{btn("Meet the team", "team.html", "ghost")}</div>
 '''
-CAREERS_FORM = f'''<form class="form r" name="network" data-mail-form data-mail-to="founders@eplgroup.co" data-mail-subject="Joining the EPL network">
-{CAREERS_FIELDS}            <div class="form__foot">
-              <button class="btn btn--black" type="submit"><span>Introduce yourself</span><span class="btn__icon">{ARROW}</span></button>
-              <p class="note">This opens a ready-to-send email to founders@eplgroup.co in your mail app.</p>
-            </div>
-          </form>'''
+CAREERS_MAIN = f'''<div class="ev-formcard ev-formcard--page join-card r">
+            <p class="ev-kicker">Applications</p>
+            <h3>Open roles and network applications are on JOIN.</h3>
+            <p>See what is open, tell us where you have built, run or advised, and which platform you would strengthen. A partner reads every application.</p>
+            <div>{ext_btn("See open roles on JOIN", JOIN, "black")}</div>
+            <p class="ev-embed__fine">Opens in a new tab.</p>
+          </div>'''
 form_page("careers.html", "Careers | EPL Group", "Join the EPL network as a venture partner, operator or industry expert.",
           "Careers", "Join the EPL network. <strong>Operators first.</strong>",
           "For operators and prospective venture partners. Tell us where you have built, run or advised, and which platform you would strengthen.",
-          CAREERS_FORM, CAREERS_SIDE)
+          CAREERS_MAIN, CAREERS_SIDE)
 
 # ---------------------------------------------------------------- THANKS / 404
 page("404.html", "Page not found | EPL Group", "The page you were looking for could not be found.", "", f'''    <section class="page-hero error-page">
@@ -1372,7 +1366,7 @@ EVENTS = f"""    <section class="ev-hero" aria-labelledby="ev-title">
               <p class="ev-embed__loading" aria-hidden="true">Loading the form…</p>
               <iframe title="EPL investor onboarding form, including registration for the December 1 and December 3 events" referrerpolicy="strict-origin-when-cross-origin"></iframe>
             </div>
-            <p class="ev-formcard__foot">Trouble seeing the form? <a href="{PIPEFY_FORM}" target="_blank" rel="noopener">Open the investor onboarding form</a> or write to <a href="mailto:ir@eplgroup.co">ir@eplgroup.co</a>.</p>
+            <p class="ev-formcard__foot">Trouble seeing the form? <a href="{PIPEFY_FORM}" target="_blank" rel="noopener">Open the investor onboarding form</a>.</p>
           </div>
           <aside class="ev-side">
             <div class="ev-glass r" style="--d:1">
@@ -1389,7 +1383,7 @@ EVENTS = f"""    <section class="ev-hero" aria-labelledby="ev-title">
                 <div><dt>Tue 1 Dec</dt><dd>Private dinner, Miami Beach<br>5 to 11 PM, 20 seats</dd></div>
                 <div><dt>Thu 3 Dec</dt><dd>Closed-room debate, Miami DDA<br>9:30 AM ET</dd></div>
               </dl>
-              <p>Both events are invite-only. Questions: <a class="mail" href="mailto:ir@eplgroup.co">ir@eplgroup.co</a></p>
+              <p>Both events are invite-only. Registration is through the <a class="mail" href="investors.html">investor form</a>.</p>
             </div>
           </aside>
         </div>

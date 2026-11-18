@@ -295,18 +295,6 @@
     el.addEventListener('focusout', function () { set(false); });
   });
 
-  /* ---------- careers form: opens a ready-to-send email (the site has no form backend) ---------- */
-  document.querySelectorAll('[data-mail-form]').forEach(function (form) {
-    form.addEventListener('submit', function (ev) {
-      ev.preventDefault();
-      var lines = [];
-      new FormData(form).forEach(function (v, k) { if (v) lines.push(k + ': ' + v); });
-      window.location.href = 'mailto:' + form.getAttribute('data-mail-to') +
-        '?subject=' + encodeURIComponent(form.getAttribute('data-mail-subject') || 'EPL Group') +
-        '&body=' + encodeURIComponent(lines.join('\n'));
-    });
-  });
-
   /* ---------- hero: cursor nudge on hover of the selection ---------- */
   var sel = document.querySelector('.sel');
   if (sel && !reduce) {

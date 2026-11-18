@@ -15,7 +15,7 @@ css/styles.css, js/main.js, assets/ (photos, logo and monogram SVGs), favicon.sv
 - Insights articles: one Markdown file per article in `../epl-group-build/insights/` (see the README there). Each one gets a page under `insights/` and a card on the Insights page.
 - `sitemap.xml` and `robots.txt` are generated on each build.
 - The Pitch and Investors pages embed Pipefy forms (pitch: czfdp_CJ, investor onboarding: qyeXlWs4). The Events page embeds the investor onboarding form too.
-- The Careers form opens a pre-filled email; the site has no form backend.
+- No email addresses on the site: founders use the Pitch form, investors the Investors form, and the Careers page sends people to JOIN.
 - Deploy as plain static files, for example on Cloudflare Workers static assets.
 - Figures and transactions are placeholders taken from the current EPL site; confirm them before launch.
 - Photos were exported from the Figma file at 1x; swap in higher-resolution originals before launch.
