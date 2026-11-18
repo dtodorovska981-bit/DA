@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://xpl.partners/sitemap.xml
