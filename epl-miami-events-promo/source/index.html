@@ -130,28 +130,28 @@ html,body{width:1080px;height:1350px;overflow:hidden;background:var(--navy);font
 #note{right:60px;top:1287px;font-size:17px;line-height:22px;color:rgba(255,255,255,.82);animation-name:up;animation-delay:12.4s}
 
 /* hook */
-#hook{inset:0;z-index:50;overflow:hidden;background:var(--navy);animation:gone .01s 4.6s both}
+#hook{inset:0;z-index:50;overflow:hidden;background:#fff;color:#24303F;animation:gone .01s 7.6s both}
 @keyframes gone{from{opacity:1;visibility:visible}to{opacity:0;visibility:hidden}}
-#hbg{inset:0;background:url(skyline.png) center/cover;opacity:.22;filter:blur(6px);animation:hz 4.6s linear both}
+#hbg{left:0;bottom:0;width:1080px;height:420px;background:linear-gradient(transparent,rgba(241,114,121,.14))}
 @keyframes hz{from{transform:scale(1.35)}to{transform:scale(1.1)}}
-#qm{right:-60px;top:120px;font-size:1250px;line-height:1;font-weight:700;color:transparent;-webkit-text-stroke:3px rgba(241,114,121,.5);transform-origin:50% 55%;animation:qm 4.6s both}
-@keyframes qm{0%{opacity:0;transform:rotate(-40deg) scale(.4);animation-timing-function:var(--e)}18%{opacity:1;transform:rotate(-8deg) scale(1);animation-timing-function:linear}62%{opacity:1;transform:rotate(4deg) scale(1.08);animation-timing-function:cubic-bezier(.6,0,.9,.4)}70%,100%{opacity:0;transform:rotate(30deg) scale(2.2)}}
-#q{left:80px;top:330px;width:920px;animation:qout .3s 2.9s cubic-bezier(.6,0,.9,.4) both}
+#qm{right:-60px;top:120px;font-size:1250px;line-height:1;font-weight:700;color:transparent;-webkit-text-stroke:3px rgba(241,114,121,.4);transform-origin:50% 55%;animation:qm 7.6s both}
+@keyframes qm{0%{opacity:0;transform:rotate(-40deg) scale(.4);animation-timing-function:var(--e)}11%{opacity:1;transform:rotate(-8deg) scale(1);animation-timing-function:linear}53%{opacity:1;transform:rotate(4deg) scale(1.08);animation-timing-function:cubic-bezier(.6,0,.9,.4)}59%,100%{opacity:0;transform:rotate(30deg) scale(2.2)}}
+#q{left:80px;top:330px;width:920px;animation:qout .3s 4.1s cubic-bezier(.6,0,.9,.4) both}
 @keyframes qout{to{opacity:0;transform:translateY(-90px)}}
 #q small{display:block;font-size:20px;font-weight:600;letter-spacing:5px;color:var(--coral);margin-bottom:26px}
-#q div{font-size:104px;line-height:116px;font-weight:300;letter-spacing:-1.5px}
+#q div{font-size:104px;line-height:116px;font-weight:400;letter-spacing:-1.5px}
 #q i{display:inline-block;font-style:normal;animation-name:slam;animation-duration:.32s}
 #q b{font-weight:600;color:var(--coral)}
-#q .qq{display:inline-block;animation:qq .5s 1.35s var(--sp) both}
+#q .qq{display:inline-block;animation:qq .5s 1.6s var(--sp) both}
 @keyframes qq{0%{transform:none}50%{transform:scale(1.5) rotate(12deg)}100%{transform:none}}
-.chip{left:80px;top:830px;font-size:74px;font-weight:600;line-height:1.2;padding:6px 34px;border-radius:60px;border:3px solid var(--coral);animation:chip .44s both}
-@keyframes chip{0%{opacity:0;transform:translateX(-80px) scale(.8)}22%{opacity:1;transform:none}80%{opacity:1;transform:none}100%{opacity:0;transform:translateX(80px) scale(.9)}}
+.chip{left:80px;top:830px;font-size:74px;font-weight:600;line-height:1.2;padding:6px 34px;border-radius:60px;border:3px solid var(--coral);animation:chip .72s both}
+@keyframes chip{0%{opacity:0;transform:translateX(-80px) scale(.8)}16%{opacity:1;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translateX(80px) scale(.9)}}
 #ans{left:80px;top:400px;width:920px}
 #ans small{display:block;font-size:20px;font-weight:600;letter-spacing:5px;color:var(--coral);margin-bottom:30px}
-#ans div{font-size:78px;line-height:104px;font-weight:300;letter-spacing:-1px;animation-name:ansin;animation-duration:.4s}
+#ans div{font-size:78px;line-height:104px;font-weight:400;letter-spacing:-1px;animation-name:ansin;animation-duration:.4s}
 #ans div.c{font-weight:600;color:var(--coral)}
 @keyframes ansin{from{opacity:0;transform:translateX(-120px);filter:blur(10px)}to{opacity:1;transform:none;filter:blur(0)}}
-#hw{inset:0;background:var(--coral2);animation:hw .3s 4.3s cubic-bezier(.7,0,.2,1) both}
+#hw{inset:0;background:var(--coral2);animation:hw .3s 7.3s cubic-bezier(.7,0,.2,1) both}
 @keyframes hw{from{transform:translateY(101%)}to{transform:none}}
 </style></head><body><div id="stage"><div id="cam">
 <div id="photo" class="abs"><div id="sun" class="abs"></div></div><div id="top0" class="abs"></div><div id="top" class="abs"></div><div id="bot" class="abs"></div>
@@ -192,10 +192,10 @@ html,body{width:1080px;height:1350px;overflow:hidden;background:var(--navy);font
 <div class="abs w" style="background:var(--navy);animation-delay:.12s"></div><div class="abs w" style="background:var(--coral2)"></div>
 <div id="hook" class="abs"><div id="hbg" class="abs"></div><div id="qm" class="abs">?</div>
  <div id="q" class="abs"><small data-a style="animation-name:up;animation-delay:.1s">AFTER THE MIDTERMS</small>
-  <div><i data-a style="animation-delay:.25s">Where&nbsp;</i><i data-a style="animation-delay:.42s">does</i><br><i data-a style="animation-delay:.59s">the&nbsp;</i><i data-a style="animation-delay:.76s"><b>next&nbsp;cycle</b></i><br><i data-a style="animation-delay:.98s">really&nbsp;</i><i data-a style="animation-delay:1.15s">begin<span class="qq"><b>?</b></span></i></div></div>
- <div class="abs chip" style="animation-delay:1.7s">In AI?</div><div class="abs chip" style="animation-delay:2.1s">In cyber risk?</div><div class="abs chip" style="animation-delay:2.5s">In Sunbelt deals?</div>
- <div id="ans" class="abs"><small data-a style="animation-name:up;animation-delay:3.05s">NOT ON A PANEL</small>
-  <div data-a style="animation-delay:3.15s">Around one table.</div><div data-a style="animation-delay:3.45s">Behind closed doors.</div><div class="c" data-a style="animation-delay:3.75s">With the people<br>who decide.</div></div>
+  <div><i data-a style="animation-delay:.3s">Where&nbsp;</i><i data-a style="animation-delay:.5s">does</i><br><i data-a style="animation-delay:.7s">the&nbsp;</i><i data-a style="animation-delay:.9s"><b>next&nbsp;cycle</b></i><br><i data-a style="animation-delay:1.15s">really&nbsp;</i><i data-a style="animation-delay:1.35s">begin<span class="qq"><b>?</b></span></i></div></div>
+ <div class="abs chip" style="animation-delay:2s">In AI?</div><div class="abs chip" style="animation-delay:2.7s">In cyber risk?</div><div class="abs chip" style="animation-delay:3.4s">In Sunbelt deals?</div>
+ <div id="ans" class="abs"><small data-a style="animation-name:up;animation-delay:4.3s">NOT ON A PANEL</small>
+  <div data-a style="animation-delay:4.5s">Around one table.</div><div data-a style="animation-delay:5.1s">Behind closed doors.</div><div class="c" data-a style="animation-delay:5.7s">With the people<br>who decide.</div></div>
  <div id="hw" class="abs"></div></div>
 </div>
 <script>
@@ -213,5 +213,5 @@ const P='M74 9C44 3 10 15 8 40C6 66 38 80 70 78C100 76 120 60 116 38C112 16 86 6
 [[143.7,3.65,'PRIVATE DINNER'],[418,4.6,'CLOSED-ROOM DEBATE']].forEach(([x,t,l])=>h+=`<svg class="abs mk" style="left:${x}px;top:96px" viewBox="0 0 124 86" preserveAspectRatio="none" fill="none"><path pathLength="1" d="${P}" stroke="#F17279" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="animation-delay:${t}s"/></svg><div class="abs pill" style="left:${x}px;animation-delay:${t+.2}s">${l}</div>`);
 cal.innerHTML=h;
 document.querySelectorAll('.cb').forEach((c,i)=>{const s=document.getElementById('formwrap').style;s.setProperty('--x'+(i+1),(c.offsetLeft+10)+'px');s.setProperty('--y'+(i+1),(c.offsetTop+10)+'px')});
-const OFF=4600;window.seek=ms=>{document.getAnimations().forEach(a=>{a.pause();a.currentTime=a.effect.target.closest('#hook')?ms:ms-OFF})};
+const OFF=7600;window.seek=ms=>{document.getAnimations().forEach(a=>{a.pause();a.currentTime=a.effect.target.closest('#hook')?ms:ms-OFF})};
 </script></body></html>
