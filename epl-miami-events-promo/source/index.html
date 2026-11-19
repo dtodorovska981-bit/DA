@@ -132,26 +132,40 @@ html,body{width:1080px;height:1350px;overflow:hidden;background:var(--navy);font
 /* hook */
 #hook{inset:0;z-index:50;overflow:hidden;background:#fff;color:#24303F;animation:gone .01s 7.6s both}
 @keyframes gone{from{opacity:1;visibility:visible}to{opacity:0;visibility:hidden}}
-#hbg{left:0;bottom:0;width:1080px;height:420px;background:linear-gradient(transparent,rgba(241,114,121,.14))}
-@keyframes hz{from{transform:scale(1.35)}to{transform:scale(1.1)}}
-#qm{right:-60px;top:120px;font-size:1250px;line-height:1;font-weight:700;color:transparent;-webkit-text-stroke:3px rgba(241,114,121,.4);transform-origin:50% 55%;animation:qm 7.6s both}
-@keyframes qm{0%{opacity:0;transform:rotate(-40deg) scale(.4);animation-timing-function:var(--e)}11%{opacity:1;transform:rotate(-8deg) scale(1);animation-timing-function:linear}53%{opacity:1;transform:rotate(4deg) scale(1.08);animation-timing-function:cubic-bezier(.6,0,.9,.4)}59%,100%{opacity:0;transform:rotate(30deg) scale(2.2)}}
-#q{left:80px;top:330px;width:920px;animation:qout .3s 4.1s cubic-bezier(.6,0,.9,.4) both}
-@keyframes qout{to{opacity:0;transform:translateY(-90px)}}
-#q small{display:block;font-size:20px;font-weight:600;letter-spacing:5px;color:var(--coral);margin-bottom:26px}
-#q div{font-size:104px;line-height:116px;font-weight:400;letter-spacing:-1.5px}
+/* scene 1: question on white with the tree */
+#s1{inset:0;animation:s1out .35s 4.05s cubic-bezier(.6,0,.9,.4) both}
+@keyframes s1out{to{opacity:0;transform:translateY(-70px)}}
+#tree{left:-10px;top:690px;width:1100px;height:825px;background:url(tree.png) center/cover;mix-blend-mode:multiply;filter:brightness(1.07) contrast(1.06);-webkit-mask-image:linear-gradient(transparent 0,#000 9%);transform-origin:50% 92%;animation:grow 1.4s .1s var(--e) both, sway 3s 1.5s ease-in-out infinite alternate both}
+@keyframes grow{from{opacity:0;transform:translateY(160px) scale(.72)}to{opacity:1;transform:none}}
+@keyframes sway{from{rotate:-.7deg}to{rotate:.9deg}}
+#q{left:80px;top:150px;width:920px}
+#q small{display:block;font-size:20px;font-weight:600;letter-spacing:5px;color:var(--coral2);margin-bottom:24px}
+#q div.t{font-size:98px;line-height:122px;font-weight:400;letter-spacing:-1.5px}
 #q i{display:inline-block;font-style:normal;animation-name:slam;animation-duration:.32s}
-#q b{font-weight:600;color:var(--coral)}
+#q b{font-weight:500;color:var(--coral2)}
 #q .qq{display:inline-block;animation:qq .5s 1.6s var(--sp) both}
 @keyframes qq{0%{transform:none}50%{transform:scale(1.5) rotate(12deg)}100%{transform:none}}
-.chip{left:80px;top:830px;font-size:74px;font-weight:600;line-height:1.2;padding:6px 34px;border-radius:60px;border:3px solid var(--coral);animation:chip .72s both}
+/* dashed selection box around "next cycle", dragged by the coral cursor */
+#sel{position:relative;display:inline-block;padding:0 14px;margin:0 -14px}
+#box{position:absolute;inset:6px 0 2px 0;border:2.5px dashed var(--coral2);transform-origin:0 0;animation:drag .55s 1s cubic-bezier(.5,0,.2,1) both}
+@keyframes drag{from{opacity:0;clip-path:inset(0 100% 100% 0)}1%{opacity:1}to{opacity:1;clip-path:inset(0 0 0 0)}}
+.hd{position:absolute;width:15px;height:15px;background:#fff;border:2.5px solid var(--coral2);animation:popin .2s both}
+#ptr{position:absolute;right:-30px;bottom:-30px;width:34px;height:34px;animation:ptr .55s 1s cubic-bezier(.5,0,.2,1) both}
+@keyframes ptr{from{opacity:0;transform:translate(-470px,-110px)}8%{opacity:1}to{opacity:1;transform:none}}
+.chip{left:80px;top:585px;font-size:60px;font-weight:500;line-height:1.2;padding:16px 44px;border-radius:70px;background:#24303F;color:#fff;animation:chip .72s both}
 @keyframes chip{0%{opacity:0;transform:translateX(-80px) scale(.8)}16%{opacity:1;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translateX(80px) scale(.9)}}
-#ans{left:80px;top:400px;width:920px}
-#ans small{display:block;font-size:20px;font-weight:600;letter-spacing:5px;color:var(--coral);margin-bottom:30px}
-#ans div{font-size:78px;line-height:104px;font-weight:400;letter-spacing:-1px;animation-name:ansin;animation-duration:.4s}
-#ans div.c{font-weight:600;color:var(--coral)}
-@keyframes ansin{from{opacity:0;transform:translateX(-120px);filter:blur(10px)}to{opacity:1;transform:none;filter:blur(0)}}
-#hw{inset:0;background:var(--coral2);animation:hw .3s 7.3s cubic-bezier(.7,0,.2,1) both}
+/* scene 2: answers as white pills on the brand gradient card */
+#card2{left:40px;top:40px;width:1000px;height:1270px;border-radius:36px;overflow:hidden;background:#1D2836;animation:c2 .6s 4.15s var(--e) both}
+@keyframes c2{from{opacity:0;transform:translateY(240px) scale(.9)}to{opacity:1;transform:none}}
+#g1{inset:0;background:linear-gradient(90deg,#1D2836 0%,#6b3a44 45%,#D4545A 100%)}
+#g2{left:300px;top:250px;width:1100px;height:800px;border-radius:50%;background:radial-gradient(closest-side,rgba(240,170,172,.85),rgba(240,170,172,0));animation:g2 3.4s 4.15s ease-in-out both}
+@keyframes g2{from{transform:translate(-260px,120px) scale(.8)}to{transform:translate(40px,-60px) scale(1.15)}}
+#ans{left:70px;top:330px;width:880px}
+#ans small{display:block;font-size:20px;font-weight:600;letter-spacing:5px;color:#fff;margin-bottom:40px;opacity:.9}
+.ap{width:max-content;margin-bottom:30px;padding:26px 52px;border-radius:70px;background:#fff;color:#24303F;font-size:54px;font-weight:400;line-height:1.2;letter-spacing:-.5px;box-shadow:0 20px 50px rgba(20,28,40,.3);animation-name:apin;animation-duration:.5s;animation-timing-function:var(--sp)}
+.ap.c{font-weight:600;color:var(--coral2)}
+@keyframes apin{from{opacity:0;transform:translateX(-160px) scale(.7)}to{opacity:1;transform:none}}
+#hw{inset:0;background:url(blur.jpg) center/cover;animation:hw .3s 7.3s cubic-bezier(.7,0,.2,1) both}
 @keyframes hw{from{transform:translateY(101%)}to{transform:none}}
 </style></head><body><div id="stage"><div id="cam">
 <div id="photo" class="abs"><div id="sun" class="abs"></div></div><div id="top0" class="abs"></div><div id="top" class="abs"></div><div id="bot" class="abs"></div>
@@ -189,13 +203,17 @@ html,body{width:1080px;height:1350px;overflow:hidden;background:var(--navy);font
  <div id="fn">✓&nbsp;&nbsp;2 events selected</div>
  <svg id="cursor" class="abs" viewBox="0 0 24 24"><path d="M4 2l15 11-7 1.2L8.5 21z" fill="#fff" stroke="#1E2A3A" stroke-width="1.6" stroke-linejoin="round"/></svg>
 </div>
-<div class="abs w" style="background:var(--navy);animation-delay:.12s"></div><div class="abs w" style="background:var(--coral2)"></div>
-<div id="hook" class="abs"><div id="hbg" class="abs"></div><div id="qm" class="abs">?</div>
- <div id="q" class="abs"><small data-a style="animation-name:up;animation-delay:.1s">AFTER THE MIDTERMS</small>
-  <div><i data-a style="animation-delay:.3s">Where&nbsp;</i><i data-a style="animation-delay:.5s">does</i><br><i data-a style="animation-delay:.7s">the&nbsp;</i><i data-a style="animation-delay:.9s"><b>next&nbsp;cycle</b></i><br><i data-a style="animation-delay:1.15s">really&nbsp;</i><i data-a style="animation-delay:1.35s">begin<span class="qq"><b>?</b></span></i></div></div>
- <div class="abs chip" style="animation-delay:2s">In AI?</div><div class="abs chip" style="animation-delay:2.7s">In cyber risk?</div><div class="abs chip" style="animation-delay:3.4s">In Sunbelt deals?</div>
- <div id="ans" class="abs"><small data-a style="animation-name:up;animation-delay:4.3s">NOT ON A PANEL</small>
-  <div data-a style="animation-delay:4.5s">Around one table.</div><div data-a style="animation-delay:5.1s">Behind closed doors.</div><div class="c" data-a style="animation-delay:5.7s">With the people<br>who decide.</div></div>
+<div class="abs w" style="background:var(--navy);animation-delay:.12s"></div><div class="abs w" style="background:url(blur.jpg) center/cover"></div>
+<div id="hook" class="abs">
+ <div id="s1" class="abs"><div id="tree" class="abs"></div>
+  <div id="q" class="abs"><small data-a style="animation-name:up;animation-delay:.1s">AFTER THE MIDTERMS</small>
+   <div class="t"><i data-a style="animation-delay:.3s">Where&nbsp;</i><i data-a style="animation-delay:.5s">does</i><br><i data-a style="animation-delay:.7s">the&nbsp;&nbsp;</i><span id="sel"><i data-a style="animation-delay:.85s"><b>next&nbsp;cycle</b></i><span id="box"></span>
+    <span class="hd" style="left:-7px;top:-1px;animation-delay:1s"></span><span class="hd" style="right:-7px;top:-1px;animation-delay:1.5s"></span><span class="hd" style="left:-7px;bottom:-5px;animation-delay:1.5s"></span><span class="hd" style="right:-7px;bottom:-5px;animation-delay:1.5s"></span>
+    <svg id="ptr" viewBox="0 0 24 24"><path d="M3 3l18 7-8 2.5L10 21z" fill="#EB5A5D"/></svg></span><br><i data-a style="animation-delay:1.15s">really&nbsp;</i><i data-a style="animation-delay:1.35s">begin<span class="qq"><b>?</b></span></i></div></div>
+  <div class="abs chip" style="animation-delay:2s">In AI?</div><div class="abs chip" style="animation-delay:2.7s">In cyber risk?</div><div class="abs chip" style="animation-delay:3.4s">In Sunbelt deals?</div></div>
+ <div id="card2" class="abs"><div id="g1" class="abs"></div><div id="g2" class="abs"></div>
+  <div id="ans" class="abs"><small data-a style="animation-name:up;animation-delay:4.4s">NOT ON A PANEL</small>
+   <div class="ap" data-a style="animation-delay:4.6s">Around one table</div><div class="ap" data-a style="animation-delay:5.2s">Behind closed doors</div><div class="ap c" data-a style="animation-delay:5.8s">With the people who decide</div></div></div>
  <div id="hw" class="abs"></div></div>
 </div>
 <script>
