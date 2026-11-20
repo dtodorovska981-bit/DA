@@ -41,9 +41,17 @@ html,body{width:1080px;height:1350px;overflow:hidden;background:#000;font-family
 .push{inset:0;transform-origin:50% 62%;animation:push var(--d) var(--s) linear both}
 @keyframes push{from{transform:scale(1.02)}to{transform:scale(1.14)}}
 /* ---------- scene 1 ---------- */
-#s1{background:#000}
-#s1 .p{top:560px;width:1080px;text-align:center;font-size:22px;font-weight:600;color:var(--pink);animation-name:track;animation-duration:1s;letter-spacing:14px}
-#s1 .t{top:612px;width:1080px;text-align:center;font-size:150px;letter-spacing:4px;animation-name:slam;animation-duration:.35s}
+#s1{background:radial-gradient(circle at 50% 35%,#2a1050,#000 70%)}
+#s1 .w{top:230px;width:1080px;text-align:center;font-size:290px;letter-spacing:6px;color:transparent;-webkit-text-stroke:5px var(--pink);text-shadow:0 0 40px rgba(255,46,136,.7);animation-name:slam;animation-duration:.35s}
+#s1 .g{left:90px;top:620px;width:900px}
+#s1 .c{display:inline-block;padding:12px 26px;background:#fff;color:#150B2E;font-size:46px;letter-spacing:4px;transform:skewX(-7deg)}
+#s1 .c.y{background:var(--ye)}
+#s1 .l{margin-top:26px;font-size:150px;line-height:1.04;transform:skewX(-7deg);transform-origin:0 100%;text-shadow:8px 8px 0 rgba(0,0,0,.5)}
+#s1 .l.y{color:var(--ye)}
+#s1 .g1{animation:g1 1.85s .5s both}
+@keyframes g1{0%{opacity:0;transform:translateX(-500px);animation-timing-function:var(--e)}16%{opacity:1;transform:none}92%{opacity:1;transform:none;animation-timing-function:ease-in}100%{opacity:0;transform:translateX(500px)}}
+#s1 .g2{animation:g2 .4s 2.4s var(--e) both}
+@keyframes g2{from{opacity:0;transform:translateX(-500px)}to{opacity:1;transform:none}}
 .bar{left:0;width:1080px;height:110px;background:#000;z-index:60}
 /* ---------- scene 2 ---------- */
 #s2 .k{top:215px;width:1080px;text-align:center;font-size:74px;letter-spacing:22px;animation-name:up}
@@ -90,19 +98,20 @@ html,body{width:1080px;height:1350px;overflow:hidden;background:#000;font-family
 @keyframes fl{0%{opacity:0}15%{opacity:.95}100%{opacity:0}}
 </style></head><body><div id="stage">
 
-<div id="s1" class="sc" style="--s:0s;--d:2.3s"><div class="in">
- <div class="abs p" data-a style="--t:.15s">EPL GROUP PRESENTS</div>
- <div class="abs t an" data-a style="--t:1.05s">This December</div>
+<div id="s1" class="sc" style="--s:0s;--d:4.5s"><div class="in">
+ <div class="abs w an" data-a style="--t:.15s">Wanted</div>
+ <div class="abs g g1"><span class="c an">In-game</span><div class="l an">You're in<br>trouble.</div></div>
+ <div class="abs g g2"><span class="c an y">In Miami</span><div class="l an y">You're on the<br>guest list.</div></div>
 </div></div>
 
-<div id="s2" class="sc" style="--s:2.3s;--d:3.4s"><div class="in"><div class="abs push"><div class="bd"></div></div>
+<div id="s2" class="sc" style="--s:4.5s;--d:3.4s"><div class="in"><div class="abs push"><div class="bd"></div></div>
  <div class="abs k an" data-a style="--t:.25s">December in</div>
  <div class="abs mi" data-a style="--t:.55s">Miami</div>
  <div class="abs su an" data-a style="--t:1.5s">Two closed-room conversations</div>
  <div class="abs su2" data-a style="--t:1.75s">FOR FAMILY OFFICES AND DEALMAKERS</div>
 </div></div>
 
-<div id="s3" class="sc ev" style="--s:5.7s;--d:3.7s"><div class="in"><div class="abs bg"></div><div class="abs cityb"></div><div class="abs slash"></div>
+<div id="s3" class="sc ev" style="--s:7.9s;--d:3.7s"><div class="in"><div class="abs bg"></div><div class="abs cityb"></div><div class="abs slash"></div>
  <div class="abs no an" data-a style="--t:.1s">01</div>
  <div class="abs chip an" data-a style="--t:.25s">Tue 1 Dec · 5 to 11 PM</div>
  <div class="abs ti an" data-a style="top:440px;--t:.4s">After the</div>
@@ -114,7 +123,7 @@ html,body{width:1080px;height:1350px;overflow:hidden;background:#000;font-family
  <div class="abs stamp an" data-a style="--t:1.9s">20 seats</div>
 </div></div>
 
-<div id="s4" class="sc ev" style="--s:9.4s;--d:3.9s"><div class="in"><div class="abs bg"></div><div class="abs cityb"></div><div class="abs slash"></div>
+<div id="s4" class="sc ev" style="--s:11.6s;--d:3.9s"><div class="in"><div class="abs bg"></div><div class="abs cityb"></div><div class="abs slash"></div>
  <div class="abs no an" data-a style="--t:.1s">02</div>
  <div class="abs chip an" data-a style="--t:.25s">Thu 3 Dec · 9:30 AM ET</div>
  <div class="abs ti an" data-a style="top:440px;--t:.4s">The Sunbelt</div>
@@ -127,8 +136,8 @@ html,body{width:1080px;height:1350px;overflow:hidden;background:#000;font-family
  <div class="abs stamp an" data-a style="--t:2s">Invite only</div>
 </div></div>
 
-<div id="s5" class="sc" style="--s:13.3s;--d:3s"><div class="in">
- <div class="abs k" data-a style="--t:.1s">IN THE ROOM</div>
+<div id="s5" class="sc" style="--s:15.5s;--d:3s"><div class="in">
+ <div class="abs k" data-a style="--t:.1s">WANTED IN THE ROOM</div>
  <div class="abs r an" data-a style="top:400px;--t:.3s">Family office</div>
  <div class="abs r an" data-a style="top:520px;--t:.3s">principals</div>
  <div class="abs r an" data-a style="top:660px;--t:.85s;color:var(--pink)">PE principals</div>
@@ -136,7 +145,7 @@ html,body{width:1080px;height:1350px;overflow:hidden;background:#000;font-family
  <div class="abs f" data-a style="--t:1.9s">Small, candid, invite-only.</div>
 </div></div>
 
-<div id="s6" class="sc" style="--s:16.3s;--d:5.7s"><div class="in"><div class="abs push"><div class="bd"></div></div><div class="abs shade"></div>
+<div id="s6" class="sc" style="--s:18.5s;--d:6s"><div class="in"><div class="abs push"><div class="bd"></div></div><div class="abs shade"></div>
  <div class="abs d" data-a style="--t:.2s">DEC 1 &amp; 3, 2026 · MIAMI</div>
  <div class="abs t an" data-a style="--t:.4s">Reserve<br>your seat</div>
  <div class="abs btn an">eplgroup.co/events</div>
@@ -145,7 +154,7 @@ html,body{width:1080px;height:1350px;overflow:hidden;background:#000;font-family
  <div class="abs n" data-a style="--t:2s">INVITE ONLY · SEATS CONFIRMED BY A PARTNER</div>
 </div></div>
 
-<div class="abs bar" style="top:0;animation:barT .5s 2.25s var(--e) both"></div><div class="abs bar" style="bottom:0;animation:barB .5s 2.25s var(--e) both"></div>
+<div class="abs bar" style="top:0;animation:barT .5s 4.45s var(--e) both"></div><div class="abs bar" style="bottom:0;animation:barB .5s 4.45s var(--e) both"></div>
 <style>@keyframes barT{to{transform:translateY(-100%)}}@keyframes barB{to{transform:translateY(100%)}}</style>
 <div id="scan" class="abs"></div><div id="vig" class="abs"></div>
 </div>
@@ -167,6 +176,6 @@ document.querySelectorAll('.bd').forEach(b=>{let r='';for(let i=0;i<13;i++)r+=`<
  <div class="abs palm" style="left:-90px">${palm(760,70)}</div><div class="abs palm" style="left:70px;bottom:250px;animation-delay:calc(var(--s) + .12s)">${palm(540,-50)}</div>
  <div class="abs palm" style="right:-80px;animation-delay:calc(var(--s) + .08s)">${palm(820,-80)}</div><div class="abs palm" style="right:90px;bottom:250px;animation-delay:calc(var(--s) + .2s)">${palm(500,40)}</div>`});
 document.querySelectorAll('.cityb').forEach(c=>c.innerHTML=city(400,false));
-[2.3,5.7,9.4,13.3,16.3].forEach(t=>{const d=document.createElement('div');d.className='abs flash';d.style.animationDelay=(t-.03)+'s';stage.appendChild(d)});
+[2.38,4.5,7.9,11.6,15.5,18.5].forEach(t=>{const d=document.createElement('div');d.className='abs flash';d.style.animationDelay=(t-.03)+'s';stage.appendChild(d)});
 window.seek=ms=>{document.getAnimations().forEach(a=>{a.pause();a.currentTime=ms})};
 </script></body></html>
