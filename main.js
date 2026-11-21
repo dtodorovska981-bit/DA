@@ -241,6 +241,83 @@
   window.addEventListener('resize', onScroll);
   frame();
 
+  /* ---------- measurement: fixed labels only, and only after analytics is accepted ---------- */
+  var track = function (name, params) { return window.dnaConsent ? window.dnaConsent.track(name, params) : false; };
+  var lead = function (source) { return window.dnaConsent ? window.dnaConsent.lead(source) : false; };
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-cta]');
+    if (el) track('cta_click', { cta_name: el.getAttribute('data-cta'), cta_location: el.getAttribute('data-loc') || '' });
+  });
+
+  /* ---------- inquiry: confirmed completion only ----------
+     Counted only when the thank-you page is reached from the inquiry form (see thank-you below).
+     Opening the form, clicking Submit or loading the frame is never counted. */
+  var inquiryCounted = false;
+  function inquiryComplete() {
+    if (inquiryCounted) return;
+    inquiryCounted = true;
+    track('inquiry_submitted', {});
+    lead('inquiry_form');
+  }
+  window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== 'dna:inquiry-complete') return;
+    var form = $('#inquiry-form'), done = $('#inquiry-done');
+    if (form && done) {
+      form.hidden = true;
+      done.hidden = false;
+      done.classList.add('swap-in');
+      done.focus();
+    }
+    inquiryComplete();
+  });
+  var thanks = $('[data-inquiry-complete]');
+  if (thanks) {
+    var fromForm = /(^|\.)pipefy\.com$/.test((function () { try { return new URL(document.referrer).hostname; } catch (err) { return ''; } })());
+    if (window.self !== window.top) {
+      // Shown inside the form frame on the quote page: hand over to the page around it.
+      document.documentElement.classList.add('in-frame');
+      try { window.parent.postMessage({ type: 'dna:inquiry-complete' }, location.origin); } catch (err) {}
+    } else if (fromForm) {
+      inquiryComplete();
+    }
+  }
+
+  /* ---------- booking: Calendly loads on request and reports confirmed bookings ---------- */
+  var calBox = $('#calendly'), calBtn = $('#calendly-load');
+  function loadCalendly() {
+    if (!calBox || calBox.getAttribute('data-loaded')) return;
+    calBox.setAttribute('data-loaded', '1');
+    calBox.classList.add('is-on');
+    if (calBtn) calBtn.hidden = true;
+    var init = function () {
+      if (window.Calendly) window.Calendly.initInlineWidget({ url: calBox.getAttribute('data-url'), parentElement: calBox });
+    };
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://assets.calendly.com/assets/external/widget.css';
+    document.head.appendChild(css);
+    var s = document.createElement('script');
+    s.src = 'https://assets.calendly.com/assets/external/widget.js';
+    s.async = true;
+    s.onload = init;
+    s.onerror = function () { calBox.classList.add('is-failed'); };
+    document.head.appendChild(s);
+  }
+  if (calBox) {
+    if (calBtn) calBtn.addEventListener('click', loadCalendly);
+    var bookFromHash = function () { if (location.hash === '#book') loadCalendly(); };
+    window.addEventListener('hashchange', bookFromHash);
+    bookFromHash();
+    var booked = false;
+    window.addEventListener('message', function (e) {
+      if (e.origin !== 'https://calendly.com' || !e.data || e.data.event !== 'calendly.event_scheduled' || booked) return;
+      booked = true;           // the payload (invitee and event links) is deliberately not forwarded
+      track('call_booked', {});
+      lead('calendly');
+    });
+  }
+
   var year = $('#year');
   if (year) year.textContent = new Date().getFullYear();
 })();
