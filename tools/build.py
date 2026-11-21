@@ -9,7 +9,7 @@ import re, sys, pathlib, json
 
 OUT = pathlib.Path(sys.argv[1])
 SITE = "https://dnaproplans.com"
-BUILD = "2026-11-21.7"  # shown in <meta name="dna-build"> and /version.txt; change on every release
+BUILD = "2026-11-21.8"  # shown in <meta name="dna-build"> and /version.txt; change on every release
 CAL = "https://calendly.com/draganatodorovskajaneva/30min"
 FORM = "https://app.pipefy.com/public/form/WjXLnOMX"
 GA_ID = "G-HCBH87S9EE"  # Google tag in the shared head; analytics cookies only after the visitor accepts

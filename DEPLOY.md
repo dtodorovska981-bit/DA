@@ -37,8 +37,8 @@ If you prefer the dashboard, upload the **contents of `public/`** the same way y
 
 ## Confirm the new version is live
 
-- `https://dnaproplans.com/version.txt` shows `dnaproplans.com build 2026-11-21.7`.
-- Page source of any page contains `<meta name="dna-build" content="2026-11-21.7">`.
+- `https://dnaproplans.com/version.txt` shows `dnaproplans.com build 2026-11-21.8`.
+- Page source of any page contains `<meta name="dna-build" content="2026-11-21.8">`.
 - `https://dnaproplans.com/contact` shows the inquiry form inside the page, with no "Preview note".
 
 ## After deploying: check on the live site
