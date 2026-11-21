@@ -9,10 +9,10 @@ import re, sys, pathlib, json
 
 OUT = pathlib.Path(sys.argv[1])
 SITE = "https://dnaproplans.com"
-BUILD = "2026-11-21.5"  # shown in <meta name="dna-build"> and /version.txt; change on every release
+BUILD = "2026-11-21.7"  # shown in <meta name="dna-build"> and /version.txt; change on every release
 CAL = "https://calendly.com/draganatodorovskajaneva/30min"
 FORM = "https://app.pipefy.com/public/form/WjXLnOMX"
-GA_ID = "G-HCBH87S9EE"  # used by consent.js; the tag is only loaded after the visitor accepts analytics
+GA_ID = "G-HCBH87S9EE"  # Google tag in the shared head; analytics cookies only after the visitor accepts
 LINKEDIN = "https://www.linkedin.com/company/106128983/"
 LINKEDIN_FOUNDER = "https://www.linkedin.com/in/dragana-todorovska-j-054314176/"
 SITEMAP = []  # canonical URLs of indexable pages, filled by page()
@@ -23,11 +23,30 @@ def clean(name):
     return "" if name == "index.html" else name[:-5]
 
 
-def head(title, desc, path, extra="", index=True):
+GTAG = f"""
+  <script>
+    // Consent defaults must be set before the Google tag: no analytics cookies until the visitor accepts.
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('consent', 'default', {{
+      ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+      analytics_storage: (function () {{ try {{ return localStorage.getItem('dna-analytics-consent') === 'granted' ? 'granted' : 'denied'; }} catch (e) {{ return 'denied'; }} }})()
+    }});
+  </script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtm.js?id={GA_ID}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+  </script>"""
+
+
+def head(title, desc, path, extra="", index=True, tag=True):
     robots = "" if index else '\n  <meta name="robots" content="noindex">'
     return f"""<!DOCTYPE html>
 <html lang="en">
-<head>
+<head>{GTAG if tag else ""}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
@@ -119,9 +138,9 @@ def clean_links(html):
     return html
 
 
-def page(name, title, desc, body, current="", note="", extra="", index=True):
+def page(name, title, desc, body, current="", note="", extra="", index=True, tag=True):
     path = clean(name)
-    html = head(title, desc, path, extra, index) + nav(current) + body + footer(note)
+    html = head(title, desc, path, extra, index, tag) + nav(current) + body + footer(note)
     (OUT / name).write_text(clean_links(html))
     if index:
         SITEMAP.append(f"{SITE}/{path}")
@@ -1004,7 +1023,7 @@ page("thank-you.html", "Inquiry received | DNA Pro Plans", "Your inquiry has bee
       <div class="hero__actions"><a href="contact.html#book" class="btn" data-cta="book_call" data-loc="thank_you">Book an optional call</a><a href="case-studies.html" class="btn btn--ghost">See client work</a></div>
     </section>
   </main>
-""", index=False)
+""", index=False, tag=False)
 
 # ------------------------------------------------------------------ PRIVACY / 404
 MAIL = '<a href="mailto:office@dnaproplans.com">office@dnaproplans.com</a>'
@@ -1023,8 +1042,8 @@ page("privacy.html", "Privacy, Cookies, Payments and Refunds | DNA Pro Plans", "
         <ul><li>To reply to your inquiry, prepare a quote and hold a call if you book one.</li><li>To deliver agreed work and communicate about your project.</li></ul>
         <p>We do not sell your information or use it for unrelated marketing.</p>
         <h2 id="cookies">Analytics and cookies</h2>
-        <p>Analytics on this website is optional and switched off by default. Google Analytics is loaded only if you choose "Accept analytics". Until then, no Google Analytics script runs and no analytics cookies are set. If you choose "Reject", it stays off.</p>
-        <p>If you accept, Google Analytics sets cookies and records usage data such as pages viewed, buttons clicked, approximate location and device type, and whether an inquiry or booking was completed. We do not send your name, email address, project description or files to Google Analytics, and advertising features are not enabled.</p>
+        <p>This website uses Google Analytics. Google’s tag is loaded on every page, with analytics cookies switched off by default. Until you choose "Accept", no analytics cookies are set or read, and Google receives only limited, cookieless signals that a page was viewed, which are not tied to you as a visitor.</p>
+        <p>If you accept, Google Analytics sets cookies and records usage data such as pages viewed, buttons clicked, approximate location and device type, and whether an inquiry or booking was completed. We do not send your name, email address, project description or files to Google Analytics, and advertising features are not enabled. If you choose "Reject", cookies stay off.</p>
         <p>Your choice is saved in your browser’s local storage so we do not ask on every page. You can change it at any time: <button type="button" class="linklike" data-consent-open>open cookie settings</button>. The same link is in the footer of every page.</p>
         <p>The site’s fonts, styles and scripts are served from our own domain.</p>
         <h2>Embedded services</h2>

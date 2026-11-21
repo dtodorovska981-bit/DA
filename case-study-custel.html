@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    // Consent defaults must be set before the Google tag: no analytics cookies until the visitor accepts.
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {
+      ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+      analytics_storage: (function () { try { return localStorage.getItem('dna-analytics-consent') === 'granted' ? 'granted' : 'denied'; } catch (e) { return 'denied'; } })()
+    });
+  </script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtm.js?id=G-HCBH87S9EE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Custel case study | DNA Pro Plans</title>
@@ -20,12 +36,12 @@
   <meta name="twitter:description" content="How DNA Pro Plans built a market research report, a four-scenario financial plan and a 14-slide investor deck for Custel.">
   <meta name="twitter:image" content="https://dnaproplans.com/images/og.png">
   <meta name="theme-color" content="#0e1229">
-  <meta name="dna-build" content="2026-11-21.5">
+  <meta name="dna-build" content="2026-11-21.7">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preload" href="/fonts/jost-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/styles.css?v=2026-11-21.5">
-  <script src="/consent.js?v=2026-11-21.5"></script>
+  <link rel="stylesheet" href="/styles.css?v=2026-11-21.7">
+  <script src="/consent.js?v=2026-11-21.7"></script>
   <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
@@ -114,6 +130,6 @@
       <p>© <span id="year">2026</span> DNA Pro Plans</p>
     </div>
   </footer>
-  <script src="/main.js?v=2026-11-21.5" defer></script>
+  <script src="/main.js?v=2026-11-21.7" defer></script>
 </body>
 </html>

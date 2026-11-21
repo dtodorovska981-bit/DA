@@ -28,7 +28,8 @@ Static site for dnaproplans.com, served by the Cloudflare Worker `throbbing-king
 (`calendly.com/draganatodorovskajaneva/30min`) loads only when the visitor asks for it.
 
 ## Analytics and consent
-Google Analytics (`G-HCBH87S9EE`) is opt-in. `consent.js` loads Google's tag only after the visitor clicks
-"Accept analytics"; the choice is stored in local storage and can be changed from "Cookie settings" in the footer.
-Events: `cta_click`, `inquiry_submitted`, `call_booked` and `generate_lead` (once per visitor in 30 days).
-Only fixed labels are sent, never names, emails or free text. Fonts are self-hosted in `fonts/`.
+Google's tag (`G-HCBH87S9EE`) is in the shared head of every page, right after `<head>`, with
+`analytics_storage` denied by default. No analytics cookies are set until the visitor clicks "Accept";
+`consent.js` shows the choice, stores it in local storage and updates Google's consent state. "Cookie settings"
+in the footer reopens it. Our own events (`cta_click`, `inquiry_submitted`, `call_booked`, `generate_lead`) are
+sent only after acceptance and carry fixed labels only. Fonts are self-hosted in `fonts/`.

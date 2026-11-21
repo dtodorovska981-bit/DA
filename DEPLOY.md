@@ -37,8 +37,8 @@ If you prefer the dashboard, upload the **contents of `public/`** the same way y
 
 ## Confirm the new version is live
 
-- `https://dnaproplans.com/version.txt` shows `dnaproplans.com build 2026-11-21.5`.
-- Page source of any page contains `<meta name="dna-build" content="2026-11-21.5">`.
+- `https://dnaproplans.com/version.txt` shows `dnaproplans.com build 2026-11-21.7`.
+- Page source of any page contains `<meta name="dna-build" content="2026-11-21.7">`.
 - `https://dnaproplans.com/contact` shows the inquiry form inside the page, with no "Preview note".
 
 ## After deploying: check on the live site
@@ -81,5 +81,5 @@ Confirmed Calendly bookings are counted (`call_booked`) through Calendly's own "
 ### Google Analytics
 - Admin > Events: mark `generate_lead` as a key event.
 - Admin > Custom definitions: add event-scoped dimensions `cta_name`, `cta_location` and `lead_source`.
-- Google's "Test your website" check will report the tag as not detected, because the tag is only loaded after a
-  visitor accepts analytics. Verify with Realtime after accepting instead.
+- The Google tag is in the head of every page, so Google's "Test your website" check should detect it.
+  Analytics cookies and full measurement still start only after a visitor accepts.

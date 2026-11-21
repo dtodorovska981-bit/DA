@@ -1,5 +1,7 @@
-/* DNA Pro Plans — optional analytics, off until the visitor accepts.
-   Loaded synchronously in <head>. Google's tag is NOT requested before consent ("basic" consent mode).
+/* DNA Pro Plans — analytics choice.
+   Google's tag is in the page <head> with analytics_storage "denied" by default, so no analytics cookies are
+   set until the visitor accepts ("advanced" consent mode). This file shows the choice, stores it and sends
+   our own events only after acceptance.
    Never pass names, emails, free text or file names to track(): only fixed labels. */
 (function () {
   'use strict';
@@ -12,7 +14,6 @@
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
   window.gtag = window.gtag || gtag;
-  gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied' });
 
   function read(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
   function write(k, v) { try { window.localStorage.setItem(k, v); } catch (e) {} }
@@ -20,11 +21,12 @@
   var framed = window.self !== window.top;
   function granted() { return !framed && read(KEY) === 'granted'; }
 
-  // Official Google tag for this stream, injected once and only after consent.
+  // Pages without the tag in their <head> (the thank-you page) get it here, once, and never inside a frame.
   function loadTag() {
-    if (loaded) return;
+    if (loaded || framed) return;
     loaded = true;
-    gtag('consent', 'update', { analytics_storage: 'granted' });
+    if (document.querySelector('script[src*="googletagmanager.com/gtm.js"]')) return;
+    gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'granted' });
     gtag('js', new Date());
     var s = document.createElement('script');
     s.async = true;
@@ -46,16 +48,11 @@
   }
 
   function choose(value) {
-    var was = granted();
     write(KEY, value);
+    gtag('consent', 'update', { analytics_storage: value === 'granted' ? 'granted' : 'denied' });
     if (value === 'granted') loadTag();
-    else {
-      gtag('consent', 'update', { analytics_storage: 'denied' });
-      clearCookies();
-    }
+    else clearCookies();
     hide();
-    // The tag cannot be unloaded from a page that already ran it, so start clean after a withdrawal.
-    if (was && value !== 'granted' && loaded) location.reload();
   }
 
   function hide() { if (banner) { banner.hidden = true; } }
@@ -67,12 +64,12 @@
       banner.setAttribute('role', 'dialog');
       banner.setAttribute('aria-label', 'Analytics cookies');
       banner.innerHTML =
-        '<h2 class="consent__title">Optional analytics</h2>' +
-        '<p class="consent__text">We would like to use Google Analytics to see which pages are useful. It is off unless you accept. <a href="/privacy#cookies">How it works</a></p>' +
+        '<div class="consent__head"><span class="consent__icon" aria-hidden="true"></span><h2 class="consent__title">Cookies and analytics</h2></div>' +
+        '<p class="consent__text">We use Google Analytics to see which pages are useful. It uses cookies only if you accept. <a class="consent__link" href="/privacy#cookies">Details</a></p>' +
         '<p class="consent__state" aria-live="polite"></p>' +
         '<div class="consent__actions">' +
-        '<button type="button" class="btn btn--ghost" data-consent="denied">Reject</button>' +
-        '<button type="button" class="btn btn--ghost" data-consent="granted">Accept analytics</button>' +
+        '<button type="button" class="consent__btn" data-consent="denied">Reject</button>' +
+        '<button type="button" class="consent__btn consent__btn--accept" data-consent="granted">Accept</button>' +
         '</div>';
       banner.addEventListener('click', function (e) {
         var b = e.target.closest('[data-consent]');
@@ -82,7 +79,7 @@
     }
     var v = read(KEY);
     banner.querySelector('.consent__state').textContent =
-      v === 'granted' ? 'Current choice: analytics accepted.' : v === 'denied' ? 'Current choice: analytics rejected.' : '';
+      v === 'granted' ? 'Your current choice: accepted' : v === 'denied' ? 'Your current choice: rejected' : '';
     banner.hidden = false;
   }
 
