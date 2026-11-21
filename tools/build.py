@@ -9,7 +9,7 @@ import re, sys, pathlib, json
 
 OUT = pathlib.Path(sys.argv[1])
 SITE = "https://dnaproplans.com"
-BUILD = "2026-11-21.2"  # shown in <meta name="dna-build"> and /version.txt; change on every release
+BUILD = "2026-11-21.4"  # shown in <meta name="dna-build"> and /version.txt; change on every release
 CAL = "https://calendly.com/draganatodorovskajaneva/30min"
 FORM = "https://app.pipefy.com/public/form/WjXLnOMX"
 GA_ID = "G-HCBH87S9EE"  # used by consent.js; the tag is only loaded after the visitor accepts analytics
@@ -205,10 +205,14 @@ def thumbs(items):
 
 showcase = f"""
           <div class="showcase" data-reveal="scale">
-            <div class="show is-active show--covers" id="show-pitch">
-              <div class="show__main"><img src="images/deck-ants-1.webp" alt="Title slide of a software seed round pitch deck" width="1280" height="720"></div>
-              {thumbs([("deck-hemp-1", "Cover of a materials seed deck"), ("deck-aro-1", "Cover of a hospitality investment memorandum"), ("deck-land-1", "Cover of a real estate offering memorandum"), ("custel-cover", "Cover of a fintech seed deck"), ("deck-hemp-6", "Financials slide from a materials seed deck")])}
-              <p class="show__cap"><strong>Investor pitch decks</strong><a href="services.html#deck-examples">Five decks across software, materials, hospitality, real estate and fintech. See the slides →</a></p>
+            <div class="show is-active show--boards" id="show-pitch">
+              <div class="show__boards">
+                <img src="images/board-custel.webp" alt="Overview of the Custel fintech seed deck" style="--i:0" width="1600" height="962">
+                <img src="images/board-aro.webp" alt="Overview of the ARO Social Club investment memorandum" style="--i:1" width="1600" height="962">
+                <img src="images/board-ants.webp" alt="Overview of the ANTS Platform seed deck" style="--i:2" width="1600" height="962">
+                <img src="images/board-haraz.webp" alt="Overview of the Haraz Coffee House franchise deck" style="--i:3" width="1600" height="962">
+              </div>
+              <p class="show__cap"><strong>Investor pitch decks</strong><a href="services.html#deck-examples">Fintech, hospitality, software and franchise decks. See the examples →</a></p>
             </div>
             <div class="show" id="show-plan">
               <div class="show__pages">
@@ -256,36 +260,19 @@ STEPS = [("Brief", "A short intake: the decision you need, the deadline, the dat
          ("Call", "Thirty minutes to agree the reader, the scope and the delivery date."),
          ("Build", "Research, numbers, story and design, developed together."),
          ("Review", "Preview, revisions, then editable files, or your site live.")]
-DECKS = [
-    dict(key="ants", title="Software seed deck", kind="Agentic IT asset management · seed round",
-         slides=[("deck-ants-1", "Title"), ("deck-ants-2", "Why now"), ("deck-ants-3", "Solution"), ("deck-ants-4", "Market"), ("deck-ants-5", "Business model"), ("deck-ants-6", "Traction and financials")]),
-    dict(key="hemp", title="Materials seed deck", kind="Industrial hemp processing, Switzerland · seed round",
-         slides=[("deck-hemp-1", "Cover"), ("deck-hemp-2", "Problem"), ("deck-hemp-3", "Solution"), ("deck-hemp-4", "Market"), ("deck-hemp-5", "Business model"), ("deck-hemp-6", "Financials and unit economics")]),
-    dict(key="aro", title="Hospitality investment memorandum", kind="Racquet, wellness and social club, Miami",
-         slides=[("deck-aro-1", "Cover"), ("deck-aro-2", "The problem"), ("deck-aro-3", "The solution"), ("deck-aro-4", "Market opportunity"), ("deck-aro-5", "Business model"), ("deck-aro-6", "Financial projections")]),
-    dict(key="land", title="Real estate offering memorandum", kind="Commercial land assemblage, Mississippi",
-         slides=[("deck-land-1", "Cover"), ("deck-land-2", "By the numbers"), ("deck-land-3", "Where it sits"), ("deck-land-4", "Surrounded by demand"), ("deck-land-5", "Market in depth"), ("deck-land-6", "Five plays")]),
-    dict(key="custel", title="Fintech seed deck", kind="Corporate cards and spend control, Türkiye · figures masked with X",
-         slides=[("custel-cover", "Cover"), ("custel-problem", "Problem"), ("custel-solution", "Solution"), ("custel-how", "How it works"), ("custel-market", "Market"), ("custel-competition", "Competition"), ("custel-scenarios", "Scenarios")]),
-]
-
-
 def deck_gallery(anchor="deck-examples", heading="Pitch deck examples"):
-    blocks = ""
-    for d in DECKS:
-        figs = "".join(f'<figure><img src="images/{f}.webp" alt="{d["title"]}, slide: {c}" width="1280" height="720" loading="lazy" draggable="false"><figcaption>{c}</figcaption></figure>' for f, c in d["slides"])
-        blocks += f"""
-      <div class="deck" data-reveal>
-        <div class="wrap deck__head"><h3>{d['title']}</h3><p>{d['kind']}</p></div>
-        <div class="reel reel--wide" tabindex="0" aria-label="{d['title']} slides">{figs}</div>
-      </div>"""
+    """Overview boards only. Individual slides and confidential figures are never published."""
+    figs = "".join(
+        f'<figure class="deckboard" data-reveal style="--d:{n % 2}"><img src="images/{img}.webp" alt="{name}: {kind.lower()}, overview of the deck" width="1600" height="962" loading="lazy">'
+        f'<figcaption><strong>{name}</strong>{kind}</figcaption></figure>' for n, (img, name, kind, _) in enumerate(BOARDS))
     return f"""
     <section class="sample decks" id="{anchor}">
       <div class="wrap">
         <p class="eyebrow" data-reveal="fade">Pitch decks</p>
         <h2 class="lines"><span class="line"><span>{heading}</span></span></h2>
-        <p class="lead" data-reveal style="--d:2">Selected slides from five decks: software, materials, hospitality, real estate and fintech. Swipe or drag each row to look through it.</p>
-      </div>{blocks}
+        <p class="lead" data-reveal style="--d:2">Overviews of four client decks. Full slides and confidential figures are not shown.</p>
+        <div class="deckboards">{figs}</div>
+      </div>
     </section>"""
 
 
@@ -301,34 +288,34 @@ WORK = [
          did="We structured the deck in three chapters, Overview, Opportunity and Franchise, so each section answers one question a franchisee asks, and turned growth, unit sales and location performance into a single data story.",
          items=["Franchise opportunity deck: 23 slides in three chapters", "Light and dark versions for print, screen and meetings", "PowerPoint export, editable for the franchise sales team"]),
 ]
-work_cards = ""
-for w in WORK:
-    lis = "".join(f"<li>{x}</li>" for x in w["items"])
-    work_cards += f"""
-        <article class="work-card" data-reveal>
-          <a class="work-card__sample" href="images/{w['sample']}.webp" target="_blank" rel="noopener" data-cta="open_sample" data-loc="work" aria-label="Open the {w['client']} work sample at full size">
-            <img src="images/{w['sample']}.webp" alt="{w['sample_alt']}" width="1520" height="855" loading="lazy">
-            <span>Open sample at full size</span>
-          </a>
-          <div class="work-card__body">
-            <p class="eyebrow">{w['kind']}</p>
-            <h3><a href="{w['file']}">{w['client']}</a></h3>
-            <dl>
-              <dt>The document challenge</dt><dd>{w['challenge']}</dd>
-              <dt>What we did</dt><dd>{w['did']}</dd>
-              <dt>Delivered</dt><dd><ul class="squares">{lis}</ul></dd>
-            </dl>
-            <a class="ulink" href="{w['file']}" data-cta="view_case_study" data-loc="work">Read the full {w['client']} case study</a>
-          </div>
-        </article>"""
+BOARDS = [
+    ("board-custel", "Custel", "Fintech seed deck", "case-study-custel.html"),
+    ("board-aro", "ARO Social Club", "Investment memorandum", "services.html#deck-examples"),
+    ("board-ants", "ANTS Platform", "Software seed deck", "services.html#deck-examples"),
+    ("board-haraz", "Haraz Coffee House", "Franchise deck", "case-study-haraz.html"),
+]
+
+
+def board_items(hidden=False):
+    extra = ' aria-hidden="true" tabindex="-1"' if hidden else ""
+    return "".join(
+        f'<li><a class="board" href="{href}" data-cta="open_work" data-loc="work_strip"{extra}>'
+        f'<img src="images/{img}.webp" alt="{"" if hidden else name + ": " + kind.lower() + ", slide overview"}" width="1600" height="962" loading="lazy">'
+        f'<span><strong>{name}</strong>{kind}</span></a></li>' for img, name, kind, href in BOARDS)
+
+
 work_html = f"""    <section class="work" id="work">
+      <div class="wrap work__head">
+        <h2 class="h2" data-reveal>Relevant work</h2>
+        <a class="ulink" href="services.html#deck-examples" data-cta="view_examples" data-loc="work" data-reveal style="--d:2">See all deck examples</a>
+      </div>
+      <div class="strip" data-reveal="fade" style="--d:2">
+        <div class="strip__track">
+          <ul class="strip__group">{board_items()}</ul>
+          <ul class="strip__group" aria-hidden="true">{board_items(hidden=True)}</ul>
+        </div>
+      </div>
       <div class="wrap">
-        <div class="sec-head">
-          <h2 class="h2" data-reveal>Relevant work</h2>
-          <p class="lead" data-reveal style="--d:2">Two client engagements, shown with permission. Confidential figures are masked with X.</p>
-        </div>
-        <div class="work__list">{work_cards}
-        </div>
         <div class="work__cta" data-reveal>
           <p>Have a deck, plan or model to prepare?</p>
           {quote_cta("after_work")}
@@ -747,7 +734,7 @@ SPEC = {
         ("What we need from you", "Your current deck or notes, the key numbers, who the deck is for and your brand assets." + INPUT_NOTE),
         ("Delivery", TIMING),
         ("Revisions", REVISIONS),
-        ("Sample", 'Slides from <a href="services.html#deck-examples">five pitch decks</a>.'),
+        ("Sample", 'Overviews of <a href="services.html#deck-examples">four client decks</a>.'),
         ("How to request a quote", HOW)]),
     "market-research": facts([
         ("Who it is for", "Founders who need to size a market or prove demand before they raise, borrow or enter a new market."),
@@ -936,14 +923,14 @@ service_page(
     ["Founders raising a seed or later round", "Owners and brokers presenting an investment or property opportunity", "Companies approaching partners, distributors or large clients"],
     "What a pitch deck engagement includes", DECK_SLIDES, SPEC["pitch-decks"],
     deck_gallery(),
-    [("How many slides is an investor deck?", "It depends on the reader. The seed decks shown on this page run from 13 to 15 slides, some with an appendix for due diligence. We agree the structure with you before design starts."),
+    [("How many slides is an investor deck?", "It depends on the reader. Recent seed decks ran from 13 to 15 slides, some with an appendix for due diligence, and franchise and investment decks ran longer. We agree the structure with you before design starts."),
      ("I have a deck already. Do I still need a business plan?", "If you are raising money or applying for a loan, usually yes. The deck opens the door and the plan gets the approval: due diligence asks for the model behind the deck."),
      ("Can you write the deck, or only design it?", "Both. Research, financial modeling, copy and presentation design are developed together, so you do not need finished text."),
      ("Can you rework the deck I have?", "Yes. Send it with your inquiry and we will tell you what can be kept and what needs rebuilding."),
      ("What files do I get?", "A PowerPoint export your team can edit, and the Figma source. The exact formats are listed in your quote."),
      FAQS[5], FAQS[4]],
     "Investor Pitch Deck Services | DNA Pro Plans",
-    "Investor pitch decks and sales decks built on market research and a financial model. See slides from five decks and request a project quote.",
+    "Investor pitch decks and sales decks built on market research and a financial model. See overviews of recent decks and request a project quote.",
     "pitch")
 
 service_page(
