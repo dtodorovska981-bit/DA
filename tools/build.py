@@ -9,7 +9,7 @@ import re, sys, pathlib, json
 
 OUT = pathlib.Path(sys.argv[1])
 SITE = "https://dnaproplans.com"
-BUILD = "2026-11-21.1"  # shown in <meta name="dna-build"> and /version.txt; change on every release
+BUILD = "2026-11-21.2"  # shown in <meta name="dna-build"> and /version.txt; change on every release
 CAL = "https://calendly.com/draganatodorovskajaneva/30min"
 FORM = "https://app.pipefy.com/public/form/WjXLnOMX"
 GA_ID = "G-HCBH87S9EE"  # used by consent.js; the tag is only loaded after the visitor accepts analytics
@@ -147,7 +147,7 @@ FAQS = [
     ("How does confidentiality work?",
      "Everything you share about your finances and internal planning stays confidential, and an NDA is available on request. Work is shown publicly only with the client’s permission, with confidential figures masked."),
     ("How are delivery times and revisions agreed?",
-     "Most decks, plans and models are delivered in 7 days, counted from the day we have your complete inputs. Branding and websites follow an agreed timeline. The scope, fee, delivery date and revisions are confirmed in your quote before work starts."),
+     "Most decks, plans and models are delivered in 7 days, counted from the day we have your complete inputs. Graphic design and websites follow an agreed timeline. The scope, fee, delivery date and revisions are confirmed in your quote before work starts."),
     ("Do you guarantee funding?",
      "No. We make your case clear and check that the numbers hold. Investors and lenders decide."),
 ]
@@ -180,7 +180,7 @@ SERVICES = [
     ("pitch", "Pitch decks and sales decks", "Decks for investors, partners and large clients.", "Why this company, and why now?"),
     ("plan", "Business and financial plans", "Plans and five-year projections in four scenarios.", "Do the numbers still hold if the market turns?"),
     ("research", "Market research papers", "Market sizing, demand and competitor intelligence.", "How big is this market, and who says so?"),
-    ("website", "Branding and websites", "Identity, guidelines and a website that sells.", "Does this company look as serious as its plan?"),
+    ("website", "Graphic design", "Brand identity, guidelines and designed materials.", "Does this company look as serious as its plan?"),
 ]
 svc_html = ""
 for i, (icon, t, d, q) in enumerate(SERVICES):
@@ -205,10 +205,10 @@ def thumbs(items):
 
 showcase = f"""
           <div class="showcase" data-reveal="scale">
-            <div class="show is-active" id="show-pitch">
-              <div class="show__main"><img src="images/custel-cover.webp" alt="Cover slide of the Custel investor deck: Spend today. Pay on the statement." width="1520" height="855"></div>
-              {thumbs([("custel-market", "Market slide"), ("custel-unit", "Unit economics slide"), ("custel-competition", "Competition slide"), ("custel-scenarios", "Scenarios slide"), ("custel-ask", "The ask slide")])}
-              <p class="show__cap"><strong>Investor pitch deck</strong><a href="case-study-custel.html">From the Custel deck. Figures masked. →</a></p>
+            <div class="show is-active show--covers" id="show-pitch">
+              <div class="show__main"><img src="images/deck-ants-1.webp" alt="Title slide of a software seed round pitch deck" width="1280" height="720"></div>
+              {thumbs([("deck-hemp-1", "Cover of a materials seed deck"), ("deck-aro-1", "Cover of a hospitality investment memorandum"), ("deck-land-1", "Cover of a real estate offering memorandum"), ("custel-cover", "Cover of a fintech seed deck"), ("deck-hemp-6", "Financials slide from a materials seed deck")])}
+              <p class="show__cap"><strong>Investor pitch decks</strong><a href="services.html#deck-examples">Five decks across software, materials, hospitality, real estate and fintech. See the slides →</a></p>
             </div>
             <div class="show" id="show-plan">
               <div class="show__pages">
@@ -256,6 +256,39 @@ STEPS = [("Brief", "A short intake: the decision you need, the deadline, the dat
          ("Call", "Thirty minutes to agree the reader, the scope and the delivery date."),
          ("Build", "Research, numbers, story and design, developed together."),
          ("Review", "Preview, revisions, then editable files, or your site live.")]
+DECKS = [
+    dict(key="ants", title="Software seed deck", kind="Agentic IT asset management · seed round",
+         slides=[("deck-ants-1", "Title"), ("deck-ants-2", "Why now"), ("deck-ants-3", "Solution"), ("deck-ants-4", "Market"), ("deck-ants-5", "Business model"), ("deck-ants-6", "Traction and financials")]),
+    dict(key="hemp", title="Materials seed deck", kind="Industrial hemp processing, Switzerland · seed round",
+         slides=[("deck-hemp-1", "Cover"), ("deck-hemp-2", "Problem"), ("deck-hemp-3", "Solution"), ("deck-hemp-4", "Market"), ("deck-hemp-5", "Business model"), ("deck-hemp-6", "Financials and unit economics")]),
+    dict(key="aro", title="Hospitality investment memorandum", kind="Racquet, wellness and social club, Miami",
+         slides=[("deck-aro-1", "Cover"), ("deck-aro-2", "The problem"), ("deck-aro-3", "The solution"), ("deck-aro-4", "Market opportunity"), ("deck-aro-5", "Business model"), ("deck-aro-6", "Financial projections")]),
+    dict(key="land", title="Real estate offering memorandum", kind="Commercial land assemblage, Mississippi",
+         slides=[("deck-land-1", "Cover"), ("deck-land-2", "By the numbers"), ("deck-land-3", "Where it sits"), ("deck-land-4", "Surrounded by demand"), ("deck-land-5", "Market in depth"), ("deck-land-6", "Five plays")]),
+    dict(key="custel", title="Fintech seed deck", kind="Corporate cards and spend control, Türkiye · figures masked with X",
+         slides=[("custel-cover", "Cover"), ("custel-problem", "Problem"), ("custel-solution", "Solution"), ("custel-how", "How it works"), ("custel-market", "Market"), ("custel-competition", "Competition"), ("custel-scenarios", "Scenarios")]),
+]
+
+
+def deck_gallery(anchor="deck-examples", heading="Pitch deck examples"):
+    blocks = ""
+    for d in DECKS:
+        figs = "".join(f'<figure><img src="images/{f}.webp" alt="{d["title"]}, slide: {c}" width="1280" height="720" loading="lazy" draggable="false"><figcaption>{c}</figcaption></figure>' for f, c in d["slides"])
+        blocks += f"""
+      <div class="deck" data-reveal>
+        <div class="wrap deck__head"><h3>{d['title']}</h3><p>{d['kind']}</p></div>
+        <div class="reel reel--wide" tabindex="0" aria-label="{d['title']} slides">{figs}</div>
+      </div>"""
+    return f"""
+    <section class="sample decks" id="{anchor}">
+      <div class="wrap">
+        <p class="eyebrow" data-reveal="fade">Pitch decks</p>
+        <h2 class="lines"><span class="line"><span>{heading}</span></span></h2>
+        <p class="lead" data-reveal style="--d:2">Selected slides from five decks: software, materials, hospitality, real estate and fintech. Swipe or drag each row to look through it.</p>
+      </div>{blocks}
+    </section>"""
+
+
 WORK = [
     dict(file="case-study-custel.html", client="Custel", kind="Market research, financial model and investor deck",
          sample="custel-market", sample_alt="Market sizing slide from the Custel investor deck, with confidential figures masked",
@@ -350,7 +383,7 @@ home = f"""  <main id="main">
               <li>Investor pitch decks and sales decks</li>
               <li>Business plans and financial models</li>
               <li>Market research papers</li>
-              <li>Branding and websites</li>
+              <li>Graphic design</li>
             </ul>
           </aside>
         </div>
@@ -429,7 +462,7 @@ home = f"""  <main id="main">
       <div class="wrap">
         <div class="sec-head">
           <h2 class="h2 lines"><span class="line"><span>Clear steps, fast delivery.</span></span></h2>
-          <p class="lead" data-reveal style="--d:2">Most decks, plans and models are delivered in 7 days from complete inputs. Branding and websites follow an agreed timeline.</p>
+          <p class="lead" data-reveal style="--d:2">Most decks, plans and models are delivered in 7 days from complete inputs. Graphic design and websites follow an agreed timeline.</p>
         </div>
         <div class="rail" aria-hidden="true"><i></i></div>
         <ol class="steps">{steps_html}</ol>
@@ -714,7 +747,7 @@ SPEC = {
         ("What we need from you", "Your current deck or notes, the key numbers, who the deck is for and your brand assets." + INPUT_NOTE),
         ("Delivery", TIMING),
         ("Revisions", REVISIONS),
-        ("Sample", 'The <a href="case-study-custel.html">Custel investor deck</a> and the <a href="case-study-haraz.html">Haraz franchise deck</a>.'),
+        ("Sample", 'Slides from <a href="services.html#deck-examples">five pitch decks</a>.'),
         ("How to request a quote", HOW)]),
     "market-research": facts([
         ("Who it is for", "Founders who need to size a market or prove demand before they raise, borrow or enter a new market."),
@@ -724,11 +757,11 @@ SPEC = {
         ("Revisions", REVISIONS),
         ("Sample", 'Six pages of a <a href="services.html#research-sample">sample market research report</a> with illustrative figures.'),
         ("How to request a quote", HOW)]),
-    "branding-websites": facts([
-        ("Who it is for", "Founders launching a company, or owners whose brand and website no longer match their plan."),
+    "graphic-design": facts([
+        ("Who it is for", "Founders launching a company, or owners whose brand and materials no longer match their plan."),
         ("Editable files", "Logo files, brand guidelines and a live website. The file formats are listed in your quote."),
         ("What we need from you", "What the company does, who it sells to, and any existing logo, colours or website." + INPUT_NOTE),
-        ("Delivery", "Branding and websites follow a timeline agreed in your quote."),
+        ("Delivery", "Graphic design and websites follow a timeline agreed in your quote."),
         ("Revisions", REVISIONS),
         ("Sample", 'Our own <a href="services.html#brand-sample">brand guidelines</a>.'),
         ("How to request a quote", HOW)]),
@@ -739,20 +772,20 @@ services_body = f"""  <main id="main">
       <div class="wrap">
         <p class="eyebrow" data-reveal="fade">Services and pricing</p>
         <h1 class="h1" data-reveal style="--d:1">What we build, what you receive and what it costs.</h1>
-        <p class="lead" data-reveal style="--d:3">Business plans start from $900 and financial models from $360. Pitch decks, market research, branding and websites are quoted individually. Every price is confirmed in a written quote before work starts.</p>
-        <nav class="jump" aria-label="Services on this page" data-reveal style="--d:4"><a href="#business-plan">Business plan</a><a href="#financial-plan">Financial model</a><a href="#pitch-decks">Pitch decks</a><a href="#market-research">Market research</a><a href="#branding-websites">Branding and websites</a></nav>
+        <p class="lead" data-reveal style="--d:3">Business plans, financial plans, pitch decks, market research and graphic design. Business plans start from $900 and financial plans from $360; the rest are quoted individually. Every price is confirmed in a written quote before work starts.</p>
+        <nav class="jump" aria-label="Services on this page" data-reveal style="--d:4"><a href="#business-plan">Business plans</a><a href="#financial-plan">Financial plans</a><a href="#pitch-decks">Pitch decks</a><a href="#market-research">Market research</a><a href="#graphic-design">Graphic design</a></nav>
       </div>
     </section>
-{offer("business-plan", "Business plan", "A written plan built for investors, banks and visa programs.",
+{offer("business-plan", "Business plans", "A written plan built for investors, banks and visa programs.",
        "Built on the financial plan, so every number in the text matches the model behind it.",
        price("$900", "Written plan. Final price depends on scope."), "Business plan", contents("What you get", BP) + SPEC["business-plan"],
        more=("business-plan-services.html", "More about business plans"))}
 
 {sample_sec("sample", "Sample business plan", "See what a finished plan looks like.", "Six pages from a 24-page plan for Fieldhouse Workspace, a fictional coworking company asking for an SBA loan. Swipe or drag to look through it.", reel, "Sample plan for a fictional company, prepared by DNA Pro Plans. All figures are illustrative.")}
-{offer("financial-plan", "Financial model", "An Excel financial plan in four scenarios based on market factors.",
+{offer("financial-plan", "Financial plans", "An Excel financial model in four scenarios based on market factors.",
        "Live formulas and analysis based on real market data, built to account for the future: Base, Upside, Downside and Stress.",
        price("$360", "Excel model. Final price depends on scope."), "Financial plan", contents("What you get", FP) + SPEC["financial-plan"],
-       more=("financial-modeling-services.html", "More about financial models"))}
+       more=("financial-modeling-services.html", "More about financial plans and models"))}
 {offer("pitch-decks", "Pitch decks and sales decks", "Decks for investors, partners and large clients.",
        "The reader asks: why this company, and why now? The deck answers it with a clear story and the numbers behind it.",
        QUOTE, "Pitch deck or sales deck",
@@ -761,6 +794,7 @@ services_body = f"""  <main id="main">
                                  ("Appendix for due diligence", "Scenarios, assumptions and supporting data."),
                                  ("Editable files", "Figma and PowerPoint, in light and dark where needed.")]) + SPEC["pitch-decks"],
        more=("pitch-deck-services.html", "More about pitch decks"))}
+{deck_gallery()}
 {offer("market-research", "Market research papers", "Market sizing, demand and competitor intelligence.",
        "Evidence from sources the reader can verify. Estimates are labelled as estimates.",
        QUOTE, "Market research paper",
@@ -769,13 +803,13 @@ services_body = f"""  <main id="main">
                                  ("Competitor intelligence", "Revenue, clients, funding and the strategies they use."),
                                  ("Sources", "Every figure cited, every estimate labelled.")]) + SPEC["market-research"])}
 {sample_sec("research-sample", "Sample market research report", "See what a research report looks like.", "Six pages from a 32-page report on EV charging for apartment and multifamily buildings in the United States: market size, demand, competition and where to enter first.", research_reel, "Sample report with illustrative figures, prepared by DNA Pro Plans for a fictional client.")}
-{offer("branding-websites", "Branding and websites", "Identity, guidelines and a website that sells.",
-       "The same story your documents tell, carried into how the company looks and what its website says.",
-       QUOTE, "Branding and website",
+{offer("graphic-design", "Graphic design", "Brand identity and designed materials that match your documents.",
+       "The same story your plan and deck tell, carried into how the company looks: identity, guidelines, reports, one-pagers and web pages.",
+       QUOTE, "Graphic design",
        contents("What you get", [("Brand identity", "Logo, icon, colour, type and pattern."),
                                  ("Brand guidelines", "Usage rules your team and suppliers can follow."),
-                                 ("Website design and build", "Pages that point to the decision you need."),
-                                 ("Matching materials", "Reports, one-pagers and ads on one identity.")]) + SPEC["branding-websites"])}
+                                 ("Designed documents", "Reports, one-pagers, proposals and ads on one identity."),
+                                 ("Website design and build", "Pages that point to the decision you need.")]) + SPEC["graphic-design"])}
 {sample_sec("brand-sample", "Brand guidelines", "One identity for every deck, plan and page.", "Our own brand guidelines: logo, colour, type, pattern, photography and icons. This is the kind of system we build for clients.", brand_reel, "DNA Pro Plans brand guidelines.", wide=True)}
 {faq_html(FAQS, band=False)}
 
@@ -789,7 +823,7 @@ services_body = f"""  <main id="main">
   </main>
 """
 page("services.html", "Services and Pricing | DNA Pro Plans",
-     "Business plans from $900 and financial models from $360. See deliverables, file formats, required inputs, delivery timing and samples for each service.",
+     "Business plans, financial plans, pitch decks, market research and graphic design. See deliverables, pricing, file formats, timing and samples for each service.",
      services_body, current="services")
 
 # ------------------------------------------------------------------ SERVICE PAGES (phase 2)
@@ -899,17 +933,17 @@ service_page(
     "Investor pitch decks built on the research and the model.",
     "A deck opens the door. Investors then ask for what is behind it. We build the deck from market research and a financial model, so each slide holds up when someone checks the numbers.",
     QUOTE,
-    ["Founders raising a seed or later round", "Franchise and expansion teams presenting an opportunity", "Companies approaching partners, distributors or large clients"],
+    ["Founders raising a seed or later round", "Owners and brokers presenting an investment or property opportunity", "Companies approaching partners, distributors or large clients"],
     "What a pitch deck engagement includes", DECK_SLIDES, SPEC["pitch-decks"],
-    work_teasers(["Custel", "Haraz Coffee House"]),
-    [("How many slides is an investor deck?", "It depends on the reader. The Custel seed deck is 14 slides with a 6-slide appendix for due diligence. The Haraz franchise deck is 23 slides in three chapters. We agree the structure with you before design starts."),
+    deck_gallery(),
+    [("How many slides is an investor deck?", "It depends on the reader. The seed decks shown on this page run from 13 to 15 slides, some with an appendix for due diligence. We agree the structure with you before design starts."),
      ("I have a deck already. Do I still need a business plan?", "If you are raising money or applying for a loan, usually yes. The deck opens the door and the plan gets the approval: due diligence asks for the model behind the deck."),
      ("Can you write the deck, or only design it?", "Both. Research, financial modeling, copy and presentation design are developed together, so you do not need finished text."),
      ("Can you rework the deck I have?", "Yes. Send it with your inquiry and we will tell you what can be kept and what needs rebuilding."),
      ("What files do I get?", "A PowerPoint export your team can edit, and the Figma source. The exact formats are listed in your quote."),
      FAQS[5], FAQS[4]],
     "Investor Pitch Deck Services | DNA Pro Plans",
-    "Investor pitch decks and sales decks built on market research and a financial model. See the Custel and Haraz decks and request a project quote.",
+    "Investor pitch decks and sales decks built on market research and a financial model. See slides from five decks and request a project quote.",
     "pitch")
 
 service_page(

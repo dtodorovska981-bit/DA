@@ -794,3 +794,10 @@ main { padding-top: var(--nav-h); }
 .hero__media { margin-top: clamp(40px, 4.4vw, 64px); }
 @media (max-width: 960px) { .consent { grid-template-columns: minmax(0, 1fr) auto; row-gap: 8px; } .consent__title, .consent__state:not(:empty) { grid-column: 1 / -1; } }
 @media (max-width: 600px) { .consent { grid-template-columns: minmax(0, 1fr); } .hero { padding-bottom: 40px; } }
+
+/* pitch deck examples */
+.decks .deck { margin-top: 64px; }
+.decks .deck .reel { margin-top: 22px; }
+.deck__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px; border-top: 1px solid rgba(255, 255, 255, .18); padding-top: 22px; }
+.deck__head h3 { font-weight: 500; font-size: clamp(22px, 1.94vw, 28px); letter-spacing: -.02em; }
+.deck__head p { font-size: 15px; color: var(--lav); }
