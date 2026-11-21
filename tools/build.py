@@ -9,7 +9,7 @@ import re, sys, pathlib, json
 
 OUT = pathlib.Path(sys.argv[1])
 SITE = "https://dnaproplans.com"
-BUILD = "2026-11-21.4"  # shown in <meta name="dna-build"> and /version.txt; change on every release
+BUILD = "2026-11-21.5"  # shown in <meta name="dna-build"> and /version.txt; change on every release
 CAL = "https://calendly.com/draganatodorovskajaneva/30min"
 FORM = "https://app.pipefy.com/public/form/WjXLnOMX"
 GA_ID = "G-HCBH87S9EE"  # used by consent.js; the tag is only loaded after the visitor accepts analytics
@@ -276,18 +276,6 @@ def deck_gallery(anchor="deck-examples", heading="Pitch deck examples"):
     </section>"""
 
 
-WORK = [
-    dict(file="case-study-custel.html", client="Custel", kind="Market research, financial model and investor deck",
-         sample="custel-market", sample_alt="Market sizing slide from the Custel investor deck, with confidential figures masked",
-         challenge="Custel is building corporate cards and spend control for Türkiye’s field teams. To raise a seed round, they had to size a market no one had published numbers for, prove the unit economics, and explain why neither banks nor expense software already solve the problem.",
-         did="We started with a market research report, then built a financial plan with four market scenarios. Both became the pitch deck, so every figure in the deck traces back to the research and the model.",
-         items=["Market research report on Türkiye’s corporate card market", "Five-year financial plan with four scenarios", "Investor pitch deck: 14 slides plus a 6-slide appendix"]),
-    dict(file="case-study-haraz.html", client="Haraz Coffee House", kind="Franchise opportunity presentation",
-         sample="haraz-key", sample_alt="Slide from the Haraz Coffee House franchise deck, with confidential figures masked",
-         challenge="Haraz needed to present a fast-growing café brand to prospective franchisees. The deck had to carry the heritage story, prove the network’s growth and unit performance, and lay out the investment clearly enough for a serious buyer to evaluate in one sitting.",
-         did="We structured the deck in three chapters, Overview, Opportunity and Franchise, so each section answers one question a franchisee asks, and turned growth, unit sales and location performance into a single data story.",
-         items=["Franchise opportunity deck: 23 slides in three chapters", "Light and dark versions for print, screen and meetings", "PowerPoint export, editable for the franchise sales team"]),
-]
 BOARDS = [
     ("board-custel", "Custel", "Fintech seed deck", "case-study-custel.html"),
     ("board-aro", "ARO Social Club", "Investment memorandum", "services.html#deck-examples"),
@@ -481,8 +469,6 @@ page("index.html", "Pitch Decks, Business Plans and Financial Models | DNA Pro P
 # ------------------------------------------------------------------ CASE STUDIES
 def case_page(c):
     facts = "".join(f"<dt>{k}</dt><dd>{v}</dd>" for k, v in c["facts"])
-    stack = "".join(f'<img src="images/{s}.webp" alt="{a}" width="1260" height="709" loading="lazy" data-reveal style="--d:{i}">' for i, (s, a) in enumerate(c["stack"]))
-    light = "".join(f'<img src="images/{s}.webp" alt="{a}" width="1500" height="844" loading="lazy" data-reveal style="--d:{i + 1}">' for i, (s, a) in enumerate(c["light"]))
     proof = "".join(f'<li data-reveal style="--d:{i + 1}"><h3>{t}</h3><p>{d}</p></li>' for i, (t, d) in enumerate(c["proof"]))
     deliver = "".join(f'<div class="deliver__item"><h3>{t}</h3><p>{d}</p></div>' for t, d in c["deliver"])
     body = f"""  <main id="main">
@@ -502,25 +488,15 @@ def case_page(c):
       </div>
     </section>
 
-    <section class="wall" aria-label="Slides from the {c['short']} deck">
-      <img src="images/{c['key']}-wall.webp" alt="A wall of slides from the {c['short']} deck" width="2160" height="990" data-drift="-0.06">
-    </section>
-
-    <section class="panels">
-      <div class="wrap panels__grid">
-        <div class="panel">{stack}</div>
-        <div class="panel panel--light"><p class="eyebrow" data-reveal="fade">{c['light_label']}</p>{light}</div>
-      </div>
+    <section class="wall wall--board" aria-label="Overview of the {c['short']} deck">
+      <img src="images/board-{c['key']}.webp" alt="Overview of the {c['short']} deck" width="1600" height="962" data-drift="-0.04">
     </section>
 
     <section class="key">
       <div class="wrap">
-        <div class="feature">
-          <div class="feature__slide" data-reveal="left"><img src="images/{c['key']}-{c['feature'][0]}.webp" alt="{c['feature'][1]}" width="1520" height="855" loading="lazy"></div>
-          <div>
-            <p class="proof__label" data-reveal="fade">What the deck had to prove</p>
-            <ul class="proof">{proof}</ul>
-          </div>
+        <div class="feature feature--text">
+          <p class="proof__label" data-reveal="fade">What the deck had to prove</p>
+          <ul class="proof">{proof}</ul>
         </div>
       </div>
     </section>
@@ -545,7 +521,7 @@ def case_page(c):
     </section>
   </main>
 """
-    page(c["file"], f"{c['short']} case study | DNA Pro Plans", c["desc"], body, current="cases", note="Confidential figures are masked with X.")
+    page(c["file"], f"{c['short']} case study | DNA Pro Plans", c["desc"], body, current="cases", note="Confidential details are not shown.")
 
 
 HARAZ = dict(
@@ -597,7 +573,7 @@ for c, blurb, tags in [
     tg = "".join(f"<li>{t}</li>" for t in tags)
     cards += f"""
         <article class="case-card">
-          <a class="case-card__media" href="{c['file']}" data-reveal="clip" tabindex="-1" aria-hidden="true"><img src="images/{c['key']}-wall.webp" alt="" width="2160" height="990"></a>
+          <a class="case-card__media" href="{c['file']}" data-reveal="clip" tabindex="-1" aria-hidden="true"><img src="images/board-{c['key']}.webp" alt="" width="1600" height="962"></a>
           <div data-reveal style="--d:2">
             <p class="eyebrow">{c['facts'][1][1]}</p>
             <h2><a href="{c['file']}">{c['short']}</a></h2>
@@ -613,7 +589,7 @@ page("case-studies.html", "Case studies | DNA Pro Plans",
       <div class="wrap">
         <p class="eyebrow" data-reveal="fade">Case studies</p>
         <h1 class="h1 lines" style="--d:1"><span class="line"><span>Work that had to</span></span><span class="line"><span>hold up to scrutiny.</span></span></h1>
-        <p class="lead" data-reveal style="--d:4">Two engagements, shown with the client’s permission. Confidential figures are masked with X.</p>
+        <p class="lead" data-reveal style="--d:4">Two engagements, shown with the client’s permission. Confidential details are not shown.</p>
       </div>
     </section>
     <section class="wrap cases">{cards}
@@ -626,11 +602,12 @@ page("case-studies.html", "Case studies | DNA Pro Plans",
       </div>
     </section>
   </main>
-""", current="cases", note="Confidential figures are masked with X.")
+""", current="cases", note="Confidential details are not shown.")
 
 # ------------------------------------------------------------------ SERVICES
 def facts(rows):
-    return '<dl class="specs">' + "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in rows) + "</dl>"
+    return ('<details class="more"><summary>Who it is for, files, timing and inputs</summary><dl class="specs">'
+            + "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in rows) + "</dl></details>")
 
 
 def offer(anchor, eyebrow, title, lead, price_html, need, right, more=None):
@@ -857,33 +834,6 @@ def service_page(file, eyebrow, h1, lead, price_html, who, get_label, get_items,
   </main>
 """
     page(file, title, desc, body, current="services", extra=faq_ld(faqs))
-
-
-def work_teasers(which):
-    out = ""
-    for w in WORK:
-        if w["client"] not in which:
-            continue
-        out += f"""
-        <article class="work-card" data-reveal>
-          <a class="work-card__sample" href="images/{w['sample']}.webp" target="_blank" rel="noopener" aria-label="Open the {w['client']} work sample at full size">
-            <img src="images/{w['sample']}.webp" alt="{w['sample_alt']}" width="1520" height="855" loading="lazy"><span>Open sample at full size</span>
-          </a>
-          <div class="work-card__body">
-            <p class="eyebrow">{w['kind']}</p>
-            <h3><a href="{w['file']}">{w['client']}</a></h3>
-            <dl><dt>The document challenge</dt><dd>{w['challenge']}</dd><dt>Delivered</dt><dd>{bullets(w['items'])}</dd></dl>
-            <a class="ulink" href="{w['file']}">Read the full {w['client']} case study</a>
-          </div>
-        </article>"""
-    return f"""
-    <section class="work">
-      <div class="wrap">
-        <div class="sec-head"><h2 class="h2" data-reveal>Client work</h2><p class="lead" data-reveal style="--d:2">Shown with the client’s permission. Confidential figures are masked with X.</p></div>
-        <div class="work__list">{out}
-        </div>
-      </div>
-    </section>"""
 
 
 SCENARIO_EXAMPLE = """
