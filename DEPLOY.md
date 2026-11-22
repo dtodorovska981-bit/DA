@@ -41,8 +41,8 @@ when it is uploaded with the other files. Add one line per old address: `/old-pa
 
 ## Confirm the new version is live
 
-- `https://dnaproplans.com/version.txt` shows `dnaproplans.com build 2026-11-22.2`.
-- Page source of any page contains `<meta name="dna-build" content="2026-11-22.2">`.
+- `https://dnaproplans.com/version.txt` shows `dnaproplans.com build 2026-11-22.3`.
+- Page source of any page contains `<meta name="dna-build" content="2026-11-22.3">`.
 - `https://dnaproplans.com/contact` shows the inquiry form inside the page, with no "Preview note".
 
 ## After deploying: check on the live site
