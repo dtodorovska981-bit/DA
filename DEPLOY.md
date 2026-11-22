@@ -35,10 +35,14 @@ check afterwards that `dnaproplans.com` is still listed under the Worker's domai
 
 If you prefer the dashboard, upload the **contents of `public/`** the same way you uploaded the site before.
 
+## Redirects from the old website
+`public/_redirects` holds permanent (301) redirects for old addresses. Cloudflare applies it automatically
+when it is uploaded with the other files. Add one line per old address: `/old-path https://dnaproplans.com/new-path 301`.
+
 ## Confirm the new version is live
 
-- `https://dnaproplans.com/version.txt` shows `dnaproplans.com build 2026-11-22.1`.
-- Page source of any page contains `<meta name="dna-build" content="2026-11-22.1">`.
+- `https://dnaproplans.com/version.txt` shows `dnaproplans.com build 2026-11-22.2`.
+- Page source of any page contains `<meta name="dna-build" content="2026-11-22.2">`.
 - `https://dnaproplans.com/contact` shows the inquiry form inside the page, with no "Preview note".
 
 ## After deploying: check on the live site

@@ -9,7 +9,7 @@ import pathlib, shutil, subprocess, sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
 PKG = DIST / "dnaproplans-production"
-PUBLIC_FILES = ["styles.css", "main.js", "consent.js", "favicon.svg", "apple-touch-icon.png", "robots.txt", "sitemap.xml", "version.txt"]
+PUBLIC_FILES = ["_redirects", "styles.css", "main.js", "consent.js", "favicon.svg", "apple-touch-icon.png", "robots.txt", "sitemap.xml", "version.txt"]
 PUBLIC_DIRS = ["images", "icons", "fonts"]
 
 subprocess.run([sys.executable, str(ROOT / "tools" / "build.py"), str(ROOT)], check=True, stdout=subprocess.DEVNULL)
