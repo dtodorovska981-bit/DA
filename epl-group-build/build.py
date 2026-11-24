@@ -48,6 +48,8 @@ def webpage(path, title, desc, kind="WebPage"):
     return {"@type": kind, "@id": clean_url(path) + "#page", "url": clean_url(path), "name": title, "description": desc,
             "isPartOf": {"@id": SITE + "/#site"}, "about": {"@id": SITE + "/#org"}}
 
+OG_TITLES = {}   # pages whose share title differs from the browser title
+
 def head(title, desc, path, extra_css=""):
     return f'''<!DOCTYPE html>
 <html lang="en">
@@ -56,7 +58,7 @@ def head(title, desc, path, extra_css=""):
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
   <meta name="description" content="{desc}">
-  <meta property="og:title" content="{title}">
+  <meta property="og:title" content="{OG_TITLES.get(path, title)}">
   <meta property="og:description" content="{desc}">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="EPL Group">
@@ -132,6 +134,7 @@ FOOTER = f'''  <footer class="footer">
           <li><a href="track-record.html">Track record</a></li>
           <li><a href="insights.html">Insights</a></li>
           <li><a href="events.html">Events</a></li>
+          <li><a href="circle.html">EPL Circle</a></li>
           <li><a href="faq.html">FAQ</a></li>
           <li><a href="{JOIN}" target="_blank" rel="noopener">Careers</a></li></ul></div>
         <div><h4>Connect</h4><ul>
@@ -1196,7 +1199,7 @@ def calendar():
         cls = "ev-cal__day" + (" wk1" if i < 7 and kind != "out" else "") + (" out" if kind else "") + (" last" if i >= 28 else "")
         if kind == "" and d in (1, 3):
             key = "dec1" if d == 1 else "dec3"
-            label = "Tuesday 1 December: private dinner, Miami Beach" if d == 1 else "Thursday 3 December: breakfast debate, Downtown Miami"
+            label = "Tuesday 1 December: private dinner, Key Biscayne" if d == 1 else "Thursday 3 December: breakfast debate, Downtown Miami"
             out += (f'<a class="{cls}" href="#{key}" data-ev="{key}" aria-label="{label}" style="--dl:{1.1 if d == 1 else 1.5}s">'
                     f'{d}{RING.replace("<path", "<path style=\"animation-delay:var(--dl)\"")}<i class="ev-cal__dot"></i></a>')
         else:
@@ -1212,7 +1215,7 @@ EVENTS = f"""    <section class="ev-hero" aria-labelledby="ev-title">
             <p class="ev-eyebrow ev-rise" style="--i:0">Mark your calendar &nbsp;·&nbsp; Miami</p>
             <h1 id="ev-title" class="ev-rise" style="--i:1">December in Miami.</h1>
             <p class="ev-hero__sub ev-rise" style="--i:2">Two conversations for family offices and dealmakers</p>
-            <p class="ev-hero__lead ev-rise" style="--i:3">Two small, invite-only gatherings EPL is hosting in Miami during Art Basel: a private dinner on Miami Beach and a closed-room debate in Downtown Miami. Seats are reserved through the investor onboarding form.</p>
+            <p class="ev-hero__lead ev-rise" style="--i:3">Two small, invite-only gatherings EPL is hosting in Miami during Art Basel: a private dinner in Key Biscayne and a closed-room debate in Downtown Miami. Seats are reserved through the investor onboarding form.</p>
             <div class="ev-hero__actions ev-rise" style="--i:4">
               {btn("Reserve your seat", "investors.html", "coral")}
               {btn("About the events", "#dec1", "glass")}
@@ -1225,9 +1228,9 @@ EVENTS = f"""    <section class="ev-hero" aria-labelledby="ev-title">
         </div>
         <div class="ev-cards">
           <article class="ev-card ev-glass ev-rise" style="--i:5" data-ev="dec1">
-            <p class="ev-card__when">Tue 1 Dec &nbsp;·&nbsp; 5 to 11 PM</p>
+            <p class="ev-card__when">Tue 1 Dec &nbsp;·&nbsp; From 5 PM</p>
             <h2>After the Midterms: AI, Cyber Risk &amp; the Next Investment Cycle</h2>
-            <p>Private dinner for SFO principals, waterfront villa, Miami Beach</p>
+            <p>Private dinner for SFO principals, Key Biscayne</p>
             <div class="ev-card__actions">
               <a class="btn btn--coral" href="investors.html"><span>Reserve your seat</span><span class="btn__icon">{ARROW}</span></a>
             </div>
@@ -1252,8 +1255,8 @@ EVENTS = f"""    <section class="ev-hero" aria-labelledby="ev-title">
         <div class="ev-date r">
           <div class="ev-date__big">{blk("coral", 62, "navy", "navy", 40, "coral", 0)}<p class="ev-date__num">01<small>Tuesday<br>December 2026</small></p></div>
           <dl class="ev-facts">
-            <div><dt>Time</dt><dd>5 to 11 PM</dd></div>
-            <div><dt>Place</dt><dd>Waterfront villa, Miami Beach</dd></div>
+            <div><dt>Time</dt><dd>5:00 PM, open evening after 9:00 PM</dd></div>
+            <div><dt>Place</dt><dd>Key Biscayne</dd></div>
             <div><dt>Format</dt><dd>Private dinner for SFO principals</dd></div>
             <div><dt>Seats</dt><dd>Limited to 20 principals</dd></div>
           </dl>
@@ -1261,11 +1264,25 @@ EVENTS = f"""    <section class="ev-hero" aria-labelledby="ev-title">
         <div class="ev-body">
           <p class="ev-kicker r">Event 01 &nbsp;·&nbsp; Private dinner</p>
           <h2 class="r" style="--d:1">After the Midterms: <strong>AI, Cyber Risk &amp; the Next Investment Cycle</strong></h2>
-          <p class="r" style="--d:2">A private dinner for single-family office principals at a waterfront villa on Miami Beach, from 5:00 to 11:00 PM. Seating is limited to 20 principals, so please consider this a save the date.</p>
+          <p class="r" style="--d:2">A private dinner for single-family office principals in Key Biscayne. Market intelligence, peer exchange and curated networking, hosted by EPL Group on the eve of the Art Basel Miami Beach VIP Days. Seating is limited to 20 principals.</p>
           <ul class="ev-tags r" style="--d:2"><li>The midterms</li><li>AI</li><li>Cyber risk</li><li>The next investment cycle</li></ul>
           <div class="ev-actions r" style="--d:3">
             <a class="btn btn--black" href="investors.html"><span>Reserve your seat</span><span class="btn__icon">{ARROW}</span></a>
             <p class="ev-fine">Invite-only. Reserve through the investor onboarding form.</p>
+          </div>
+
+          <p class="ev-sub r">Your evening</p>
+          <ol class="ev-timeline r">
+            <li><span class="t">5:00 p.m.</span><b>Cocktails</b><span>5:00 to 6:00 PM.</span></li>
+            <li><span class="t">6:00 p.m.</span><b>Seated dinner</b><span>6:00 to 9:00 PM.</span></li>
+            <li><span class="t">9:00 p.m.</span><b>Open evening</b><span>9:00 PM onwards.</span></li>
+          </ol>
+
+          <p class="ev-sub r">The conversation is led by</p>
+          <div class="ev-lead r">
+            <b>Professor David Andolfatto</b>
+            <span>Chair of the Department of Economics, Miami Herbert Business School</span>
+            <p>Professor Andolfatto has written and spoken extensively on monetary and fiscal policy, national debt and inflation. His experience includes Senior Vice President and advisor to the president at the Federal Reserve Bank of St. Louis.</p>
           </div>
         </div>
       </div>
@@ -1356,7 +1373,7 @@ EVENTS = f"""    <section class="ev-hero" aria-labelledby="ev-title">
                 <p class="ev-kicker">Secure registration form</p>
                 <h4>Choose your events in the investor onboarding form</h4>
                 <ul class="ev-picks">
-                  <li><span class="ev-picks__box" aria-hidden="true"></span><div><b>Tue 1 Dec &nbsp;·&nbsp; Private dinner for SFO principals</b><span>Waterfront villa, Miami Beach, 5 to 11 PM. Limited to 20 seats.</span></div></li>
+                  <li><span class="ev-picks__box" aria-hidden="true"></span><div><b>Tue 1 Dec &nbsp;·&nbsp; Private dinner for SFO principals</b><span>Key Biscayne, from 5 PM. Limited to 20 seats.</span></div></li>
                   <li><span class="ev-picks__box" aria-hidden="true"></span><div><b>Thu 3 Dec &nbsp;·&nbsp; Closed-room debate</b><span>Miami DDA, Downtown Miami, 9:30 AM ET.</span></div></li>
                 </ul>
                 <p class="ev-embed__hint">Tick one or both under "December Events" at the top of the form, then complete your investor profile.</p>
@@ -1380,7 +1397,7 @@ EVENTS = f"""    <section class="ev-hero" aria-labelledby="ev-title">
             <div class="ev-glass r" style="--d:2">
               <h3>At a glance</h3>
               <dl>
-                <div><dt>Tue 1 Dec</dt><dd>Private dinner, Miami Beach<br>5 to 11 PM, 20 seats</dd></div>
+                <div><dt>Tue 1 Dec</dt><dd>Private dinner, Key Biscayne<br>From 5 PM, 20 seats</dd></div>
                 <div><dt>Thu 3 Dec</dt><dd>Closed-room debate, Miami DDA<br>9:30 AM ET</dd></div>
               </dl>
               <p>Both events are invite-only. Registration is through the <a class="mail" href="investors.html">investor form</a>.</p>
@@ -1395,6 +1412,170 @@ EVENTS = f"""    <section class="ev-hero" aria-labelledby="ev-title">
 page("events.html", "December in Miami: two events for family offices and dealmakers | EPL Group",
      "Two EPL Group events in Miami: a private dinner for selected families on December 1 and the Sunbelt Acquisition Playbook breakfast debate at Miami DDA on December 3, 2026.",
      "events.html", EVENTS, closing=False)
+
+# ---------------------------------------------------------------- EPL CIRCLE (private investor dinners)
+import math
+CIR_STEPS = [
+    ("Investor targeting and curation", "We identify and invite investors whose investment focus, stage preferences, sector expertise and capital profile align with your financing objectives."),
+    ("Private investor dinner", "We organize an invitation-only dinner with approximately 8 to 12 qualified investors, selected for relevance and potential fit."),
+    ("Company positioning and preparation", "We work with your leadership team to prepare the company briefing, so invited investors understand the opportunity ahead of the dinner."),
+    ("Introductions and follow-up", "We facilitate introductions, coordinate post-dinner follow-up and help track investor engagement and potential next steps."),
+]
+CIR_FOR = [
+    ("Seed", "Companies preparing for their first institutional financing."),
+    ("Series A", "Companies looking to expand their investor base and accelerate growth."),
+    ("Series B and later", "Companies seeking growth capital, strategic investors or new financing relationships."),
+]
+CIR_NETWORK = ["Venture capital firms", "Family offices", "High-net-worth investors", "Private investment groups", "Strategic investors"]
+CIR_WHY = [
+    ("Curated, not crowded.", "A deliberately selected group of relevant investors."),
+    ("Private and relationship-driven.", "A discreet environment for substantive conversations."),
+    ("Relevant investor access.", "Targeting based on your sector, stage and financing objectives."),
+    ("Senior-level engagement.", "Direct interaction with founders, executives and investment decision-makers."),
+    ("Focused execution.", "A structured process before, during and after each dinner."),
+]
+CIR_FAQ = [
+    ("What is EPL Circle?", "EPL Circle is EPL Group's private investor dinner program. It connects Seed, Series A and Series B companies with qualified investors through invitation-only dinners."),
+    ("How many investors attend each dinner?", "Approximately 8 to 12 qualified investors, selected for relevance and potential fit."),
+    ("Which companies can take part?", "Ambitious companies seeking institutional and private investment, from Seed-stage companies preparing a first institutional financing to Series B and later-stage companies seeking growth capital."),
+    ("Which types of investors are invited?", "The network may include venture capital firms, family offices, high-net-worth investors, private investment groups and strategic investors, chosen to match your sector, stage and financing objectives."),
+    ("How does my company prepare?", "We work with your leadership team to prepare the company briefing, so invited investors understand the opportunity before the dinner."),
+    ("What happens after the dinner?", "We facilitate introductions, coordinate follow-up and help track investor engagement and potential next steps."),
+    ("How is EPL Circle structured commercially?", "The engagement structure depends on the company's stage, fundraising objectives, investor profile and scope. Contact EPL Group to discuss your situation."),
+]
+CIR_ALT = "Private dinner table set for an EPL Circle investor evening"
+SEATS = 10
+def circle_table():
+    seats = ""
+    for i in range(SEATS):
+        a = math.radians(-90 + i * 360 / SEATS)
+        x, y = 50 + 41 * math.cos(a), 50 + 41 * math.sin(a)
+        seats += (f'<span class="cir-seat{" cir-seat--you" if i == 0 else ""}" style="left:{x:.2f}%;top:{y:.2f}%;--i:{i};--a:{-90 + i * 360 / SEATS + 90:.0f}deg">'
+                  f'<i></i></span>')
+    return f'''<div class="cir-table" role="img" aria-label="{CIR_ALT}">
+            <span class="cir-table__ring" aria-hidden="true"></span>
+            <span class="cir-table__top" aria-hidden="true"><img src="assets/mesh.jpg" alt="" width="1200" height="640"></span>
+            <span class="cir-table__mid" aria-hidden="true"><b>EPL Circle</b><small>8 to 12 investors</small></span>
+            <span aria-hidden="true">{seats}</span>
+            <span class="cir-table__tag" aria-hidden="true">Your company</span>
+          </div>'''
+
+CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
+      <div class="wrap cir-hero__grid">
+        <div class="cir-hero__text">
+          <p class="eyebrow r">Private Investor Dinners</p>
+          <h1 class="display r" id="cir-title" style="--d:1">EPL Circle: <strong>Curated Access to Private Capital</strong></h1>
+          <p class="lead r" style="--d:2">Invitation-only dinners that put your company in front of the right investors, in Miami, New York and San Francisco.</p>
+          <div class="page-hero__actions r" style="--d:3">{btn("Request an introduction", "pitch.html", "coral")}</div>
+        </div>
+        <div class="cir-hero__art r r--fade" style="--d:2" data-reveal-group>
+          {circle_table()}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="cir-what">
+          <div>
+            <p class="eyebrow r">The program</p>
+            <h2 class="display r" style="--d:1">What is <strong>EPL Circle?</strong></h2>
+          </div>
+          <div>
+            <p class="definition r">EPL Circle is EPL Group's private investor dinner program for Seed, Series A and Series B companies. Each dinner brings together approximately 8 to 12 qualified investors, selected for relevance and potential fit with your financing objectives.</p>
+            <p class="lead r" style="--d:1">It is a focused investor engagement, not a traditional networking event or a large-scale pitch session.</p>
+          </div>
+        </div>
+        <div class="ab-stats cir-stats r" style="--d:1">
+          <div><b>8 to 12</b><span>Qualified investors at each dinner</span></div>
+          <div><b>Seed to B</b><span>Seed, Series A and Series B companies</span></div>
+          <div><b>3 cities</b><span>Miami, New York and San Francisco</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cir-dark">
+      <div class="wrap">
+        <div class="section__head section__head--gap56">
+          <div class="title">
+            <p class="eyebrow r">The process</p>
+            <h2 class="display r" style="--d:1">How an EPL Circle <strong>dinner works</strong></h2>
+          </div>
+        </div>
+        <ol class="cir-steps r r--fade" data-reveal-group>
+''' + "".join(f'''          <li style="--i:{i}"><span class="cir-steps__n">0{i + 1}</span><h3>{t}</h3><p>{d}</p></li>
+''' for i, (t, d) in enumerate(CIR_STEPS)) + f'''        </ol>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+{section_head("", "Stages", "Who EPL Circle <strong>is for</strong>", gap56=True)}
+        <div class="cards cir-for">
+''' + "".join(f'''          <div class="card r" style="--d:{i}">{FIG_BLK[i]}<h3>{t}</h3><p>{d}</p></div>
+''' for i, (t, d) in enumerate(CIR_FOR)) + f'''        </div>
+        <div class="cir-network r">
+          <p>Our investor network and targeting approach may include venture capital firms, family offices, high-net-worth investors, private investment groups and strategic investors.</p>
+          <ul aria-hidden="true">{"".join(f"<li>{n}</li>" for n in CIR_NETWORK)}</ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--line">
+      <div class="wrap two-col">
+        <div class="sticky-aside">
+          <p class="eyebrow r">The difference</p>
+          <h2 class="display r" style="--d:1">Why <strong>EPL Circle</strong></h2>
+        </div>
+        <ul class="cir-why">
+''' + "".join(f'''          <li class="r" style="--d:{i % 3}"><span>0{i + 1}</span><div><h3>{t}</h3><p>{d}</p></div></li>
+''' for i, (t, d) in enumerate(CIR_WHY)) + f'''        </ul>
+      </div>
+    </section>
+
+    <section class="section section--line">
+      <div class="wrap">
+{section_head("", "Locations", "Where <strong>we host</strong>", '<p class="lead">Miami, New York and San Francisco, with other selected markets.</p>', gap56=True)}
+        <div class="cir-cities r r--fade">
+          <div><span>01</span><b>Miami</b></div>
+          <div><span>02</span><b>New York</b></div>
+          <div><span>03</span><b>San Francisco</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--line">
+      <div class="wrap">
+{section_head("", "FAQ", "Frequently asked <strong>questions</strong>", gap56=True)}
+{faq_block(CIR_FAQ, note="About EPL Circle", more=False)}        <p class="cir-links r">EPL Circle is a program of <a href="index.html">EPL Group</a>. To talk to us, use the <a href="pitch.html">contact form</a>.</p>
+      </div>
+    </section>
+
+    <section class="closing" id="contact-band">
+      <img class="closing__bg" src="assets/closing-band.jpg" alt="" data-parallax="0.08" width="1440" height="640" loading="lazy">
+      <div class="closing__veil" aria-hidden="true"></div>
+      <div class="wrap">
+        <p class="closing__kicker r">EPL Circle</p>
+        <h2 class="r" style="--d:1">Let's bring the right investors<br><span class="dim">to the table.</span></h2>
+        <p class="r" style="--d:2">Whether you are preparing a Seed round, raising a Series A or pursuing a larger growth financing, EPL Circle helps create the investor relationships that can move your financing objectives forward.</p>
+        <div class="closing__actions r" style="--d:3">
+          {btn("Contact EPL Group", "pitch.html")}
+        </div>
+      </div>
+    </section>
+'''
+CIR_TITLE = "EPL Circle | Private Investor Dinners for Seed to Series B"
+CIR_DESC = "EPL Circle hosts invitation-only dinners with 8 to 12 qualified investors for Seed to Series B companies in Miami, New York and San Francisco."
+OG_TITLES["circle.html"] = "EPL Circle: Private Investor Dinners"
+page("circle.html", CIR_TITLE, CIR_DESC, "circle.html", CIRCLE, closing=False,
+     jsonld=ld(webpage("circle.html", CIR_TITLE, CIR_DESC),
+               {"@type": "Service", "@id": clean_url("circle.html") + "#service", "name": "EPL Circle", "alternateName": "EPL Circle Private Investor Dinners",
+                "description": "EPL Circle is EPL Group's private investor dinner program for Seed, Series A and Series B companies, bringing approximately 8 to 12 qualified investors together at an invitation-only dinner.",
+                "url": clean_url("circle.html"), "provider": {"@type": "Organization", "@id": SITE + "/#org", "name": "EPL Group", "url": SITE},
+                "areaServed": [{"@type": "City", "name": c} for c in ("Miami", "New York", "San Francisco")],
+                "audience": {"@type": "BusinessAudience", "audienceType": "Seed, Series A and Series B companies"}},
+               {"@type": "FAQPage", "@id": clean_url("circle.html") + "#faq", "mainEntity": [
+                   {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in CIR_FAQ[:6]]}))
 
 # ---------------------------------------------------------------- SITEMAP / ROBOTS
 TODAY = datetime.date.today().isoformat()

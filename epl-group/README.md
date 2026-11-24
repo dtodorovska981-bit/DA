@@ -4,7 +4,7 @@ Static site, nothing to build at deploy time. Built from the Figma file "EPL Gro
 (page "Homepage v5, editorial layers").
 
 ## Pages
-index.html (home), about.html, faq.html, platforms.html, team.html, track-record.html, partners.html,
+index.html (home), about.html, faq.html, circle.html (EPL Circle), platforms.html, team.html, track-record.html, partners.html,
 insights.html, events.html, pitch.html, investors.html, careers.html, 404.html
 
 ## Files
