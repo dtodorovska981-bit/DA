@@ -1557,7 +1557,7 @@ CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
           <p class="eyebrow r">Private Investor Dinners</p>
           <h1 class="display r" id="cir-title" style="--d:1">Circle: <strong>Curated Access to Private Capital</strong></h1>
           <p class="lead r" style="--d:2">Invitation-only dinners that put your company in front of the right investors, in Miami, New York and San Francisco.</p>
-          <div class="page-hero__actions r" style="--d:3">{btn("Request an introduction", "pitch.html", "coral")}</div>
+          <div class="page-hero__actions r" style="--d:3">{btn("Request an introduction", "#request", "coral")}</div>
         </div>
         <div class="cir-hero__art r r--fade" style="--d:2" data-reveal-group>
           {circle_table()}
@@ -1630,10 +1630,26 @@ CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
 {circle_map()}      </div>
     </section>
 
+    <section class="section section--line" id="request">
+      <div class="wrap two-col two-col--form">
+        <div>
+          {pipefy_embed("NsPFNtGJ", "Circle request", None, None, None, "Circle request form", "Tell us about your company and your raise",
+                        "Your company, your stage, the investors you want to meet and your preferred dinner city.", "Open the request form",
+                        "Request an introduction", "For Seed, Series A and Series B companies. Takes about 5 minutes.", "", "client")}
+        </div>
+        <aside class="sticky-aside">
+          <p class="eyebrow r">Request an introduction</p>
+          <h2 class="display r" style="--d:1">Tell us about your raise. <strong>A partner follows up.</strong></h2>
+          <p class="lead r" style="--d:2">Share your company, your stage, the investors you want to meet and your preferred dinner city: Miami, New York or San Francisco.</p>
+          <p class="fine r" style="--d:3">This form is for companies seeking investor introductions. Investors use the <a href="investors.html">investor form</a>.</p>
+        </aside>
+      </div>
+    </section>
+
     <section class="section section--line">
       <div class="wrap">
 {section_head("", "FAQ", "Frequently asked <strong>questions</strong>", gap56=True)}
-{faq_block(CIR_FAQ, note="About Circle", more=False)}        <p class="cir-links r">Circle is a program of <a href="index.html">EPL Group</a>. To talk to us, use the <a href="pitch.html">contact form</a>.</p>
+{faq_block(CIR_FAQ, note="About Circle", more=False)}        <p class="cir-links r">Circle is a program of <a href="index.html">EPL Group</a>. To talk to us, use the <a href="#request">request form</a>.</p>
       </div>
     </section>
 
@@ -1645,7 +1661,7 @@ CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
         <h2 class="r" style="--d:1">Let's bring the right investors<br><span class="dim">to the table.</span></h2>
         <p class="r" style="--d:2">Whether you are preparing a Seed round, raising a Series A or pursuing a larger growth financing, Circle helps create the investor relationships that can move your financing objectives forward.</p>
         <div class="closing__actions r" style="--d:3">
-          {btn("Contact EPL Group", "pitch.html")}
+          {btn("Contact EPL Group", "#request")}
         </div>
       </div>
     </section>

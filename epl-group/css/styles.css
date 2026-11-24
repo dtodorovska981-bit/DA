@@ -1578,3 +1578,5 @@ a.ev-cal__day.is-hot .ev-cal__ring path, a.ev-cal__day:hover .ev-cal__ring path 
   .cookies { transition: none; transform: none; }
 }
 .cir-pin:nth-child(4) i { animation-delay: .4s; } .cir-pin:nth-child(5) i { animation-delay: 1.2s; }
+.sticky-aside .fine { font-size: 13px; line-height: 1.55; color: var(--grey); }
+.sticky-aside .fine a { color: var(--ink); border-bottom: 1px solid var(--coral); }

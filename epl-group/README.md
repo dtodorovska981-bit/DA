@@ -15,7 +15,7 @@ css/styles.css, js/main.js, assets/ (photos, logo and monogram SVGs), favicon.sv
 - Insights articles: one Markdown file per article in `../epl-group-build/insights/` (see the README there). Each one gets a page under `insights/` and a card on the Insights page.
 - `sitemap.xml` and `robots.txt` are generated on each build.
 - Google Analytics 4: every page carries the Google tag from the Analytics property (container GTM-W9FDVN8D, which holds G-CBT69W3QW3), with consent mode. No Analytics cookies are used until the visitor accepts in the cookie card; before a choice only cookieless signals are sent, and visitors who decline send nothing. "Cookie settings" in the footer reopens the card. Copies of the site not on eplgroup.co send nothing.
-- The Pitch and Investors pages embed Pipefy forms (pitch: czfdp_CJ, investor onboarding: qyeXlWs4). The Events page embeds the investor onboarding form too.
+- The Pitch and Investors pages embed Pipefy forms (pitch: czfdp_CJ, investor onboarding: qyeXlWs4, Circle client requests: NsPFNtGJ on the Circle page). The Events page embeds the investor onboarding form too.
 - No email addresses on the site: founders use the Pitch form, investors the Investors form, and the Careers page sends people to JOIN.
 - Deploy as plain static files, for example on Cloudflare Workers static assets.
 - Figures and transactions are placeholders taken from the current EPL site; confirm them before launch.
