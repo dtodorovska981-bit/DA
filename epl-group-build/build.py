@@ -21,7 +21,7 @@ def ext_btn(label, href, kind="ghost"):
     return f'<a class="btn btn--{kind}" href="{href}" target="_blank" rel="noopener"><span>{label}</span><span class="btn__icon">{ARROW}</span></a>'
 
 NAV = [("Platforms", "platforms.html"), ("Team", "team.html"), ("Track record", "track-record.html"),
-       ("Partners", "partners.html"), ("Insights", "insights.html"), ("Events", "events.html")]
+       ("Partners", "partners.html"), ("Insights", "insights.html"), ("Events", "events.html"), ("EPL Circle", "circle.html")]
 
 SITE = "https://eplgroup.co"
 LINKEDIN = "https://www.linkedin.com/company/epl-group-inc"
