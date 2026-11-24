@@ -366,4 +366,50 @@
       })
       .catch(function () { /* keep the posts already on the page */ });
   }
+  /* ---------- cookie consent: Analytics stays off until the visitor accepts ----------
+     The choice is stored as "epl-cookies" = "yes" | "no". "Cookie settings" in the footer reopens the card. */
+  (function () {
+    var KEY = 'epl-cookies';
+    var read = function () { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
+    var write = function (v) { try { localStorage.setItem(KEY, v); } catch (e) {} };
+    var card = null;
+    var close = function () { if (!card) return; card.classList.remove('is-open'); var c = card; card = null; setTimeout(function () { c.remove(); }, 450); };
+    var decide = function (yes) {
+      write(yes ? 'yes' : 'no');
+      if (window.eplAnalytics) window.eplAnalytics(yes);
+      if (!yes) {
+        /* remove Analytics cookies already set */
+        document.cookie.split(';').forEach(function (c) {
+          var name = c.split('=')[0].trim();
+          if (/^_ga/.test(name)) ['', '; domain=' + location.hostname, '; domain=.' + location.hostname.replace(/^www\./, '')].forEach(function (d) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + d;
+          });
+        });
+      }
+      close();
+    };
+    var open = function () {
+      if (card) return;
+      var choice = read();
+      card = document.createElement('section');
+      card.className = 'cookies';
+      card.setAttribute('role', 'dialog');
+      card.setAttribute('aria-label', 'Cookie choice');
+      card.innerHTML =
+        '<div class="cookies__icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 3a13 13 0 1 0 13 13 5.5 5.5 0 0 1-6.2-6.2A5.5 5.5 0 0 1 16 3z"/><circle cx="11.5" cy="13" r="1.6"/><circle cx="17.5" cy="20.5" r="1.6"/><circle cx="10.5" cy="20" r="1.1"/><circle cx="19" cy="13.5" r="1.1"/></svg></div>' +
+        '<div class="cookies__text"><h2>A note on cookies</h2>' +
+        '<p>We would like to use Google Analytics cookies to see how this site is used and improve it. No advertising cookies, and nothing is set unless you accept.</p>' +
+        (choice ? '<p class="cookies__now">Your current choice: <b>' + (choice === 'yes' ? 'accepted' : 'declined') + '</b></p>' : '') + '</div>' +
+        '<div class="cookies__actions"><button type="button" class="cookies__btn cookies__btn--yes" data-cookie="yes">Accept</button>' +
+        '<button type="button" class="cookies__btn" data-cookie="no">Decline</button></div>';
+      card.addEventListener('click', function (ev) {
+        var b = ev.target.closest('[data-cookie]');
+        if (b) decide(b.getAttribute('data-cookie') === 'yes');
+      });
+      document.body.appendChild(card);
+      requestAnimationFrame(function () { requestAnimationFrame(function () { if (card) card.classList.add('is-open'); }); });
+    };
+    document.querySelectorAll('[data-cookie-settings]').forEach(function (b) { b.addEventListener('click', open); });
+    if (!read()) setTimeout(open, 1200);
+  })();
 })();

@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script>if(!/(^|\.)eplgroup\.co$/.test(location.hostname))window['ga-disable-G-CBT69W3QW3']=true;</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CBT69W3QW3"></script>
+  <!-- Google Analytics, loaded only after cookie consent -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-CBT69W3QW3');
+    (function () {
+      var id = 'G-CBT69W3QW3', live = /(^|\.)eplgroup\.co$/.test(location.hostname), on = false;
+      window.eplAnalytics = function (allow) {
+        window['ga-disable-' + id] = !allow;
+        if (!allow || on || !live) return;
+        on = true;
+        gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+        gtag('js', new Date());
+        gtag('config', id);
+        var s = document.createElement('script');
+        s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+        document.head.appendChild(s);
+      };
+      try { if (localStorage.getItem('epl-cookies') === 'yes') window.eplAnalytics(true); } catch (e) {}
+    })();
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -449,7 +460,7 @@
       </div>
       <div class="footer__legal">
         <p>Securities are offered through Finalis Securities LLC, Member FINRA / SIPC. EPL Group is not a registered broker-dealer, and Finalis Securities LLC and EPL Group are separate, unaffiliated entities. This website is for information only and is not an offer or solicitation to buy or sell any security.</p>
-        <p>© <span id="year">2026</span> EPL Group Inc. All rights reserved.</p>
+        <p>© <span id="year">2026</span> EPL Group Inc. All rights reserved. <button type="button" class="footer__cookies" data-cookie-settings>Cookie settings</button></p>
       </div>
     </div>
   </footer>

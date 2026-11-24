@@ -50,17 +50,30 @@ def webpage(path, title, desc, kind="WebPage"):
 
 OG_TITLES = {}   # pages whose share title differs from the browser title
 
-# Google Analytics 4 (EPL Group property). The first line keeps test copies of the site
-# (previews, other domains) from sending visits; only eplgroup.co is counted.
+# Google Analytics 4 (EPL Group property), behind cookie consent.
+# Nothing is loaded from Google until the visitor accepts in the cookie banner (js/main.js).
+# The choice is kept in localStorage as "epl-cookies" = "yes" or "no". Only eplgroup.co is counted,
+# so previews and test copies never send visits.
 GA_ID = "G-CBT69W3QW3"
-GA_TAG = f'''  <!-- Google tag (gtag.js) -->
-  <script>if(!/(^|\\.)eplgroup\\.co$/.test(location.hostname))window['ga-disable-{GA_ID}']=true;</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
+GA_TAG = f'''  <!-- Google Analytics, loaded only after cookie consent -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){{dataLayer.push(arguments);}}
-    gtag('js', new Date());
-    gtag('config', '{GA_ID}');
+    (function () {{
+      var id = '{GA_ID}', live = /(^|\\.)eplgroup\\.co$/.test(location.hostname), on = false;
+      window.eplAnalytics = function (allow) {{
+        window['ga-disable-' + id] = !allow;
+        if (!allow || on || !live) return;
+        on = true;
+        gtag('consent', 'default', {{ analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' }});
+        gtag('js', new Date());
+        gtag('config', id);
+        var s = document.createElement('script');
+        s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+        document.head.appendChild(s);
+      }};
+      try {{ if (localStorage.getItem('epl-cookies') === 'yes') window.eplAnalytics(true); }} catch (e) {{}}
+    }})();
   </script>
 '''
 
@@ -160,7 +173,7 @@ FOOTER = f'''  <footer class="footer">
       </div>
       <div class="footer__legal">
         <p>Securities are offered through Finalis Securities LLC, Member FINRA / SIPC. EPL Group is not a registered broker-dealer, and Finalis Securities LLC and EPL Group are separate, unaffiliated entities. This website is for information only and is not an offer or solicitation to buy or sell any security.</p>
-        <p>© <span id="year">2026</span> EPL Group Inc. All rights reserved.</p>
+        <p>© <span id="year">2026</span> EPL Group Inc. All rights reserved. <button type="button" class="footer__cookies" data-cookie-settings>Cookie settings</button></p>
       </div>
     </div>
   </footer>
