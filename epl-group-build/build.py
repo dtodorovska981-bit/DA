@@ -50,11 +50,25 @@ def webpage(path, title, desc, kind="WebPage"):
 
 OG_TITLES = {}   # pages whose share title differs from the browser title
 
+# Google Analytics 4 (EPL Group property). The first line keeps test copies of the site
+# (previews, other domains) from sending visits; only eplgroup.co is counted.
+GA_ID = "G-CBT69W3QW3"
+GA_TAG = f'''  <!-- Google tag (gtag.js) -->
+  <script>if(!/(^|\\.)eplgroup\\.co$/.test(location.hostname))window['ga-disable-{GA_ID}']=true;</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+    gtag('config', '{GA_ID}');
+  </script>
+'''
+
 def head(title, desc, path, extra_css=""):
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+{GA_TAG}  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
   <meta name="description" content="{desc}">
