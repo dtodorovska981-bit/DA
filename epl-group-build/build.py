@@ -1523,6 +1523,28 @@ def circle_table():
             <span aria-hidden="true">{chips}</span>
           </div>'''
 
+def circle_map():
+    """Where we host: the United States drawn in horizontal lines, with the three cities.
+    data/us-lines.json holds the line segments (made once from US Census outlines)."""
+    m = json.loads((HERE / "data" / "us-lines.json").read_text())
+    w, h = m["width"], m["height"]
+    d = "".join(f"M{x1} {y}H{x2}" for x1, y, x2 in m["segments"])
+    side = {"San Francisco": "r"}                       # label to the right of the dot; the others sit to the left
+    pins = "".join(
+        f'''<button type="button" class="cir-pin cir-pin--{side.get(c["name"], "l")}" data-pin="{i}" style="left:{c["x"] / w * 100:.2f}%;top:{c["y"] / h * 100:.2f}%"><i></i><span>{c["name"]}</span></button>'''
+        for i, c in enumerate(m["cities"]))
+    items = "".join(f'''<li><button type="button" data-pin="{i}"><span>0{i + 1}</span><b>{c["name"]}</b></button></li>''' for i, c in enumerate(m["cities"]))
+    return f'''        <div class="cir-map r r--fade" data-linemap>
+          <div class="cir-map__stage">
+            <svg class="cir-map__base" viewBox="0 0 {w} {h}" role="img" aria-label="Map of the United States with Miami, New York and San Francisco marked"><defs><path id="usLines" d="{d}"/></defs><use href="#usLines"/></svg>
+            <div class="cir-map__glow" aria-hidden="true"><svg viewBox="0 0 {w} {h}"><use href="#usLines"/></svg></div>
+            <div class="cir-map__pins">{pins}</div>
+          </div>
+          <ol class="cir-map__list">{items}</ol>
+          <p class="cir-map__note">With other selected markets.</p>
+        </div>
+'''
+
 CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
       <div class="wrap cir-hero__grid">
         <div class="cir-hero__text">
@@ -1600,12 +1622,7 @@ CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
     <section class="section section--line">
       <div class="wrap">
 {section_head("", "Locations", "Where <strong>we host</strong>", '<p class="lead">Miami, New York and San Francisco, with other selected markets.</p>', gap56=True)}
-        <div class="cir-cities r r--fade">
-          <div><span>01</span><b>Miami</b></div>
-          <div><span>02</span><b>New York</b></div>
-          <div><span>03</span><b>San Francisco</b></div>
-        </div>
-      </div>
+{circle_map()}      </div>
     </section>
 
     <section class="section section--line">

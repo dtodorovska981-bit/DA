@@ -366,6 +366,51 @@
       })
       .catch(function () { /* keep the posts already on the page */ });
   }
+  /* ---------- EPL Circle: line map of host cities ----------
+     A glow follows the mouse across the map. With no mouse on it (and on touch screens),
+     the glow moves from city to city on its own. */
+  var lineMap = document.querySelector('[data-linemap]');
+  if (lineMap) {
+    var lmStage = lineMap.querySelector('.cir-map__stage');
+    var lmGlow = lineMap.querySelector('.cir-map__glow');
+    var lmPins = Array.prototype.slice.call(lineMap.querySelectorAll('.cir-pin'));
+    var lmPts = lmPins.map(function (p) { return { x: parseFloat(p.style.left), y: parseFloat(p.style.top) }; });
+    var lmCur = { x: lmPts[0].x, y: lmPts[0].y }, lmTarget = lmPts[0], lmActive = 0, lmHold = false, lmSeen = false, lmRaf = 0;
+    var lmDraw = function () {
+      lmCur.x += (lmTarget.x - lmCur.x) * (reduce ? 1 : 0.14);
+      lmCur.y += (lmTarget.y - lmCur.y) * (reduce ? 1 : 0.14);
+      lmGlow.style.setProperty('--mx', lmCur.x.toFixed(2) + '%');
+      lmGlow.style.setProperty('--my', lmCur.y.toFixed(2) + '%');
+      lmRaf = (Math.abs(lmTarget.x - lmCur.x) + Math.abs(lmTarget.y - lmCur.y) > 0.05) ? requestAnimationFrame(lmDraw) : 0;
+    };
+    var lmGo = function (pt) { lmTarget = pt; if (!lmRaf) lmRaf = requestAnimationFrame(lmDraw); };
+    var lmMark = function (i) {
+      lineMap.querySelectorAll('[data-pin]').forEach(function (el) { el.classList.toggle('is-on', +el.getAttribute('data-pin') === i); });
+    };
+    var lmCity = function (i) { lmActive = i; lmMark(i); lmGo(lmPts[i]); };
+    lmStage.addEventListener('pointermove', function (ev) {
+      if (ev.pointerType === 'touch') return;
+      var r = lmStage.getBoundingClientRect();
+      var pt = { x: (ev.clientX - r.left) / r.width * 100, y: (ev.clientY - r.top) / r.height * 100 };
+      lmHold = true; lmGo(pt);
+      var near = -1;
+      lmPts.forEach(function (c, i) { if (Math.abs(c.x - pt.x) < 9 && Math.abs(c.y - pt.y) * (r.height / r.width) < 9) near = i; });
+      lmMark(near);
+    });
+    lmStage.addEventListener('pointerleave', function () { lmHold = false; lmCity(lmActive); });
+    lineMap.querySelectorAll('[data-pin]').forEach(function (el) {
+      var i = +el.getAttribute('data-pin');
+      var on = function () { lmHold = true; lmCity(i); };
+      el.addEventListener('mouseenter', on); el.addEventListener('focus', on); el.addEventListener('click', on);
+      el.addEventListener('mouseleave', function () { lmHold = false; }); el.addEventListener('blur', function () { lmHold = false; });
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { lmSeen = es[0].isIntersecting; }, { threshold: 0.25 }).observe(lineMap);
+    } else { lmSeen = true; }
+    lmCity(0);
+    if (!reduce) setInterval(function () { if (lmSeen && !lmHold) lmCity((lmActive + 1) % lmPts.length); }, 2800);
+  }
+
   /* ---------- cookie consent: Analytics stays off until the visitor accepts ----------
      The choice is stored as "epl-cookies" = "yes" | "no". "Cookie settings" in the footer reopens the card. */
   (function () {
