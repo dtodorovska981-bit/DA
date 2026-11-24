@@ -1446,23 +1446,60 @@ CIR_FAQ = [
 CIR_ALT = "Private dinner table set for an EPL Circle investor evening"
 SEATS = 10
 def circle_table():
-    seats = ""
+    """A dinner table seen from above: chairs, place settings, the EPL logo at the centre."""
+    C = 300
+    def pol(r, deg):
+        a = math.radians(deg)
+        return C + r * math.cos(a), C + r * math.sin(a)
+    chairs = settings = ""
     for i in range(SEATS):
-        a = math.radians(-90 + i * 360 / SEATS)
-        x, y = 50 + 41 * math.cos(a), 50 + 41 * math.sin(a)
-        seats += (f'<span class="cir-seat{" cir-seat--you" if i == 0 else ""}" style="left:{x:.2f}%;top:{y:.2f}%;--i:{i};--a:{-90 + i * 360 / SEATS + 90:.0f}deg">'
-                  f'<i></i></span>')
+        deg = -90 + i * 360 / SEATS
+        you = " cir-you" if i == 0 else ""
+        (x1, y1), (x2, y2) = pol(226, deg - 10.5), pol(226, deg + 10.5)
+        chairs += (f'<path class="cir-pop cir-chair{you}" style="--i:{i}" d="M{x1:.1f} {y1:.1f}A226 226 0 0 1 {x2:.1f} {y2:.1f}"/>')
+        x, y = pol(140, deg)
+        settings += (f'<g transform="translate({x:.1f} {y:.1f}) rotate({deg + 90:.0f})"><g class="cir-pop cir-set{you}" style="--i:{i}">'
+                     + ('<circle class="cir-pulse" r="25"/>' if i == 0 else "") +
+                     f'<circle class="cir-plate" r="25"/><circle class="cir-plate__in" r="16"/>'
+                     # cutlery and glass are turned about the table centre (0,140 in this frame), so they sit like spokes
+                     f'<path class="cir-cut" transform="rotate(-14.5 0 140)" d="M0 -13V13M-2.6 -13v7M2.6 -13v7"/>'
+                     f'<path class="cir-cut" transform="rotate(14.5 0 140)" d="M0 -13V13"/>'
+                     f'<circle class="cir-glass" cx="0" cy="37" r="5.5" transform="rotate(10 0 140)"/></g></g>')
+    chips = ""
+    for label, deg, cls in [("Your company", -90, " cir-chip--you"), ("Venture capital", -18, ""), ("Family office", 90, ""), ("Strategic investor", 198, "")]:
+        x, y = pol(262, deg)
+        chips += f'<span class="cir-chip{cls}" style="left:{x / 6:.2f}%;top:{y / 6:.2f}%">{label}</span>'
     return f'''<div class="cir-table" role="img" aria-label="{CIR_ALT}">
-            <span class="cir-table__ring" aria-hidden="true"></span>
-            <span class="cir-table__top" aria-hidden="true"><img src="assets/mesh.jpg" alt="" width="1200" height="640"></span>
-            <span class="cir-table__mid" aria-hidden="true"><b>EPL Circle</b><small>8 to 12 investors</small></span>
-            <span aria-hidden="true">{seats}</span>
-            <span class="cir-table__tag" aria-hidden="true">Your company</span>
+            <svg viewBox="0 0 600 600" aria-hidden="true" focusable="false">
+              <defs>
+                <radialGradient id="cirTop" cx="42%" cy="36%" r="75%"><stop offset="0" stop-color="#ffffff"/><stop offset=".62" stop-color="#f6efeb"/><stop offset="1" stop-color="#e6d8d1"/></radialGradient>
+                <radialGradient id="cirBlush" cx="72%" cy="74%" r="52%"><stop offset="0" stop-color="#eb5a5d" stop-opacity=".34"/><stop offset="1" stop-color="#eb5a5d" stop-opacity="0"/></radialGradient>
+                <radialGradient id="cirHalo" cx="50%" cy="50%" r="50%"><stop offset=".6" stop-color="#eb5a5d" stop-opacity=".0"/><stop offset=".8" stop-color="#eb5a5d" stop-opacity=".2"/><stop offset="1" stop-color="#eb5a5d" stop-opacity="0"/></radialGradient>
+                <filter id="cirShadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="22" stdDeviation="20" flood-color="#050d1a" flood-opacity=".6"/></filter>
+              </defs>
+              <circle cx="300" cy="300" r="300" fill="url(#cirHalo)"/>
+              <circle class="cir-orbit" cx="300" cy="300" r="262"/>
+              <circle class="cir-orbit2" cx="300" cy="300" r="296"/>
+              {chairs}
+              <g class="cir-top">
+                <circle cx="300" cy="300" r="190" fill="url(#cirTop)" filter="url(#cirShadow)"/>
+                <circle cx="300" cy="300" r="190" fill="url(#cirBlush)"/>
+                <circle cx="300" cy="300" r="182" fill="none" stroke="#2c3a4b" stroke-opacity=".1"/>
+              </g>
+              {settings}
+              <circle class="cir-ring" cx="300" cy="300" r="86" pathLength="1"/>
+              <g class="cir-logo">
+                <svg x="232" y="250" width="138" height="64.7" viewBox="0 0 1200 563" color="#2c3a4b">{LOGO_INNER}</svg>
+                <text x="304" y="342" text-anchor="middle">CIRCLE</text>
+              </g>
+            </svg>
+            <span aria-hidden="true">{chips}</span>
           </div>'''
 
 CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
       <div class="wrap cir-hero__grid">
         <div class="cir-hero__text">
+          <p class="cir-lockup r" aria-hidden="true">{logo_svg()}<i></i><span>Circle</span></p>
           <p class="eyebrow r">Private Investor Dinners</p>
           <h1 class="display r" id="cir-title" style="--d:1">EPL Circle: <strong>Curated Access to Private Capital</strong></h1>
           <p class="lead r" style="--d:2">Invitation-only dinners that put your company in front of the right investors, in Miami, New York and San Francisco.</p>
