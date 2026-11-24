@@ -50,30 +50,35 @@ def webpage(path, title, desc, kind="WebPage"):
 
 OG_TITLES = {}   # pages whose share title differs from the browser title
 
-# Google Analytics 4 (EPL Group property), behind cookie consent.
-# Nothing is loaded from Google until the visitor accepts in the cookie banner (js/main.js).
-# The choice is kept in localStorage as "epl-cookies" = "yes" or "no". Only eplgroup.co is counted,
-# so previews and test copies never send visits.
+# Google Analytics 4 (EPL Group property), with Google's consent mode.
+# The tag is the exact code from Analytics > Data streams > Install manually: the container
+# GTM-W9FDVN8D, which is published with the Analytics ID G-CBT69W3QW3 inside it.
+# The script before it sets the consent defaults, so no Analytics cookies are used until the visitor
+# accepts in the cookie card (js/main.js). The choice is kept in localStorage as "epl-cookies" = "yes" | "no".
+# Visitors who decline, and any copy of the site not on eplgroup.co, send nothing at all.
 GA_ID = "G-CBT69W3QW3"
-GA_TAG = f'''  <!-- Google Analytics, loaded only after cookie consent -->
+GTM_ID = "GTM-W9FDVN8D"
+GA_TAG = f'''  <!-- Cookie consent defaults: no Analytics cookies until the visitor accepts -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){{dataLayer.push(arguments);}}
     (function () {{
-      var id = '{GA_ID}', live = /(^|\\.)eplgroup\\.co$/.test(location.hostname), on = false;
+      var id = '{GA_ID}', live = /(^|\\.)eplgroup\\.co$/.test(location.hostname), choice = null;
+      try {{ choice = localStorage.getItem('epl-cookies'); }} catch (e) {{}}
+      window['ga-disable-' + id] = !live || choice === 'no';
+      gtag('consent', 'default', {{ analytics_storage: choice === 'yes' ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' }});
       window.eplAnalytics = function (allow) {{
-        window['ga-disable-' + id] = !allow;
-        if (!allow || on || !live) return;
-        on = true;
-        gtag('consent', 'default', {{ analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' }});
-        gtag('js', new Date());
-        gtag('config', id);
-        var s = document.createElement('script');
-        s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
-        document.head.appendChild(s);
+        window['ga-disable-' + id] = !live || !allow;
+        gtag('consent', 'update', {{ analytics_storage: allow ? 'granted' : 'denied' }});
       }};
-      try {{ if (localStorage.getItem('epl-cookies') === 'yes') window.eplAnalytics(true); }} catch (e) {{}}
     }})();
+  </script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtm.js?id={GTM_ID}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
   </script>
 '''
 

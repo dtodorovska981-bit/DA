@@ -411,7 +411,7 @@
     if (!reduce) setInterval(function () { if (lmSeen && !lmHold) lmCity((lmActive + 1) % lmPts.length); }, 2800);
   }
 
-  /* ---------- cookie consent: Analytics stays off until the visitor accepts ----------
+  /* ---------- cookie consent: no Analytics cookies until the visitor accepts ----------
      The choice is stored as "epl-cookies" = "yes" | "no". "Cookie settings" in the footer reopens the card. */
   (function () {
     var KEY = 'epl-cookies';
@@ -443,7 +443,7 @@
       card.innerHTML =
         '<div class="cookies__icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 3a13 13 0 1 0 13 13 5.5 5.5 0 0 1-6.2-6.2A5.5 5.5 0 0 1 16 3z"/><circle cx="11.5" cy="13" r="1.6"/><circle cx="17.5" cy="20.5" r="1.6"/><circle cx="10.5" cy="20" r="1.1"/><circle cx="19" cy="13.5" r="1.1"/></svg></div>' +
         '<div class="cookies__text"><h2>A note on cookies</h2>' +
-        '<p>We would like to use Google Analytics cookies to see how this site is used and improve it. No advertising cookies, and nothing is set unless you accept.</p>' +
+        '<p>We would like to use Google Analytics cookies to see how this site is used and improve it. No advertising cookies, and no cookies are set unless you accept.</p>' +
         (choice ? '<p class="cookies__now">Your current choice: <b>' + (choice === 'yes' ? 'accepted' : 'declined') + '</b></p>' : '') + '</div>' +
         '<div class="cookies__actions"><button type="button" class="cookies__btn cookies__btn--yes" data-cookie="yes">Accept</button>' +
         '<button type="button" class="cookies__btn" data-cookie="no">Decline</button></div>';
