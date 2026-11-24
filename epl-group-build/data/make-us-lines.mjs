@@ -21,7 +21,8 @@ for (let y = Math.ceil(minY) + 1; y < maxY; y += STEP) {
   for (let i = 0; i + 1 < xs.length; i += 2) if (xs[i + 1] - xs[i] >= 4) segs.push([+(xs[i] - minX + PAD).toFixed(1), +(y - minY + PAD).toFixed(1), +(xs[i + 1] - minX + PAD).toFixed(1)]);
 }
 const proj = geoAlbersUsa().scale(1300).translate([487.5, 305]);            // the projection us-atlas uses
-const cities = [['Miami', -80.1918, 25.7617], ['New York', -74.006, 40.7128], ['San Francisco', -122.4194, 37.7749]].map(([name, lon, lat]) => {
+// the first three are listed under the map; Dallas and Chicago are shown on the map only
+const cities = [['Miami', -80.1918, 25.7617], ['New York', -74.006, 40.7128], ['San Francisco', -122.4194, 37.7749], ['Dallas', -96.797, 32.7767], ['Chicago', -87.6298, 41.8781]].map(([name, lon, lat]) => {
   const [x, y] = proj([lon, lat]); return { name, x: +(x - minX + PAD).toFixed(1), y: +(y - minY + PAD).toFixed(1) };
 });
 const out = { width: Math.ceil(maxX - minX + PAD * 2), height: Math.ceil(maxY - minY + PAD * 2), step: STEP, segments: segs, cities,

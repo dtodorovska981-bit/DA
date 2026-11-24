@@ -1475,6 +1475,7 @@ a.ev-cal__day.is-hot .ev-cal__ring path, a.ev-cal__day:hover .ev-cal__ring path 
 .cir-pin span { position: absolute; top: 0; transform: translateY(-50%); white-space: nowrap; font-size: 13px; font-weight: 500; padding: 7px 13px; border-radius: 100px; background: rgba(20, 28, 36, .55); border: 1px solid rgba(255, 255, 255, .3); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: background-color .3s, color .3s, border-color .3s, transform .35s var(--ease); }
 .cir-pin--l span { right: 18px; }
 .cir-pin--r span { left: 18px; }
+.cir-pin--b span { left: 0; top: 16px; transform: translateX(-50%); }
 .cir-pin.is-on i { transform: scale(1.35); }
 .cir-pin.is-on span { background: #fff; color: var(--coral); border-color: #fff; font-weight: 600; }
 .cir-pin:focus-visible span { outline: 2px solid var(--coral); outline-offset: 2px; }
@@ -1513,6 +1514,7 @@ a.ev-cal__day.is-hot .ev-cal__ring path, a.ev-cal__day:hover .ev-cal__ring path 
   .cir-map { padding: 26px 18px 22px; }
   .cir-pin span { font-size: 10.5px; padding: 4px 9px; }
   .cir-pin--l span { right: 13px; } .cir-pin--r span { left: 13px; }
+  .cir-pin--b span { top: 11px; }
   .cir-pin i { left: -5px; top: -5px; width: 10px; height: 10px; }
   .cir-map__base use { stroke-width: 2.2; }
   .cir-map__glow use { stroke-width: 4; }
@@ -1575,3 +1577,4 @@ a.ev-cal__day.is-hot .ev-cal__ring path, a.ev-cal__day:hover .ev-cal__ring path 
 @media (prefers-reduced-motion: reduce) {
   .cookies { transition: none; transform: none; }
 }
+.cir-pin:nth-child(4) i { animation-delay: .4s; } .cir-pin:nth-child(5) i { animation-delay: 1.2s; }

@@ -20,8 +20,8 @@ def btn(label, href, kind="black", extra=""):
 def ext_btn(label, href, kind="ghost"):
     return f'<a class="btn btn--{kind}" href="{href}" target="_blank" rel="noopener"><span>{label}</span><span class="btn__icon">{ARROW}</span></a>'
 
-NAV = [("Platforms", "platforms.html"), ("Team", "team.html"), ("Track record", "track-record.html"),
-       ("Partners", "partners.html"), ("Insights", "insights.html"), ("Events", "events.html"), ("EPL Circle", "circle.html")]
+NAV = [("Platforms", "platforms.html"), ("Track record", "track-record.html"),
+       ("Partners", "partners.html"), ("Insights", "insights.html"), ("Events", "events.html")]
 
 SITE = "https://eplgroup.co"
 LINKEDIN = "https://www.linkedin.com/company/epl-group-inc"
@@ -166,15 +166,15 @@ FOOTER = f'''  <footer class="footer">
           <li><a href="track-record.html">Track record</a></li>
           <li><a href="insights.html">Insights</a></li>
           <li><a href="events.html">Events</a></li>
-          <li><a href="circle.html">EPL Circle</a></li>
-          <li><a href="faq.html">FAQ</a></li>
-          <li><a href="{JOIN}" target="_blank" rel="noopener">Careers</a></li></ul></div>
+          <li><a href="circle.html">Circle</a></li>
+          <li><a href="faq.html">FAQ</a></li></ul></div>
         <div><h4>Connect</h4><ul>
           <li><a href="pitch.html">Start a conversation</a></li>
           <li><a href="investors.html">Investors: complete the form</a></li>
           <li><a href="https://xpl.partners/" rel="noopener" target="_blank">xPL Partners</a></li>
           <li><a href="{LINKEDIN}" rel="noopener" target="_blank">LinkedIn</a></li>
-          <li><a href="https://epls-newsletter.beehiiv.com/" rel="noopener" target="_blank">Newsletter</a></li></ul></div>
+          <li><a href="https://epls-newsletter.beehiiv.com/" rel="noopener" target="_blank">Newsletter</a></li>
+          <li><a href="{JOIN}" target="_blank" rel="noopener">Careers</a></li></ul></div>
       </div>
       <div class="footer__legal">
         <p>Securities are offered through Finalis Securities LLC, Member FINRA / SIPC. EPL Group is not a registered broker-dealer, and Finalis Securities LLC and EPL Group are separate, unaffiliated entities. This website is for information only and is not an offer or solicitation to buy or sell any security.</p>
@@ -1467,15 +1467,15 @@ CIR_WHY = [
     ("Focused execution.", "A structured process before, during and after each dinner."),
 ]
 CIR_FAQ = [
-    ("What is EPL Circle?", "EPL Circle is EPL Group's private investor dinner program. It connects Seed, Series A and Series B companies with qualified investors through invitation-only dinners."),
+    ("What is Circle?", "Circle is EPL Group's private investor dinner program. It connects Seed, Series A and Series B companies with qualified investors through invitation-only dinners."),
     ("How many investors attend each dinner?", "Approximately 8 to 12 qualified investors, selected for relevance and potential fit."),
     ("Which companies can take part?", "Ambitious companies seeking institutional and private investment, from Seed-stage companies preparing a first institutional financing to Series B and later-stage companies seeking growth capital."),
     ("Which types of investors are invited?", "The network may include venture capital firms, family offices, high-net-worth investors, private investment groups and strategic investors, chosen to match your sector, stage and financing objectives."),
     ("How does my company prepare?", "We work with your leadership team to prepare the company briefing, so invited investors understand the opportunity before the dinner."),
     ("What happens after the dinner?", "We facilitate introductions, coordinate follow-up and help track investor engagement and potential next steps."),
-    ("How is EPL Circle structured commercially?", "The engagement structure depends on the company's stage, fundraising objectives, investor profile and scope. Contact EPL Group to discuss your situation."),
+    ("How is Circle structured commercially?", "The engagement structure depends on the company's stage, fundraising objectives, investor profile and scope. Contact EPL Group to discuss your situation."),
 ]
-CIR_ALT = "Private dinner table set for an EPL Circle investor evening"
+CIR_ALT = "Private dinner table set for a Circle investor evening"
 SEATS = 10
 def circle_table():
     """A dinner table seen from above: chairs, place settings, the EPL logo at the centre."""
@@ -1534,14 +1534,14 @@ def circle_map():
     m = json.loads((HERE / "data" / "us-lines.json").read_text())
     w, h = m["width"], m["height"]
     d = "".join(f"M{x1} {y}H{x2}" for x1, y, x2 in m["segments"])
-    side = {"San Francisco": "r"}                       # label to the right of the dot; the others sit to the left
+    side = {"San Francisco": "r", "Dallas": "r", "Chicago": "b"}   # r: right of the dot, b: below it                       # label to the right of the dot; the others sit to the left
     pins = "".join(
         f'''<button type="button" class="cir-pin cir-pin--{side.get(c["name"], "l")}" data-pin="{i}" style="left:{c["x"] / w * 100:.2f}%;top:{c["y"] / h * 100:.2f}%"><i></i><span>{c["name"]}</span></button>'''
         for i, c in enumerate(m["cities"]))
-    items = "".join(f'''<li><button type="button" data-pin="{i}"><span>0{i + 1}</span><b>{c["name"]}</b></button></li>''' for i, c in enumerate(m["cities"]))
+    items = "".join(f'''<li><button type="button" data-pin="{i}"><span>0{i + 1}</span><b>{c["name"]}</b></button></li>''' for i, c in enumerate(m["cities"][:3]))
     return f'''        <div class="cir-map r r--fade" data-linemap>
           <div class="cir-map__stage">
-            <svg class="cir-map__base" viewBox="0 0 {w} {h}" role="img" aria-label="Map of the United States with Miami, New York and San Francisco marked"><defs><path id="usLines" d="{d}"/></defs><use href="#usLines"/></svg>
+            <svg class="cir-map__base" viewBox="0 0 {w} {h}" role="img" aria-label="Map of the United States with Miami, New York, San Francisco, Dallas and Chicago marked"><defs><path id="usLines" d="{d}"/></defs><use href="#usLines"/></svg>
             <div class="cir-map__glow" aria-hidden="true"><svg viewBox="0 0 {w} {h}"><use href="#usLines"/></svg></div>
             <div class="cir-map__pins">{pins}</div>
           </div>
@@ -1555,7 +1555,7 @@ CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
         <div class="cir-hero__text">
           <p class="cir-lockup r" aria-hidden="true">{logo_svg()}<i></i><span>Circle</span></p>
           <p class="eyebrow r">Private Investor Dinners</p>
-          <h1 class="display r" id="cir-title" style="--d:1">EPL Circle: <strong>Curated Access to Private Capital</strong></h1>
+          <h1 class="display r" id="cir-title" style="--d:1">Circle: <strong>Curated Access to Private Capital</strong></h1>
           <p class="lead r" style="--d:2">Invitation-only dinners that put your company in front of the right investors, in Miami, New York and San Francisco.</p>
           <div class="page-hero__actions r" style="--d:3">{btn("Request an introduction", "pitch.html", "coral")}</div>
         </div>
@@ -1570,10 +1570,10 @@ CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
         <div class="cir-what">
           <div>
             <p class="eyebrow r">The program</p>
-            <h2 class="display r" style="--d:1">What is <strong>EPL Circle?</strong></h2>
+            <h2 class="display r" style="--d:1">What is <strong>Circle?</strong></h2>
           </div>
           <div>
-            <p class="definition r">EPL Circle is EPL Group's private investor dinner program for Seed, Series A and Series B companies. Each dinner brings together approximately 8 to 12 qualified investors, selected for relevance and potential fit with your financing objectives.</p>
+            <p class="definition r">Circle is EPL Group's private investor dinner program for Seed, Series A and Series B companies. Each dinner brings together approximately 8 to 12 qualified investors, selected for relevance and potential fit with your financing objectives.</p>
             <p class="lead r" style="--d:1">It is a focused investor engagement, not a traditional networking event or a large-scale pitch session.</p>
           </div>
         </div>
@@ -1590,7 +1590,7 @@ CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
         <div class="section__head section__head--gap56">
           <div class="title">
             <p class="eyebrow r">The process</p>
-            <h2 class="display r" style="--d:1">How an EPL Circle <strong>dinner works</strong></h2>
+            <h2 class="display r" style="--d:1">How a Circle <strong>dinner works</strong></h2>
           </div>
         </div>
         <ol class="cir-steps r r--fade" data-reveal-group>
@@ -1601,7 +1601,7 @@ CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
 
     <section class="section">
       <div class="wrap">
-{section_head("", "Stages", "Who EPL Circle <strong>is for</strong>", gap56=True)}
+{section_head("", "Stages", "Who Circle <strong>is for</strong>", gap56=True)}
         <div class="cards cir-for">
 ''' + "".join(f'''          <div class="card r" style="--d:{i}">{FIG_BLK[i]}<h3>{t}</h3><p>{d}</p></div>
 ''' for i, (t, d) in enumerate(CIR_FOR)) + f'''        </div>
@@ -1616,7 +1616,7 @@ CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
       <div class="wrap two-col">
         <div class="sticky-aside">
           <p class="eyebrow r">The difference</p>
-          <h2 class="display r" style="--d:1">Why <strong>EPL Circle</strong></h2>
+          <h2 class="display r" style="--d:1">Why <strong>Circle</strong></h2>
         </div>
         <ul class="cir-why">
 ''' + "".join(f'''          <li class="r" style="--d:{i % 3}"><span>0{i + 1}</span><div><h3>{t}</h3><p>{d}</p></div></li>
@@ -1633,7 +1633,7 @@ CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
     <section class="section section--line">
       <div class="wrap">
 {section_head("", "FAQ", "Frequently asked <strong>questions</strong>", gap56=True)}
-{faq_block(CIR_FAQ, note="About EPL Circle", more=False)}        <p class="cir-links r">EPL Circle is a program of <a href="index.html">EPL Group</a>. To talk to us, use the <a href="pitch.html">contact form</a>.</p>
+{faq_block(CIR_FAQ, note="About Circle", more=False)}        <p class="cir-links r">Circle is a program of <a href="index.html">EPL Group</a>. To talk to us, use the <a href="pitch.html">contact form</a>.</p>
       </div>
     </section>
 
@@ -1641,22 +1641,22 @@ CIRCLE = f'''    <section class="cir-hero" aria-labelledby="cir-title">
       <img class="closing__bg" src="assets/closing-band.jpg" alt="" data-parallax="0.08" width="1440" height="640" loading="lazy">
       <div class="closing__veil" aria-hidden="true"></div>
       <div class="wrap">
-        <p class="closing__kicker r">EPL Circle</p>
+        <p class="closing__kicker r">Circle</p>
         <h2 class="r" style="--d:1">Let's bring the right investors<br><span class="dim">to the table.</span></h2>
-        <p class="r" style="--d:2">Whether you are preparing a Seed round, raising a Series A or pursuing a larger growth financing, EPL Circle helps create the investor relationships that can move your financing objectives forward.</p>
+        <p class="r" style="--d:2">Whether you are preparing a Seed round, raising a Series A or pursuing a larger growth financing, Circle helps create the investor relationships that can move your financing objectives forward.</p>
         <div class="closing__actions r" style="--d:3">
           {btn("Contact EPL Group", "pitch.html")}
         </div>
       </div>
     </section>
 '''
-CIR_TITLE = "EPL Circle | Private Investor Dinners for Seed to Series B"
-CIR_DESC = "EPL Circle hosts invitation-only dinners with 8 to 12 qualified investors for Seed to Series B companies in Miami, New York and San Francisco."
-OG_TITLES["circle.html"] = "EPL Circle: Private Investor Dinners"
+CIR_TITLE = "Circle by EPL Group | Private Investor Dinners"
+CIR_DESC = "Circle by EPL Group hosts invitation-only dinners with 8 to 12 qualified investors for Seed to Series B companies in Miami, New York and San Francisco."
+OG_TITLES["circle.html"] = "Circle by EPL Group: Private Investor Dinners"
 page("circle.html", CIR_TITLE, CIR_DESC, "circle.html", CIRCLE, closing=False,
      jsonld=ld(webpage("circle.html", CIR_TITLE, CIR_DESC),
-               {"@type": "Service", "@id": clean_url("circle.html") + "#service", "name": "EPL Circle", "alternateName": "EPL Circle Private Investor Dinners",
-                "description": "EPL Circle is EPL Group's private investor dinner program for Seed, Series A and Series B companies, bringing approximately 8 to 12 qualified investors together at an invitation-only dinner.",
+               {"@type": "Service", "@id": clean_url("circle.html") + "#service", "name": "Circle", "alternateName": ["EPL Circle", "Circle by EPL Group"],
+                "description": "Circle is EPL Group's private investor dinner program for Seed, Series A and Series B companies, bringing approximately 8 to 12 qualified investors together at an invitation-only dinner.",
                 "url": clean_url("circle.html"), "provider": {"@type": "Organization", "@id": SITE + "/#org", "name": "EPL Group", "url": SITE},
                 "areaServed": [{"@type": "City", "name": c} for c in ("Miami", "New York", "San Francisco")],
                 "audience": {"@type": "BusinessAudience", "audienceType": "Seed, Series A and Series B companies"}},
