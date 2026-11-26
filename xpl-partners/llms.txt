@@ -2,6 +2,9 @@
 
 > xPL Partners is the company-creation arm of EPL Group, a Miami-based investment firm building and investing since 2018. It helps international investors own an operating business in the United States: the company is built from the ground up or acquired, its manual work is rebuilt with AI, and xPL's operating team runs it with the investor.
 
+## Who it is for
+International investors, family offices and entrepreneurs based outside the United States who want to buy or build a US business and own it directly, instead of holding an interest in a fund, and who want an experienced operating team to run it with them.
+
 ## What xPL Partners does
 - The investor owns the US operating company from formation. xPL is an operating partner, not a fund manager.
 - Two routes: build a new company, or acquire an established one. Either way the manual, labour-intensive work is rebuilt with AI.
