@@ -106,4 +106,28 @@
       }
     });
   });
+
+  /* ---- analytics: cookie consent + call-booking clicks ---- */
+  var track = function () { if (typeof window.gtag === 'function') { window.gtag.apply(null, arguments); } };
+  var consent = $('#consent');
+  var choice = null;
+  try { choice = localStorage.getItem('xpl-consent'); } catch (e) {}
+  if (consent && !choice) { consent.hidden = false; }
+  $$('[data-consent]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var value = btn.getAttribute('data-consent');
+      try { localStorage.setItem('xpl-consent', value); } catch (e) {}
+      track('consent', 'update', { analytics_storage: value });
+      consent.hidden = true;
+    });
+  });
+  $$('a[href*="cal.com"]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      var section = a.closest('section, footer, header');
+      track('event', 'book_call_click', {
+        link_text: (a.textContent || '').split(/[ \n\t]+/).join(' ').trim().slice(0, 60),
+        section: section ? (section.id || section.className.split(' ')[0]) : 'page'
+      });
+    });
+  });
 })();

@@ -620,6 +620,16 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .why li p { flex-basis: 100%; padding-left: 38px; }
 }
 
+/* ---------- cookie consent ---------- */
+.consent { position: fixed; left: 20px; bottom: 20px; z-index: 60; max-width: 420px; display: flex; flex-direction: column; gap: 16px; padding: 20px 22px; background: #fff; color: var(--ink); box-shadow: 0 20px 50px rgba(14, 26, 39, .28); border-top: 3px solid var(--coral); font-size: 14px; line-height: 1.55; animation: fade-up .6s var(--ease-out) both; }
+.consent[hidden] { display: none; }
+.consent__actions { display: flex; gap: 10px; }
+.consent__btn { height: 40px; padding: 0 20px; background: var(--ink); color: #fff; font-family: var(--display); font-weight: 600; font-size: 14px; transition: background-color .25s; }
+.consent__btn:hover { background: var(--coral); }
+.consent__btn--ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.consent__btn--ghost:hover { background: var(--wash); }
+@media (max-width: 640px) { .consent { left: 12px; right: 12px; bottom: 12px; max-width: none; } }
+
 /* ---------- reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
