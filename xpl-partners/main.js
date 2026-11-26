@@ -118,8 +118,23 @@
       var value = btn.getAttribute('data-consent');
       try { localStorage.setItem('xpl-consent', value); } catch (e) {}
       track('consent', 'update', { analytics_storage: value });
+      if (value === 'denied') {
+        /* withdraw: remove the Google Analytics cookies already set for this site */
+        document.cookie.split(';').forEach(function (c) {
+          var name = c.split('=')[0].trim();
+          if (name.indexOf('_ga') !== 0) { return; }
+          var host = location.hostname;
+          [host, '.' + host, '.' + host.split('.').slice(-2).join('.')].forEach(function (d) {
+            document.cookie = name + '=; Max-Age=0; path=/; domain=' + d;
+          });
+          document.cookie = name + '=; Max-Age=0; path=/';
+        });
+      }
       consent.hidden = true;
     });
+  });
+  $$('[data-cookie-settings]').forEach(function (btn) {
+    btn.addEventListener('click', function () { consent.hidden = false; });
   });
   $$('a[href*="cal.com"]').forEach(function (a) {
     a.addEventListener('click', function () {

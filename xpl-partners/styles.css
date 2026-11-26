@@ -630,6 +630,37 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .consent__btn--ghost:hover { background: var(--wash); }
 @media (max-width: 640px) { .consent { left: 12px; right: 12px; bottom: 12px; max-width: none; } }
 
+.consent a { text-decoration: underline; text-underline-offset: 3px; }
+.legal__btn { font: inherit; cursor: pointer; }
+
+/* ---------- privacy policy page ---------- */
+.nav--solid { background: var(--ink); }
+.policy { padding: 168px 0 112px; background: #fff; }
+.policy__inner { max-width: calc(820px + 2 * var(--gutter)); }
+.policy h1 { margin-top: 16px; }
+.policy__meta { margin-top: 20px; font-size: 14px; color: var(--grey); }
+.policy__lead { margin-top: 32px; font-weight: 300; font-size: 21px; line-height: 1.5; color: var(--ink); }
+.policy h2 { margin: 56px 0 16px; padding-top: 28px; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 500; font-size: 26px; line-height: 1.2; scroll-margin-top: 100px; }
+.policy h3 { margin: 28px 0 10px; font-family: var(--display); font-weight: 600; font-size: 18px; }
+.policy p, .policy li { font-size: 16px; line-height: 1.65; color: var(--slate); }
+.policy p + p { margin-top: 14px; }
+.policy .eyebrow { font-size: 12px; line-height: normal; color: var(--coral); }
+.policy .policy__meta { font-size: 14px; color: var(--grey); }
+.policy .policy__lead { font-size: 21px; line-height: 1.5; color: var(--ink); }
+.policy ul { margin: 14px 0; padding-left: 20px; list-style: square; }
+.policy li + li { margin-top: 6px; }
+.policy li::marker { color: var(--coral); }
+.policy a, .policy__link { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--coral); font: inherit; cursor: pointer; }
+.policy a:hover, .policy__link:hover { color: var(--coral); }
+.policy__table { margin: 20px 0; overflow-x: auto; }
+.policy table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; }
+.policy th { text-align: left; padding: 12px 14px; background: var(--ink); color: #fff; font-family: var(--display); font-weight: 600; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
+.policy td { padding: 14px; border-bottom: 1px solid var(--line); color: var(--slate); line-height: 1.5; vertical-align: top; }
+.policy__back { margin-top: 56px; }
+.closing--slim { padding: 0 0 40px; }
+.closing--slim .legal { border-top: 0; padding-top: 40px; }
+@media (max-width: 640px) { .policy { padding: 128px 0 72px; } .policy__lead { font-size: 18px; } .policy h2 { font-size: 22px; margin-top: 40px; } }
+
 /* ---------- reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
