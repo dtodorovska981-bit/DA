@@ -70,7 +70,7 @@ tr:last-child td { border-bottom: 0; }
     <div>
       <div class="kicker">DNA Pro Plans · prospecting</div>
       <h1>Raise Signal Leads</h1>
-      <p class="sub">US startups with 1 to 50 people in AI, fintech and energy/climate that show a sign of an upcoming or open pre-seed, seed or Series A round.</p>
+      <p class="sub">US startups in AI, fintech and energy/climate that have a round open now, or raised their first round in the past two years and are due for the next one.</p>
     </div>
     <dl class="stats">
       <div><dd id="s-total">0</dd><dt>Leads</dt></div>
@@ -103,7 +103,7 @@ tr:last-child td { border-bottom: 0; }
   </div>
   <div class="pager"><button id="prev" type="button">Previous</button><span class="count" id="page"></span><button id="next" type="button">Next</button></div>
 
-  <p class="note">How to read this. The signal is inferred from public data (Y Combinator batch timing, hiring, SEC Form D filings), so treat it as a reason to reach out, not proof of a raise. Emails marked "guess" follow the first@domain pattern and are not verified: run them through an email verifier before sending. LinkedIn links marked "search" open a LinkedIn search because no profile was published.</p>
+  <p class="note">How to read this. Four public sources feed this list: SEC Form D filings (private raises), SEC Form C filings (crowdfunding rounds open now), funding announcements, and the Y Combinator directory. "Round open now" and "Raising now" come straight from SEC filings; the "window" signals are timing estimates, so treat them as a reason to reach out, not proof of a raise. "Software / tech" means the SEC filing says technology but does not say whether it is AI. Emails marked "guess" follow the first@domain pattern and are not verified: run them through an email verifier before sending. LinkedIn links marked "search" open a LinkedIn search because no profile was published.</p>
 </div>
 
 <script>
@@ -126,7 +126,7 @@ function apply() {
   view = LEADS.filter(r =>
     (!st.sector || r.sector.includes(st.sector)) &&
     (!st.round || r.likely_round === st.round) &&
-    (!st.source || r.source === st.source) &&
+    (!st.source || r.source.includes(st.source)) &&
     (!q || [r.company, r.full_name, r.signal, r.location, r.description, r.sector].join(" ").toLowerCase().includes(q)));
   const k = st.sort;
   view.sort((a, b) => (typeof a[k] === "number" ? a[k] - b[k] : String(a[k]).localeCompare(String(b[k]))) * st.dir || a.company.localeCompare(b.company));
@@ -171,7 +171,7 @@ function start(data, updated) {
   $("s-upd").textContent = updated || "n/a";
   chips($("f-sector"), ["AI", "Fintech", "Energy & Climate", "Software / tech"], "sector");
   chips($("f-round"), [...new Set(LEADS.map(r => r.likely_round))].sort(), "round");
-  $("f-source").innerHTML += [...new Set(LEADS.map(r => r.source))].map(s => `<option>${esc(s)}</option>`).join("");
+  $("f-source").innerHTML += [...new Set(LEADS.flatMap(r => r.source.split(" + ")))].sort().map(s => `<option>${esc(s)}</option>`).join("");
   render();
 }
 

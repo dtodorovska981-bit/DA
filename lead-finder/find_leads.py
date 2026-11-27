@@ -215,7 +215,8 @@ def yc_leads(args):
     allc = json.loads(fetch("https://yc-oss.github.io/api/companies/all.json"))
     picked = []
     for c in allc:
-        if c.get("status") != "Active" or "United States of America" not in c.get("regions", []):
+        hq = (c.get("all_locations") or "").split(";")[0].strip()
+        if c.get("status") != "Active" or not hq.endswith("USA"):
             continue
         if not 1 <= (c.get("team_size") or 0) <= 50:
             continue
@@ -482,15 +483,7 @@ def sec_lead(recs):
             return None  # next round would be a Series B, outside the target
         nxt = "Seed" if stage == "Pre-seed" else "Series A"
         sig = f"Raised a {usd(sold or size)} {stage.lower()} round {months:.0f} months ago (Form D filed {last_new['filed']}). "
-        if months < 6:
-            sig += f"Early for the next raise; worth warming up for their {nxt}."
-            score = 50
-        elif months < 12:
-            sig += f"Founders usually start preparing the {nxt} around now."
-            score = 70
-        else:
-            sig += f"In the usual 12 to 24 month window to raise a {nxt}."
-            score = 82
+        sig, score = next_raise_signal(sig.strip(), months, nxt)
         rnd = nxt
     if len(new) > 1:
         sig += f" {len(new)} separate raises filed in two years."
@@ -532,24 +525,257 @@ def sec_leads(args):
     return leads
 
 
-def merge(yc, sec):
-    """A YC company that also filed a Form D gets the confirmed raise added to its row."""
-    by_name = {}
-    for lead in yc:
-        by_name.setdefault(name_key(lead["company"]), []).append(lead)
-    rest = []
-    for s in sec:
-        hits = by_name.get(name_key(s["company"]))
-        if not hits:
-            rest.append(s)
+# ---------- keyword sector classifier (news blurbs, crowdfunding issuers) ----------
+
+KW = [
+    ("Energy & Climate", re.compile(r"climate|energy|solar|batter(y|ies)|carbon|renewable|\bgrid\b|nuclear|fusion|geothermal|"
+                                    r"hydrogen|clean ?tech|electrif|\bEVs?\b|decarbon|sustainab|recycl|emission", re.I)),
+    ("Fintech", re.compile(r"fintech|payment|banking|\bbank\b|lending|insur|\bcredit\b|wealth|stablecoin|crypto|financial|"
+                           r"accounting|payroll|trading|treasury|\bloans?\b|\bpay\b|\btax\b|invoice|underwriting", re.I)),
+    ("AI", re.compile(r"\bAI\b|\bA\.I\.|artificial intelligence|machine learning|\bLLMs?\b|generative|agentic|\bagents?\b|"
+                      r"\.ai\b|[a-z]AI\b|computer vision|autonomous|copilot", re.I)),
+]
+
+
+def kw_sector(text):
+    return " + ".join(name for name, rx in KW if rx.search(text))
+
+
+def next_raise_signal(what, months, nxt):
+    """Shared wording and score for 'closed a round N months ago'."""
+    if months < 6:
+        return what + f" Early for the next raise; worth warming up for their {nxt}.", 50
+    if months < 12:
+        return what + f" Founders usually start preparing the {nxt} around now.", 70
+    return what + f" In the usual 12 to 24 month window to raise a {nxt}.", 82
+
+
+# ---------- source 3: funding announcements (VC News Daily) ----------
+
+VCN = "https://vcnewsdaily.com/"
+VCN_UA = "Mozilla/5.0 (compatible; lead-finder/1.0)"
+VCN_ITEM = re.compile(r'<a href="(https://vcnewsdaily\.com/[^"]+/venture-capital-funding/\w+)"[^>]*>\s*<h5>(.*?)</h5>\s*</a>'
+                      r'.*?posted-date[^>]*>(.*?)</(?:small|div)>.*?article-paragraph[^>]*>(.*?)<a ', re.S)
+BLURB = re.compile(r"^\s*([A-Za-z .'\-]+?),\s*([A-Z]{2}),\s*(.*)", re.S)
+TITLE_CO = re.compile(r"^(.+?)\s+(?:Raises|Lands|Inks|Secures|Scores|Pulls|Closes|Completes|Nabs|Bags|Snags|Grabs|Gets|"
+                      r"Announces|Receives|Hauls|Reels|Collects|Picks|Banks|Gains|Garners|Rakes|Brings|Locks|Nets|Attracts|"
+                      r"Wraps|Adds|Tops|Emerges|Launches|Debuts|Lines|Takes|Captures|Obtains|Pockets|Hooks|Books|Seals|"
+                      r"Rounds|Racks|Clinches|Unveils|Finalizes|Wins|Draws|Reaps|Notches|Logs|Posts|Sees|Opens|Kicks|"
+                      r"Starts|Extends|Expands|Rings|Signs|Finds|Grows|Reveals|Exits|Comes|Steps)\b")
+PERSON = r"([A-Z][a-z]+(?: [A-Z]\.)? (?:(?:de|van|von|Mc|O')\s?)?[A-Z][A-Za-z'\-]+)"
+CEO_AFTER = re.compile(PERSON + r",\s+(?:the\s+)?((?:co-?founder|founder|CEO|chief executive)[^.,;]{0,40})", re.I)
+CEO_BEFORE = re.compile(r"((?:co-?founder and )?(?:CEO|chief executive officer|founder)(?: and [A-Za-z\-]+)?)(?: of [A-Z][\w ]{1,30}?)?,? " + PERSON)
+SITE = re.compile(r"(?:learn more at|visit|more information,? (?:at|see|visit)|available at|online at)\s+(?:https?://)?"
+                  r"((?:www\.)?[A-Za-z0-9\-]+(?:\.[A-Za-z0-9\-]+)*\.[a-z]{2,})", re.I)
+
+
+def strip_tags(h):
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", h))).strip()
+
+
+def vcn_article(url):
+    page = cached("vcn_" + url.rsplit("/", 1)[-1] + ".html", url, VCN_UA, max_age_days=3650) or ""
+    body = strip_tags(re.sub(r"<script.*?</script>|<style.*?</style>", " ", page, flags=re.S))
+    body = body.split("(c) by Massinvestor")[0]
+    site = SITE.search(body)
+    first = last = title = ""
+    m = CEO_AFTER.search(body)
+    if m:
+        (first, last), title = split_name(m.group(1)), m.group(2).strip()
+    else:
+        m = CEO_BEFORE.search(body)
+        if m:
+            (first, last), title = split_name(m.group(2)), m.group(1).strip()
+    return (site.group(1).rstrip(".").lower() if site else ""), first, last, title
+
+
+def news_leads(args):
+    since = TODAY - dt.timedelta(days=24 * 30.4)
+    print("Funding news (VC News Daily): reading two years of daily archives...")
+    days = []
+    y, m = since.year, since.month
+    while (y, m) <= (TODAY.year, TODAY.month):
+        fresh = 1 if (y, m) == (TODAY.year, TODAY.month) else 3650
+        page = cached(f"vcnm_{y}_{m}.html", f"{VCN}access/archivemonth.php?m={m}&y={y}", VCN_UA, fresh) or ""
+        days += re.findall(r"archivedate\.php\?date=(\d{4}-\d\d-\d\d)", page)
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    days = sorted({d for d in days if d >= since.isoformat()})
+
+    def day_items(d):
+        page = cached(f"vcnd_{d}.html", f"{VCN}access/archivedate.php?date={d}", VCN_UA, 3650) or ""
+        return [(d, url, strip_tags(t), strip_tags(b)) for url, t, _, b in VCN_ITEM.findall(page)]
+
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        items = [i for day in ex.map(day_items, days) for i in day]
+    print(f"  {len(items)} funding announcements. Filtering to US pre-seed and seed rounds in target sectors...")
+
+    picked = []
+    for d, url, title, blurb in items:
+        rm = re.search(r"pre-?seed|seed", title, re.I)
+        bm = BLURB.match(blurb)
+        if not rm or not bm or bm.group(2) not in US_STATES or re.search(r"series [b-z]\b", title, re.I):
             continue
-        for lead in hits:
-            lead["signal"] = s["signal"] + " Also: " + lead["signal"]
-            lead["score"] = min(99, max(lead["score"], s["score"]) + 3)
-            lead["likely_round"] = s["likely_round"]
-            lead["signal_date"] = s["signal_date"]
-            lead["source"] = "Y Combinator + SEC Form D"
-    return yc + rest
+        sector = kw_sector(blurb)
+        am = re.search(r"\$([\d.]+)\s*(K|M|B|million|billion)?", title, re.I)
+        amount = float(am.group(1)) * {"k": 1e3, "b": 1e9, "billion": 1e9}.get((am.group(2) or "m").lower(), 1e6) if am else None
+        if not sector or (amount and amount > 20e6):
+            continue
+        picked.append((d, url, bm, sector, amount, "Pre-seed" if "pre" in rm.group(0).lower() else "Seed", blurb, title))
+
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        details = list(ex.map(lambda p: vcn_article(p[1]), picked))
+
+    leads = []
+    for (d, url, bm, sector, amount, stage, blurb, title), (site, first, last, role) in zip(picked, details):
+        tm = TITLE_CO.match(title)
+        company = (tm.group(1) if tm else bm.group(3).split(",")[0]).strip()
+        months = (TODAY - dt.date.fromisoformat(d)).days / 30.4
+        nxt = "Seed" if stage == "Pre-seed" else "Series A"
+        what = f"Announced a {usd(amount) + ' ' if amount else ''}{stage.lower()} round {months:.0f} months ago ({d})."
+        sig, score = next_raise_signal(what, months, nxt)
+        email = guess_email(first, site)
+        leads.append({
+            "company": company, "sector": sector, "signal": sig, "likely_round": nxt, "score": score + 3,
+            "signal_date": d, "company_linkedin": li_search("companies", company),
+            "founder_linkedin": li_search("people", f"{first} {last} {company}") if first else "",
+            "email": email, "email_status": "guess (first@domain), unverified" if email else "",
+            "full_name": f"{first} {last}".strip(), "first_name": first, "last_name": last, "title": role,
+            "website": ("https://" + site) if site else "", "location": f"{bm.group(1).title()}, {bm.group(2)}",
+            "team_size": "", "description": bm.group(3).strip()[:180],
+            "source": "Funding news", "source_url": url,
+        })
+    print(f"  {len(leads)} leads.")
+    return leads
+
+
+# ---------- source 4: SEC Form C (Regulation Crowdfunding) ----------
+# A Form C is filed to open a crowdfunding round, so an offering whose deadline is
+# still ahead is a company raising right now. It lists website and employee count.
+
+def parse_form_c(xml_text):
+    xml_text = re.sub(r'\sxmlns(:\w+)?="[^"]+"', "", xml_text).replace("<com:", "<").replace("</com:", "</")
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError:
+        return None
+    info = root.find("formData/issuerInformation/issuerInfo")
+    if info is None:
+        return None
+    signers = [(_t(p, "personSignature"), _t(p, "personTitle")) for p in root.findall("formData/signatureInfo/signaturePersons/signaturePerson")]
+    signers.insert(0, (_t(root, "formData/signatureInfo/issuerSignature/issuerSignature"), _t(root, "formData/signatureInfo/issuerSignature/issuerTitle")))
+
+    def rank(s):
+        return 0 if re.search(r"\bceo\b|chief executive", s[1], re.I) else 1 if re.search(r"founder|president", s[1], re.I) else 2
+    signers = sorted([s for s in signers if len(s[0].split()) >= 2], key=rank)
+    try:
+        deadline = dt.datetime.strptime(_t(root, "formData/offeringInformation/deadlineDate"), "%m-%d-%Y").date()
+    except ValueError:
+        deadline = None
+    emp = _t(root, "formData/annualReportDisclosureRequirements/currentEmployees")
+    return {
+        "name": _t(info, "nameOfIssuer"), "state": _t(info, "issuerAddress/stateOrCountry"),
+        "city": _t(info, "issuerAddress/city"), "website": _t(info, "issuerWebsite"),
+        "portal": _t(root, "formData/issuerInformation/companyName"),
+        "max": _money(_t(root, "formData/offeringInformation/maximumOfferingAmount")) or _money(_t(root, "formData/offeringInformation/offeringAmount")),
+        "deadline": deadline, "employees": int(float(emp)) if re.fullmatch(r"[\d.]+", emp) else None,
+        "signer": signers[0] if signers else ("", ""),
+    }
+
+
+def crowdfunding_leads(args):
+    ua = os.environ.get("SEC_USER_AGENT", "")
+    if not ua:
+        return []
+    start = TODAY - dt.timedelta(days=365)
+    print("SEC Form C (crowdfunding): listing offerings filed in the last 12 months...")
+    hits, frm = {}, 0
+    while frm < 9900:
+        q = urllib.parse.urlencode({"q": "", "forms": "C", "dateRange": "custom", "startdt": start.isoformat(),
+                                    "enddt": TODAY.isoformat(), "from": frm})
+        body = fetch("https://efts.sec.gov/LATEST/search-index?" + q, ua)
+        page = json.loads(body)["hits"]["hits"] if body else []
+        for h in page:
+            s = h["_source"]
+            if s.get("form") == "C" and set(s.get("biz_states") or []) & US_STATES:
+                hits[s["ciks"][0]] = s  # newest first, keep the first seen per company
+                hits.setdefault(s["ciks"][0], s)
+        frm += len(page)
+        time.sleep(0.15)
+        if len(page) < 100:
+            break
+    print(f"  {len(hits)} companies. Reading each offering...")
+    leads = []
+    for s in hits.values():
+        adsh, cik = s["adsh"], str(int(s["ciks"][0]))
+        url = f"https://www.sec.gov/Archives/edgar/data/{cik}/{adsh.replace('-', '')}/primary_doc.xml"
+        fresh = not os.path.exists(os.path.join(CACHE, f"secc_{adsh}.xml"))
+        xml_text = cached(f"secc_{adsh}.xml", url, ua, max_age_days=3650)
+        if fresh:
+            time.sleep(0.12)
+        c = parse_form_c(xml_text) if xml_text else None
+        if not c or c["state"] not in US_STATES or not c["deadline"] or c["deadline"] < TODAY:
+            continue
+        if c["employees"] is not None and c["employees"] > 50:
+            continue
+        sector = kw_sector(f"{c['name']} {domain_of(c['website'])}")
+        if not sector:
+            continue
+        first, last = split_name(c["signer"][0].title() if c["signer"][0].isupper() or c["signer"][0].islower() else c["signer"][0])
+        display = nice(c["name"])
+        size = c["max"] or 0
+        sig = (f"Raising now through {c['portal'] or 'a crowdfunding portal'}: Form C filed {s['file_date']}, "
+               f"target up to {usd(size)}, open until {c['deadline']}.")
+        email = guess_email(first, c["website"])
+        leads.append({
+            "company": display, "sector": sector, "signal": sig,
+            "likely_round": "Pre-seed" if size < 1.5e6 else "Seed", "score": 93, "signal_date": s["file_date"],
+            "company_linkedin": li_search("companies", LEGAL_SUFFIX.sub("", display)),
+            "founder_linkedin": li_search("people", f"{first} {last} {LEGAL_SUFFIX.sub('', display)}") if first else "",
+            "email": email, "email_status": "guess (first@domain), unverified" if email else "",
+            "full_name": f"{first} {last}".strip(), "first_name": first, "last_name": last, "title": c["signer"][1],
+            "website": c["website"], "location": f"{c['city'].title()}, {c['state']}",
+            "team_size": c["employees"] if c["employees"] is not None else "",
+            "description": "Regulation Crowdfunding offering. Sector inferred from the company name and website.",
+            "source": "SEC Form C", "source_url": url.replace("primary_doc.xml", ""),
+        })
+    print(f"  {len(leads)} leads.")
+    return leads
+
+
+PRIORITY = ["Y Combinator", "Funding news", "SEC Form C", "SEC Form D"]  # richest contact data first
+
+
+def merge(leads):
+    """Same company from several sources -> one row with every signal, on the row with the best contact data."""
+    groups = {}
+    for lead in leads:
+        groups.setdefault(name_key(lead["company"]), []).append(lead)
+    out = []
+    for key, rows in groups.items():
+        sources = sorted({r["source"] for r in rows}, key=PRIORITY.index)
+        if not key or len(sources) == 1:
+            out += rows
+            continue
+        base_rows = [r for r in rows if r["source"] == sources[0]]
+        extra = {}
+        for r in rows:
+            if r["source"] != sources[0]:
+                extra.setdefault(r["source"], r)
+        strongest = max(extra.values(), key=lambda r: r["score"])
+        for b in base_rows:
+            for r in extra.values():
+                b["signal"] += " Also: " + r["signal"]
+                for f in ("website", "full_name", "first_name", "last_name", "title", "team_size"):
+                    b[f] = b[f] or r[f]
+            if strongest["score"] >= b["score"]:
+                b["likely_round"], b["signal_date"] = strongest["likely_round"], strongest["signal_date"]
+            b["score"] = min(99, max(b["score"], strongest["score"]) + 3)
+            b["source"] = " + ".join(sources)
+            if not b["email"]:
+                b["email"] = guess_email(b["first_name"], b["website"])
+                b["email_status"] = "guess (first@domain), unverified" if b["email"] else ""
+            out.append(b)
+    return out
 
 
 # ---------- output ----------
@@ -563,7 +789,7 @@ def main():
     args.hunter_key = os.environ.get("HUNTER_API_KEY", "")
     os.makedirs(OUT, exist_ok=True)
 
-    leads = merge([] if args.no_yc else yc_leads(args), sec_leads(args))
+    leads = merge(([] if args.no_yc else yc_leads(args)) + news_leads(args) + crowdfunding_leads(args) + sec_leads(args))
     seen, unique = set(), []
     for lead in sorted(leads, key=lambda r: (-r["score"], r["company"].lower())):
         key = (re.sub(r"\W", "", lead["company"].lower()), lead["full_name"].lower())
