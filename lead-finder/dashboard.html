@@ -1,0 +1,192 @@
+<title>Raise Signal Leads</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a working list. Slim header with counts, one sticky filter bar, then dense rows where the signal sentence gets the widest column. */
+:root {
+  --bg: #f8f9fc; --surface: #ffffff; --fg: #14192e; --muted: #6b7480; --line: #d9def2;
+  --accent: #5271ff; --accent-fg: #ffffff; --tint: #eef1fe;
+  --seed: #0f7a55; --seed-bg: #e2f5ec; --a: #8a4b08; --a-bg: #fbeed6; --ext: #6a3fb8; --ext-bg: #efe8fb;
+  --font: "Jost", "Century Gothic", "Futura", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1324; --surface: #171c33; --fg: #eef0fa; --muted: #9aa3b8; --line: #2b3254;
+  --accent: #8fa3ff; --accent-fg: #0f1324; --tint: #20274a;
+  --seed: #6fd9ae; --seed-bg: #143a2e; --a: #f0c078; --a-bg: #3d2c10; --ext: #c3a6f5; --ext-bg: #2e2250;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1324; --surface: #171c33; --fg: #eef0fa; --muted: #9aa3b8; --line: #2b3254;
+  --accent: #8fa3ff; --accent-fg: #0f1324; --tint: #20274a;
+  --seed: #6fd9ae; --seed-bg: #143a2e; --a: #f0c078; --a-bg: #3d2c10; --ext: #c3a6f5; --ext-bg: #2e2250;
+  color-scheme: dark }
+*, *::before, *::after { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1400px; margin: 0 auto; padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 20px; }
+a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+header { display: flex; flex-wrap: wrap; gap: 12px 40px; align-items: flex-end; justify-content: space-between; }
+.kicker { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+h1 { margin: 4px 0 0; font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -.02em; line-height: 1.05; text-wrap: balance; }
+.sub { color: var(--muted); max-width: 62ch; margin: 8px 0 0; }
+.stats { display: flex; gap: 28px; margin: 0; flex-wrap: wrap; }
+.stats div { display: flex; flex-direction: column; }
+.stats dd { margin: 0; font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.stats dt { order: 2; font-size: 12px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+input[type=search], select { font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; min-width: 0; }
+input[type=search] { flex: 1 1 220px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px; }
+.chip[aria-pressed=true] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.btn { font: inherit; font-weight: 600; cursor: pointer; color: var(--accent-fg); background: var(--accent); border: 0; border-radius: 8px; padding: 9px 16px; margin-left: auto; }
+.count { color: var(--muted); font-variant-numeric: tabular-nums; }
+.tablebox { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; min-width: 980px; }
+th { text-align: left; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 12px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th button { all: unset; cursor: pointer; } th button:focus-visible { outline: 2px solid var(--accent); }
+td { padding: 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+.co { font-weight: 600; font-size: 16px; color: var(--fg); }
+.dim { color: var(--muted); font-size: 13.5px; }
+.sig { max-width: 46ch; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; border-radius: 999px; padding: 2px 9px; margin-bottom: 5px; white-space: nowrap; }
+.pill.seed { color: var(--seed); background: var(--seed-bg); } .pill.a { color: var(--a); background: var(--a-bg); } .pill.ext { color: var(--ext); background: var(--ext-bg); }
+.email { font-family: var(--mono); font-size: 12.5px; user-select: all; overflow-wrap: anywhere; }
+.copy { font: inherit; font-size: 12px; cursor: pointer; color: var(--accent); background: none; border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; margin-left: 6px; }
+.links { display: flex; flex-direction: column; gap: 4px; white-space: nowrap; }
+.score { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 17px; }
+.meter { width: 44px; height: 4px; background: var(--tint); border-radius: 2px; margin-top: 4px; } .meter i { display: block; height: 100%; background: var(--accent); border-radius: 2px; }
+.pager { display: flex; gap: 12px; align-items: center; justify-content: center; }
+.pager button { font: inherit; cursor: pointer; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px 14px; } .pager button:disabled { opacity: .4; cursor: default; }
+.note { color: var(--muted); font-size: 13.5px; max-width: 80ch; }
+.empty { padding: 40px 14px; text-align: center; color: var(--muted); }
+#csvbox { width: 100%; height: 160px; font-family: var(--mono); font-size: 12px; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="kicker">DNA Pro Plans · prospecting</div>
+      <h1>Raise Signal Leads</h1>
+      <p class="sub">US startups with 1 to 50 people in AI, fintech and energy/climate that show a sign of an upcoming or open pre-seed, seed or Series A round.</p>
+    </div>
+    <dl class="stats">
+      <div><dd id="s-total">0</dd><dt>Leads</dt></div>
+      <div><dd id="s-hot">0</dd><dt>Score 90+</dt></div>
+      <div><dd id="s-upd">n/a</dd><dt>Data pulled</dt></div>
+    </dl>
+  </header>
+
+  <div class="bar">
+    <input type="search" id="q" placeholder="Search company, founder, signal, city" aria-label="Search">
+    <div class="chips" id="f-sector" role="group" aria-label="Sector"></div>
+    <div class="chips" id="f-round" role="group" aria-label="Likely round"></div>
+    <select id="f-source" aria-label="Source"><option value="">All sources</option></select>
+    <span class="count" id="count"></span>
+    <button class="btn" id="copy" type="button">Copy rows for Sheets</button>
+  </div>
+  <textarea id="csvbox" hidden readonly aria-label="Rows to copy"></textarea>
+
+  <div class="tablebox">
+    <table>
+      <thead><tr>
+        <th><button type="button" data-sort="company">Company</button></th>
+        <th>Signal</th>
+        <th><button type="button" data-sort="full_name">Founder / CEO</button></th>
+        <th>LinkedIn</th>
+        <th><button type="button" data-sort="score">Score ▾</button></th>
+      </tr></thead>
+      <tbody id="rows"><tr><td colspan="5" class="empty">Loading leads…</td></tr></tbody>
+    </table>
+  </div>
+  <div class="pager"><button id="prev" type="button">Previous</button><span class="count" id="page"></span><button id="next" type="button">Next</button></div>
+
+  <p class="note">How to read this. The signal is inferred from public data (Y Combinator batch timing, hiring, SEC Form D filings), so treat it as a reason to reach out, not proof of a raise. Emails marked "guess" follow the first@domain pattern and are not verified: run them through an email verifier before sending. LinkedIn links marked "search" open a LinkedIn search because no profile was published.</p>
+</div>
+
+<script>
+const PAGE = 50, COLS = ["company","signal","company_linkedin","founder_linkedin","email","full_name","first_name","last_name","title","likely_round","sector","score","website","location","team_size","email_status","source","source_url"];
+const st = { q: "", sector: "", round: "", source: "", sort: "score", dir: -1, page: 0 };
+let LEADS = [], view = [];
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const safeUrl = u => /^https?:\/\//i.test(u || "") ? u : (u ? "https://" + u : "");
+const link = (u, label) => { u = safeUrl(u); return u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(label)}${u.includes("/search/results/") ? " (search)" : ""}</a>` : ""; };
+const pillClass = r => r.startsWith("Series A") ? "a" : r.includes("extension") ? "ext" : "seed";
+
+function chips(el, values, key) {
+  el.innerHTML = ["", ...values].map(v => `<button class="chip" type="button" data-v="${esc(v)}" aria-pressed="${st[key] === v}">${esc(v || "All")}</button>`).join("");
+  el.onclick = e => { const b = e.target.closest(".chip"); if (!b) return; st[key] = b.dataset.v; st.page = 0; chips(el, values, key); render(); };
+}
+
+function apply() {
+  const q = st.q.toLowerCase();
+  view = LEADS.filter(r =>
+    (!st.sector || r.sector.includes(st.sector)) &&
+    (!st.round || r.likely_round === st.round) &&
+    (!st.source || r.source === st.source) &&
+    (!q || [r.company, r.full_name, r.signal, r.location, r.description, r.sector].join(" ").toLowerCase().includes(q)));
+  const k = st.sort;
+  view.sort((a, b) => (typeof a[k] === "number" ? a[k] - b[k] : String(a[k]).localeCompare(String(b[k]))) * st.dir || a.company.localeCompare(b.company));
+}
+
+function render() {
+  apply();
+  const pages = Math.max(1, Math.ceil(view.length / PAGE));
+  st.page = Math.min(st.page, pages - 1);
+  const slice = view.slice(st.page * PAGE, st.page * PAGE + PAGE);
+  $("rows").innerHTML = slice.length ? slice.map(r => `<tr>
+    <td><div class="co">${esc(r.company)}</div><div class="dim">${esc(r.description)}</div>
+      <div class="dim">${esc(r.sector)}${r.team_size ? " · " + esc(r.team_size) + " people" : ""}${r.location ? " · " + esc(r.location) : ""}</div>
+      <div class="dim">${link(r.website, "Website")}${r.website ? " · " : ""}${link(r.source_url, r.source)}</div></td>
+    <td class="sig"><span class="pill ${pillClass(r.likely_round)}">${esc(r.likely_round)}</span><div>${esc(r.signal)}</div></td>
+    <td><div><strong>${esc(r.full_name || "Not listed")}</strong></div><div class="dim">${esc(r.title)}</div>
+      ${r.email ? `<div><span class="email">${esc(r.email)}</span><button class="copy" type="button" data-copy="${esc(r.email)}">Copy</button></div><div class="dim">${esc(r.email_status)}</div>` : `<div class="dim">No email found</div>`}</td>
+    <td><div class="links">${link(r.company_linkedin, "Company")}${link(r.founder_linkedin, "Founder")}</div></td>
+    <td><div class="score">${r.score}</div><div class="meter"><i style="width:${r.score}%"></i></div></td>
+  </tr>`).join("") : `<tr><td colspan="5" class="empty">No leads match these filters. Clear the search or pick "All".</td></tr>`;
+  $("count").textContent = `${view.length.toLocaleString()} of ${LEADS.length.toLocaleString()}`;
+  $("page").textContent = `Page ${st.page + 1} of ${pages}`;
+  $("prev").disabled = st.page === 0; $("next").disabled = st.page >= pages - 1;
+}
+
+function toTsv(rows) {
+  const cell = v => String(v ?? "").replace(/[\t\r\n]+/g, " ");
+  return [COLS.join("\t"), ...rows.map(r => COLS.map(c => cell(r[c])).join("\t"))].join("\n");
+}
+
+async function copyText(text, btn, done) {
+  const old = btn.textContent;
+  try { await navigator.clipboard.writeText(text); btn.textContent = done; }
+  catch { const box = $("csvbox"); box.hidden = false; box.value = text; box.focus(); box.select(); btn.textContent = "Select all, then copy"; }
+  setTimeout(() => (btn.textContent = old), 2200);
+}
+
+function start(data, updated) {
+  LEADS = data;
+  $("s-total").textContent = LEADS.length.toLocaleString();
+  $("s-hot").textContent = LEADS.filter(r => r.score >= 90).length.toLocaleString();
+  $("s-upd").textContent = updated || "n/a";
+  chips($("f-sector"), ["AI", "Fintech", "Energy & Climate"], "sector");
+  chips($("f-round"), [...new Set(LEADS.map(r => r.likely_round))].sort(), "round");
+  $("f-source").innerHTML += [...new Set(LEADS.map(r => r.source))].map(s => `<option>${esc(s)}</option>`).join("");
+  render();
+}
+
+$("q").oninput = e => { st.q = e.target.value; st.page = 0; render(); };
+$("f-source").onchange = e => { st.source = e.target.value; st.page = 0; render(); };
+$("prev").onclick = () => { st.page--; render(); scrollTo(0, 0); };
+$("next").onclick = () => { st.page++; render(); scrollTo(0, 0); };
+$("copy").onclick = e => copyText(toTsv(view), e.currentTarget, `Copied ${view.length} rows`);
+$("rows").onclick = e => { const b = e.target.closest("[data-copy]"); if (b) copyText(b.dataset.copy, b, "Copied"); };
+document.querySelector("thead").onclick = e => {
+  const b = e.target.closest("[data-sort]"); if (!b) return;
+  st.dir = st.sort === b.dataset.sort ? -st.dir : (b.dataset.sort === "score" ? -1 : 1); st.sort = b.dataset.sort; render();
+};
+
+if (window.LEADS) start(window.LEADS, window.LEADS_UPDATED);
+else fetch("leads.json").then(r => r.json()).then(d => start(d, window.LEADS_UPDATED))
+  .catch(() => { $("rows").innerHTML = `<tr><td colspan="5" class="empty">Could not load leads.json. Run find_leads.py and open out/dashboard.html.</td></tr>`; });
+</script>

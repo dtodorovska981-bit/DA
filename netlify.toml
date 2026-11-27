@@ -31,3 +31,10 @@
   to = "https://dnaproplans.com/:splat"
   status = 301
   force = true
+
+# Internal prospecting tool: never serve it from the public site
+[[redirects]]
+  from = "/lead-finder/*"
+  to = "/404.html"
+  status = 404
+  force = true
