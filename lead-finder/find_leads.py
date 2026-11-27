@@ -5,12 +5,13 @@ signs of an upcoming or open pre-seed / seed / Series A raise.
 Sources (public, free):
   1. Y Combinator directory - batch timing is the signal; founders publish
      their own names and LinkedIn profiles on their YC company page.
-  2. SEC EDGAR Form D - a filed Form D with money still unsold is a confirmed
-     open round. Needs SEC_USER_AGENT (SEC requires a declared contact).
+  2. SEC EDGAR Form D - the public record of a private raise. Finds startups
+     with a round open now or a first round closed in the past two years.
+     Needs SEC_USER_AGENT (SEC requires a declared contact).
 
 Usage:
   python3 lead-finder/find_leads.py                 # YC only
-  SEC_USER_AGENT="Your Company you@example.com" python3 lead-finder/find_leads.py --sec-days 30
+  SEC_USER_AGENT="Your Company you@example.com" python3 lead-finder/find_leads.py
   HUNTER_API_KEY=... python3 lead-finder/find_leads.py   # look up emails via Hunter
 
 Writes lead-finder/out/leads.csv, leads.json and dashboard.html.
@@ -258,16 +259,117 @@ def yc_leads(args):
 
 
 # ---------- source 2: SEC Form D ----------
+# A Form D is filed when a company sells securities privately, so it is the public
+# record of a raise. Two years of history come from the SEC's quarterly Form D data
+# sets; the weeks since the last data set come from EDGAR search plus each filing's XML.
 
 SEC_INDUSTRY = {
-    "Other Technology": "AI", "Computers": "AI", "Telecommunications": "AI",
+    "Other Technology": "Software / tech", "Computers": "Software / tech",
     "Commercial Banking": "Fintech", "Insurance": "Fintech", "Investing": "Fintech",
     "Investment Banking": "Fintech", "Other Banking and Financial Services": "Fintech",
     "Electric Utilities": "Energy & Climate", "Energy Conservation": "Energy & Climate",
     "Environmental Services": "Energy & Climate", "Other Energy": "Energy & Climate",
 }
-AI_NAME = re.compile(r"\bAI\b|\.ai\b|\bartificial intelligence\b|\bintelligen|\bml\b|\brobot|\bautonom|\bGPT\b|labs?\b", re.I)
+AI_NAME = re.compile(r"\bAI\b|\.ai\b|AI$|\bartificial intelligence\b|intelligen|\bML\b|robot|autonom|\bGPT\b|neural|cognit|\bagent", re.I)
+NOT_A_STARTUP = re.compile(r"\b(fund|spv|l\.?p\.?|trust|reit|holdings?|capital|partners|ventures|investors?|"
+                           r"co-?invest|a series of|series [a-z0-9]+|feeder|opportunit(y|ies)|acquisition|"
+                           r"real estate|realty|propert(y|ies)|bancorp|bancshares|bank|oil|gas|mining|minerals)\b", re.I)
 US_STATES = set("AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY".split())
+SEC_DATASETS = "https://www.sec.gov/data-research/sec-markets-data/form-d-data-sets"
+LEGAL_SUFFIX = re.compile(r"[,.]?\s+(inc|incorporated|corp|corporation|co|company|llc|ltd|pbc|p\.b\.c|plc)\.?$", re.I)
+
+
+def _money(s):
+    try:
+        return float(s)
+    except (TypeError, ValueError):
+        return None
+
+
+def _date(s):
+    for fmt in ("%Y-%m-%d", "%d-%b-%Y"):
+        try:
+            return dt.datetime.strptime((s or "").strip().title(), fmt).date()
+        except ValueError:
+            pass
+    return None
+
+
+def usd(v):
+    return f"${v / 1e6:.1f}M" if v >= 1e6 else f"${v / 1e3:.0f}K"
+
+
+def nice(s):
+    """De-shout ALL-CAPS filings: ACME ROBOTICS, INC. -> Acme Robotics, Inc."""
+    s = (s or "").strip()
+    if s.isupper() and len(s) > 4:
+        s = re.sub(r"\bAi\b", "AI", s.title())
+        s = re.sub(r"\b(Llc|Pbc)\b", lambda m: m.group(1).upper(), s)
+    return s
+
+
+def name_key(name):
+    n = name.lower().strip()
+    for _ in range(2):
+        n = LEGAL_SUFFIX.sub("", n)
+    return re.sub(r"[^a-z0-9]", "", n)
+
+
+def fetch_bytes(key, url, ua):
+    os.makedirs(CACHE, exist_ok=True)
+    path = os.path.join(CACHE, key)
+    if not os.path.exists(path):
+        req = urllib.request.Request(url, headers={"User-Agent": ua})
+        with urllib.request.urlopen(req, timeout=180) as r:
+            open(path, "wb").write(r.read())
+        time.sleep(0.2)
+    return path
+
+
+def sec_dataset_records(ua, since):
+    """Filings from the quarterly data sets. Returns (records, first day not covered)."""
+    import io
+    import zipfile
+    page = fetch(SEC_DATASETS, ua) or ""
+    links = sorted(set(re.findall(r'href="(/files/[^"]*?/(\d{4})q(\d)_d\.zip)"', page)), key=lambda x: (x[1], x[2]))
+    recs, covered_to = [], since
+    for href, y, q in links:
+        q_end = dt.date(int(y) + (q == "4"), (int(q) * 3) % 12 + 1, 1)  # first day after the quarter
+        if q_end <= since:
+            continue
+        try:
+            zf = zipfile.ZipFile(fetch_bytes(f"formd_{y}q{q}.zip", "https://www.sec.gov" + href, ua))
+        except Exception as e:  # noqa: BLE001
+            print(f"  ! could not read {y}q{q}: {e}", file=sys.stderr)
+            continue
+        tables = {}
+        for n in zf.namelist():
+            base = os.path.basename(n).upper()
+            if base.endswith(".TSV"):
+                text = io.TextIOWrapper(zf.open(n), encoding="utf-8", errors="replace", newline="")
+                tables[base[:-4]] = list(csv.DictReader(text, delimiter="\t", quoting=csv.QUOTE_NONE))
+        subs = {r["ACCESSIONNUMBER"]: r for r in tables.get("FORMDSUBMISSION", [])}
+        issuers = {r["ACCESSIONNUMBER"]: r for r in tables.get("ISSUERS", []) if r.get("IS_PRIMARYISSUER_FLAG") == "YES"}
+        people = {}
+        for r in tables.get("RELATEDPERSONS", []):
+            rels = [r.get(f"RELATIONSHIP_{i}") for i in (1, 2, 3) if r.get(f"RELATIONSHIP_{i}")]
+            people.setdefault(r["ACCESSIONNUMBER"], []).append(
+                (r.get("FIRSTNAME", ""), r.get("LASTNAME", ""), rels, r.get("RELATIONSHIPCLARIFICATION", "")))
+        for o in tables.get("OFFERING", []):
+            a = o["ACCESSIONNUMBER"]
+            i, s = issuers.get(a), subs.get(a)
+            if not i or not s or o.get("INDUSTRYGROUPTYPE") not in SEC_INDUSTRY:
+                continue
+            recs.append({
+                "adsh": a, "cik": i["CIK"].lstrip("0"), "name": i["ENTITYNAME"], "city": i.get("CITY", ""),
+                "state": i.get("STATEORCOUNTRY", ""), "year": i.get("YEAROFINC_VALUE_ENTERED", ""),
+                "entity": i.get("ENTITYTYPE", ""), "group": o["INDUSTRYGROUPTYPE"],
+                "amend": o.get("ISAMENDMENT") == "true", "filed": _date(s.get("FILING_DATE")),
+                "total": _money(o.get("TOTALOFFERINGAMOUNT")), "sold": _money(o.get("TOTALAMOUNTSOLD")) or 0,
+                "revenue": o.get("REVENUERANGE", ""), "people": people.get(a, []),
+            })
+        covered_to = max(covered_to, q_end)
+    return recs, covered_to
 
 
 def _t(node, path):
@@ -275,76 +377,140 @@ def _t(node, path):
     return (el.text or "").strip() if el is not None else ""
 
 
-def _money(s):
-    try:
-        return float(s)
-    except ValueError:
-        return None
-
-
-def parse_form_d(xml_text, filed, url):
+def parse_form_d(xml_text, adsh, cik, filed):
     try:
         root = ET.fromstring(xml_text)
     except ET.ParseError:
-        return []
+        return None
     issuer, off = root.find("primaryIssuer"), root.find("offeringData")
     if issuer is None or off is None:
-        return []
-    group = _t(off, "industryGroup/industryGroupType")
-    name = _t(issuer, "entityName")
-    state = _t(issuer, "issuerAddress/stateOrCountry")
-    if group not in SEC_INDUSTRY or state not in US_STATES:
-        return []
-    sector = SEC_INDUSTRY[group]
-    if sector == "AI" and not AI_NAME.search(name):
-        return []  # Form D has no AI category; keep only tech issuers whose name suggests it
-    year = _t(issuer, "yearOfInc/value")
-    if year.isdigit() and TODAY.year - int(year) > 6:
-        return []
-    total = _money(_t(off, "offeringSalesAmounts/totalOfferingAmount"))
-    sold = _money(_t(off, "offeringSalesAmounts/totalAmountSold")) or 0
-    if total is not None and not 100_000 <= total <= 20_000_000:
-        return []
-    if total is None and sold > 20_000_000:
-        return []
-    remaining = (total - sold) if total is not None else None
-    amend = _t(off, "typeOfFiling/newOrAmendment/isAmendment") == "true"
-    size = total if total is not None else sold
-    rnd = "Pre-seed" if size < 1_500_000 else "Seed" if size < 6_000_000 else "Series A"
-
-    def usd(v):
-        return f"${v / 1e6:.2f}M" if v >= 1e6 else f"${v / 1e3:.0f}K"
-
-    target = usd(total) if total is not None else "an open-ended amount"
-    sig = f"Filed SEC Form D{' amendment' if amend else ''} on {filed}: raising {target}, {usd(sold)} sold so far."
-    if remaining and remaining > 0:
-        sig += f" {usd(remaining)} still to raise, so the round is open."
-        score = 96
-    elif total is None:
-        sig += " No cap stated, round likely still open."
-        score = 88
-    else:
-        sig += " Round fully subscribed; next raise typically 12 to 18 months out."
-        score = 45
-
+        return None
     people = []
     for p in root.findall("relatedPersonsList/relatedPersonInfo"):
-        rels = [r.text or "" for r in p.findall("relatedPersonRelationshipList/relationship")]
-        first, last = _t(p, "relatedPersonName/firstName"), _t(p, "relatedPersonName/lastName")
-        if first and last and first not in ("-", "N/A"):
-            people.append((0 if "Executive Officer" in rels else 1, first.title(), last.title(), ", ".join(rels)))
-    people.sort()
-    _, first, last, title = people[0] if people else (0, "", "", "")
+        people.append((_t(p, "relatedPersonName/firstName"), _t(p, "relatedPersonName/lastName"),
+                       [r.text or "" for r in p.findall("relatedPersonRelationshipList/relationship")],
+                       _t(p, "relationshipClarification")))
+    return {
+        "adsh": adsh, "cik": cik, "name": _t(issuer, "entityName"), "city": _t(issuer, "issuerAddress/city"),
+        "state": _t(issuer, "issuerAddress/stateOrCountry"), "year": _t(issuer, "yearOfInc/value"),
+        "entity": _t(issuer, "entityType"), "group": _t(off, "industryGroup/industryGroupType"),
+        "amend": _t(off, "typeOfFiling/newOrAmendment/isAmendment") == "true", "filed": filed,
+        "total": _money(_t(off, "offeringSalesAmounts/totalOfferingAmount")),
+        "sold": _money(_t(off, "offeringSalesAmounts/totalAmountSold")) or 0,
+        "revenue": _t(off, "issuerSize/revenueRange"), "people": people,
+    }
+
+
+def sec_recent_records(ua, start):
+    """Filings newer than the last data set: EDGAR search per industry group, then each XML."""
+    hits = {}
+    for group in SEC_INDUSTRY:
+        frm = 0
+        while frm < 9900:
+            q = urllib.parse.urlencode({"q": f'"{group}"', "forms": "D", "dateRange": "custom",
+                                        "startdt": start.isoformat(), "enddt": TODAY.isoformat(), "from": frm})
+            body = fetch("https://efts.sec.gov/LATEST/search-index?" + q, ua)
+            page = json.loads(body)["hits"]["hits"] if body else []
+            for h in page:
+                s = h["_source"]
+                name = (s.get("display_names") or [""])[0]
+                if set(s.get("biz_states") or []) & US_STATES and not NOT_A_STARTUP.search(name):
+                    hits[s["adsh"]] = s
+            frm += len(page)
+            time.sleep(0.15)
+            if len(page) < 100:
+                break
+    print(f"  {len(hits)} recent filings since {start} to read (SEC limit: 10 requests/second)...")
+    recs = []
+    for adsh, s in hits.items():
+        cik = str(int(s["ciks"][0]))
+        url = f"https://www.sec.gov/Archives/edgar/data/{cik}/{adsh.replace('-', '')}/primary_doc.xml"
+        fresh = not os.path.exists(os.path.join(CACHE, f"sec_{adsh}.xml"))
+        xml_text = cached(f"sec_{adsh}.xml", url, ua, max_age_days=3650)
+        if fresh:
+            time.sleep(0.12)
+        rec = parse_form_d(xml_text, adsh, cik, _date(s["file_date"])) if xml_text else None
+        if rec and rec["group"] in SEC_INDUSTRY:
+            recs.append(rec)
+    return recs
+
+
+def sec_contact(people):
+    best = None
+    for first, last, rels, clar in people:
+        if not first or not last or first in ("-", "N/A", "n/a"):
+            continue
+        rank = 0 if re.search(r"\bceo\b|chief executive", clar, re.I) else \
+            1 if re.search(r"founder|president", clar, re.I) else \
+            2 if "Executive Officer" in rels else 3
+        if best is None or rank < best[0]:
+            title = clar if rank < 2 and clar else ", ".join(rels)
+            best = (rank, nice(first), nice(last), title)
+    return best[1:] if best else ("", "", "")
+
+
+def sec_lead(recs):
+    """One company's Form D filings in the window -> a lead, or None if it is not a fit."""
+    recs = sorted(recs, key=lambda r: r["filed"])
+    latest = recs[-1]
+    name = latest["name"]
+    year = latest["year"]
+    if latest["entity"] != "Corporation" or latest["state"] not in US_STATES or NOT_A_STARTUP.search(name):
+        return None
+    if not year.isdigit() or TODAY.year - int(year) > 5:
+        return None
+    new = [r for r in recs if not r["amend"]]
+    if not new:
+        return None  # only amendments: the first raise was before the window
+    sold = max(r["sold"] for r in recs)
+    size = max([sold] + [r["total"] for r in recs if r["total"]])
+    if sold > 20e6 or size > 30e6 or size < 100e3:
+        return None
+
+    last_new = new[-1]
+    months = (TODAY - last_new["filed"]).days / 30.4
+    remaining = (latest["total"] - latest["sold"]) if latest["total"] is not None else None
+    open_now = (TODAY - latest["filed"]).days <= 180 and (remaining is None or remaining > 0.02 * (latest["total"] or 1))
+    stage = "Pre-seed" if size < 1.5e6 else "Seed" if size < 6e6 else "Series A"
+    if open_now:
+        target = usd(latest["total"]) if latest["total"] is not None else "an uncapped amount"
+        sig = (f"Round open now. Form D filed {latest['filed']}: {usd(latest['sold'])} raised of {target}"
+               + (f", {usd(remaining)} still to raise." if remaining else "."))
+        rnd, score = stage, 95 if (TODAY - latest["filed"]).days <= 90 else 86
+    else:
+        if stage == "Series A":
+            return None  # next round would be a Series B, outside the target
+        nxt = "Seed" if stage == "Pre-seed" else "Series A"
+        sig = f"Raised a {usd(sold or size)} {stage.lower()} round {months:.0f} months ago (Form D filed {last_new['filed']}). "
+        if months < 6:
+            sig += f"Early for the next raise; worth warming up for their {nxt}."
+            score = 50
+        elif months < 12:
+            sig += f"Founders usually start preparing the {nxt} around now."
+            score = 70
+        else:
+            sig += f"In the usual 12 to 24 month window to raise a {nxt}."
+            score = 82
+        rnd = nxt
+    if len(new) > 1:
+        sig += f" {len(new)} separate raises filed in two years."
+    sector = SEC_INDUSTRY[latest["group"]]
+    if sector == "Software / tech" and AI_NAME.search(name):
+        sector = "AI"
+    first, last, title = sec_contact(latest["people"])
     full = f"{first} {last}".strip()
-    return [{
-        "company": name, "sector": sector, "signal": sig, "likely_round": rnd, "score": score,
-        "signal_date": filed, "company_linkedin": li_search("companies", name),
-        "founder_linkedin": li_search("people", f"{full} {name}") if full else "",
+    display = nice(name)
+    rev = latest["revenue"] if latest["revenue"] not in ("", "Decline to Disclose", "Not Applicable") else "undisclosed"
+    return {
+        "company": display, "sector": sector, "signal": sig, "likely_round": rnd, "score": score,
+        "signal_date": latest["filed"].isoformat(), "company_linkedin": li_search("companies", LEGAL_SUFFIX.sub("", display)),
+        "founder_linkedin": li_search("people", f"{full} {LEGAL_SUFFIX.sub('', display)}") if full else "",
         "email": "", "email_status": "", "full_name": full, "first_name": first, "last_name": last,
-        "title": title, "website": "", "location": f"{_t(issuer, 'issuerAddress/city').title()}, {state}",
-        "team_size": "", "description": f"Form D industry group: {group}. Incorporated {year or 'n/a'}.",
-        "source": "SEC Form D", "source_url": url,
-    }]
+        "title": title, "website": "", "location": f"{nice(latest['city']).title()}, {latest['state']}",
+        "team_size": "", "description": f"SEC industry: {latest['group']}. Incorporated {year}. Revenue: {rev}.",
+        "source": "SEC Form D",
+        "source_url": f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={latest['cik']}&type=D",
+    }
 
 
 def sec_leads(args):
@@ -352,34 +518,38 @@ def sec_leads(args):
     if not ua:
         print("SEC Form D: skipped. Set SEC_USER_AGENT=\"Company Name email@domain\" to enable (SEC requires it).")
         return []
-    start = TODAY - dt.timedelta(days=args.sec_days)
-    print(f"SEC Form D: listing filings since {start}...")
-    hits, frm = [], 0
-    while True:
-        q = urllib.parse.urlencode({"q": "", "forms": "D", "dateRange": "custom",
-                                    "startdt": start.isoformat(), "enddt": TODAY.isoformat(), "from": frm})
-        body = fetch("https://efts.sec.gov/LATEST/search-index?" + q, ua)
-        page = json.loads(body)["hits"]["hits"] if body else []
-        hits += page
-        frm += len(page)
-        if len(page) < 100 or frm >= 9900:
-            break
-        time.sleep(0.15)
-    print(f"  {len(hits)} filings. Reading each one (SEC limit: 10 requests/second)...")
-    leads = []
-    for h in hits:
-        s = h["_source"]
-        if not set(s.get("biz_states") or []) & US_STATES:
-            continue
-        adsh = s["adsh"]
-        url = f"https://www.sec.gov/Archives/edgar/data/{int(s['ciks'][0])}/{adsh.replace('-', '')}/primary_doc.xml"
-        fresh = not os.path.exists(os.path.join(CACHE, f"sec_{adsh}.xml"))
-        xml_text = cached(f"sec_{adsh}.xml", url, ua, max_age_days=365)
-        if fresh:
-            time.sleep(0.12)
-        if xml_text:
-            leads += parse_form_d(xml_text, s["file_date"], url.replace("primary_doc.xml", ""))
+    since = TODAY - dt.timedelta(days=args.sec_months * 30.4)
+    print(f"SEC Form D: loading filings since {since}...")
+    recs, covered_to = sec_dataset_records(ua, since)
+    print(f"  {len(recs)} filings in target industries from quarterly data sets (through {covered_to - dt.timedelta(days=1)}).")
+    recs += sec_recent_records(ua, covered_to)
+    by_cik = {}
+    for r in recs:
+        if r["filed"] and r["filed"] >= since:
+            by_cik.setdefault(r["cik"], {})[r["adsh"]] = r
+    leads = [lead for lead in (sec_lead(list(v.values())) for v in by_cik.values()) if lead]
+    print(f"  {len(leads)} startups kept out of {len(by_cik)} filers.")
     return leads
+
+
+def merge(yc, sec):
+    """A YC company that also filed a Form D gets the confirmed raise added to its row."""
+    by_name = {}
+    for lead in yc:
+        by_name.setdefault(name_key(lead["company"]), []).append(lead)
+    rest = []
+    for s in sec:
+        hits = by_name.get(name_key(s["company"]))
+        if not hits:
+            rest.append(s)
+            continue
+        for lead in hits:
+            lead["signal"] = s["signal"] + " Also: " + lead["signal"]
+            lead["score"] = min(99, max(lead["score"], s["score"]) + 3)
+            lead["likely_round"] = s["likely_round"]
+            lead["signal_date"] = s["signal_date"]
+            lead["source"] = "Y Combinator + SEC Form D"
+    return yc + rest
 
 
 # ---------- output ----------
@@ -387,13 +557,13 @@ def sec_leads(args):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--all-founders", action="store_true", help="one row per founder instead of CEO only")
-    ap.add_argument("--sec-days", type=int, default=30, help="how far back to read Form D filings")
+    ap.add_argument("--sec-months", type=int, default=24, help="how far back to read Form D filings")
     ap.add_argument("--no-yc", action="store_true")
     args = ap.parse_args()
     args.hunter_key = os.environ.get("HUNTER_API_KEY", "")
     os.makedirs(OUT, exist_ok=True)
 
-    leads = ([] if args.no_yc else yc_leads(args)) + sec_leads(args)
+    leads = merge([] if args.no_yc else yc_leads(args), sec_leads(args))
     seen, unique = set(), []
     for lead in sorted(leads, key=lambda r: (-r["score"], r["company"].lower())):
         key = (re.sub(r"\W", "", lead["company"].lower()), lead["full_name"].lower())

@@ -169,7 +169,7 @@ function start(data, updated) {
   $("s-total").textContent = LEADS.length.toLocaleString();
   $("s-hot").textContent = LEADS.filter(r => r.score >= 90).length.toLocaleString();
   $("s-upd").textContent = updated || "n/a";
-  chips($("f-sector"), ["AI", "Fintech", "Energy & Climate"], "sector");
+  chips($("f-sector"), ["AI", "Fintech", "Energy & Climate", "Software / tech"], "sector");
   chips($("f-round"), [...new Set(LEADS.map(r => r.likely_round))].sort(), "round");
   $("f-source").innerHTML += [...new Set(LEADS.map(r => r.source))].map(s => `<option>${esc(s)}</option>`).join("");
   render();
